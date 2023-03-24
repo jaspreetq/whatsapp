@@ -1,9 +1,12 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { messageContext } from '../../App';
 import { auth, db } from '../../firebase';
-
+import "./styles.css"
 function SendMessage() {
-    const [message, setMessage] = useState("");
+  const messageState = useContext(messageContext);
+  const {message,setMessage}= messageState;
+  // setMessage("dsf")
     // const handleSend = () => { setMessage("") };
     const handleEnter = (e) => (e.key == "Enter") && handleSend();
 
@@ -33,7 +36,7 @@ function SendMessage() {
                 onChange={(e) => { setMessage(e.target.value) }}
                 type="text" placeholder='Send Message...'
                 onKeyDown={handleEnter}
-            />            
+            />
             <button onClick={(e)=>handleSend(e)}>Send</button>
         </div>
     )
