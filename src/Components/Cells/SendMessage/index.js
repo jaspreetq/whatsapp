@@ -8,6 +8,8 @@ function SendMessage() {
   const { message, setMessage } = messageState;
   // setMessage("dsf")
   // const handleSend = () => { setMessage("") };
+  const refDbMessages = collection(db, "messages");
+  //refDbMessages.add({})
   const handleEnter = (e) => e.key == "Enter" && handleSend();
 
   const handleSend = async (event) => {
@@ -17,13 +19,15 @@ function SendMessage() {
     }
     const { uid, displayName, photoURL } = auth.currentUser;
     await addDoc(collection(db, "messages"), {
-      text: message,
+      uid,
       name: displayName,
       avatar: photoURL,
       createdAt: serverTimestamp(),
-      uid,
+      text: message,
+      details:
     });
     setMessage("");
+    //chats, 
   };
 
   //   return (

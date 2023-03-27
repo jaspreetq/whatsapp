@@ -1,4 +1,4 @@
-export const errorDisplay = (error, email, setErrorMessage) => {
+export const errorDisplay = (error, name, email, setErrorMessage) => {
   console.log("In utility :", error.code);
   switch (error.code) {
     case "auth/email-already-in-use":
