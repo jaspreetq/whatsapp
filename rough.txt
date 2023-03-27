@@ -1,0 +1,22 @@
+Signin:
+ /* <div>
+      {user ? (
+        <button onClick={signOut}>Sign Out</button>
+      ) : (
+        
+      )} */
+
+    /* <CustomModal visible={showModal} showModal={showModal} setShowModal={setShowModal} title={"Login"}> */
+
+    //   /* </CustomModal> */
+    //   /* Login with Phone Number or Anonymous with Metamask
+    //         - 1 to 1 Chat  */
+
+    //   /* <button onClick={()=>setUser(false)}>Sign Out</button> */
+    //   {/* <label>User email : </label>
+    //         <input email="useremail" placeholder='Enter your email:' />
+    //         <label>User  : </label>
+    //         <input email="useremail" placeholder='Enter your email:' /> */}
+    //   {/* <input email="userGmail" type="text" placeholder='enter your gmail'>Gmail:</input> */}
+    // </div>
+    //
