@@ -1,0 +1,1 @@
+export const OPEN_CHAT = "OPEN_CHAT"

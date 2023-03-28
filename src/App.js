@@ -7,26 +7,33 @@ import Welcome from "./Components/Welcome";
 import LiveChat from "./Components/LiveChat";
 import SendMessage from "./Components/Cells/SendMessage";
 import SideBar from "./Components/SideBar";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SignUp from "./Components/SignUp";
 
 export const messageContext = createContext();
 
 function App() {
   const [user] = useAuthState(auth);
+  const [chatDisplay,setChatDisplay] = useState(false)
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState();
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [senderDetails, setSenderDetails] = useState({});
   return (
-      <messageContext.Provider
-        value={{ message, setMessage, errorMessage, setErrorMessage}}
-      >
-        <div className="App">
+    <messageContext.Provider
+      value={{ message, setMessage, errorMessage, setErrorMessage, email, setEmail, password, setPassword,chatDisplay,setChatDisplay,senderDetails,setSenderDetails}}
+    >
+      <div className="App">
+        <BrowserRouter>
           <Routes>
-            <Route path="/" element={<SignIn />} />
-            <Route path="LiveChat" element={<LiveChat />} />
+            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/" element={<Welcome />} />
+            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="/LiveChat/:name" element={user ? <LiveChat />:<Welcome/>} />
           </Routes>
-          
-          {/* <br />
+        </BrowserRouter>
+        {/* <br />
           {user ? (
             <div className="home">
               <SideBar />
@@ -35,8 +42,8 @@ function App() {
           ) : (
             <SignIn />
           )} */}
-        </div>
-      </messageContext.Provider>
+      </div>
+    </messageContext.Provider>
   );
 }
 

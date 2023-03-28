@@ -1,5 +1,12 @@
-export const errorDisplay = (error, name, email, setErrorMessage) => {
-  console.log("In utility :", error.code);
+import { NAME_ERROR_STRING } from "../ConstantStrings";
+
+export const errorDisplay = (error, email, setErrorMessage) => {
+  console.log("In utility :", error);
+  if(error.message == NAME_ERROR_STRING)
+  {
+    setErrorMessage(NAME_ERROR_STRING);
+    return;
+  }
   switch (error.code) {
     case "auth/email-already-in-use":
       setErrorMessage(`Email address ${email} already in use.`);
@@ -24,6 +31,8 @@ export const errorDisplay = (error, name, email, setErrorMessage) => {
       setErrorMessage("Wrong Password !");
       break;
     default:
+      // console.log(error)
+      console.log(error.code)
       setErrorMessage(error.code);
       break;
   }

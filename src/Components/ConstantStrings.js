@@ -1,0 +1,1 @@
+export const NAME_ERROR_STRING = "Invalid Name!"

@@ -5,7 +5,7 @@ import { auth, db } from "../../../firebase";
 import "./styles.css";
 function SendMessage() {
   const messageState = useContext(messageContext);
-  const { message, setMessage } = messageState;
+  const { message, setMessage,email } = messageState;
   // setMessage("dsf")
   // const handleSend = () => { setMessage("") };
   const refDbMessages = collection(db, "messages");
@@ -18,13 +18,13 @@ function SendMessage() {
       return;
     }
     const { uid, displayName, photoURL } = auth.currentUser;
+    // console.log("name<><><<>< ",name)
     await addDoc(collection(db, "messages"), {
       uid,
-      name: displayName,
+      name:db.auth.currentUser.name,
       avatar: photoURL,
       createdAt: serverTimestamp(),
       text: message,
-      details:
     });
     setMessage("");
     //chats, 

@@ -1,15 +1,7 @@
-import {configureStore} from '@reduxjs/toolkit'
-import rootReducer from './rootReducer';
-import ContactsSaga from './ContactsSaga'
-import createSagaMiddleware from 'redux-saga';
+import { configureStore } from '@reduxjs/toolkit'
+import RootReducer from '../Reducer/RootReducer'
 
-// const store = createStore(rootReducer);
-const sagaMiddleware = createSagaMiddleware();
-const store  = configureStore({
-    reducer:rootReducer,
-    middleware:()=>[sagaMiddleware]
-});
+// import rootReducer from './reducers'
 
-sagaMiddleware.run(ContactsSaga);
-
-export default store;
+export const Store = configureStore({ reducer: RootReducer })
+// The store now has redux-thunk added and the Redux DevTools Extension is turned on

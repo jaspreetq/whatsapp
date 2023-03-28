@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { auth } from "../../firebase";
+import React, { useContext, useEffect, useState } from "react";
+import { auth, db } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
     connectAuthEmulator,
@@ -16,55 +16,27 @@ import { errorDisplay } from "../Utillities/errorDisplay";
 // import { signUpEmailPassword } from "../Utillities/signUpEmailPassword";
 import { useNavigate } from "react-router-dom";
 import { IMAGES } from "../Utillities/Images";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 function SignIn() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
-    const [userDetailsObj, setUserDetailsObj] = useState({});
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
+    // const [userDetailsObj, setUserDetailsObj] = useState({});
     const auth = getAuth();
     const [user] = useAuthState(auth);
-    const { errorMessage, setErrorMessage } = useContext(messageContext);
+    const { errorMessage, setErrorMessage, email, setEmail,password, setPassword, name} = useContext(messageContext);
 
+    useEffect(()=>{
+        setErrorMessage("")
+    },[])
     // connectAuthEmulator(auth, "http://localhost:9899");
     const handleSignIn = () => {
         loginEmailPassword();
     };
-
-    const handleSignUp = () => {
-        signUpEmailPassword();
-    };
-
     // const displayLoginStatus = () => { 
 
     // };
     // const auth = getAuth();
     // signUpEmailPassword
-    const signUpEmailPassword = async () => {
-        const signupEmail = email;
-        const signupPassword = password;
-        try {
-            const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                signupEmail,
-                signupPassword
-            );
-            const { uid } = auth.currentUser;
-            await addDoc(collection(db, "users"), {
-                uid,
-                email,
-                avatar: IMAGES.DP1,//random array dp generator
-                createdAt: serverTimestamp(),
-            });
-            navigate("LiveChat");
-        } catch (error) {
-            console.log(error);
-            errorDisplay(error, email, setErrorMessage);
-            // showLoginError(error);
-        }
-    };
-
 
     const loginEmailPassword = async () => {
         // console.log(emailExists)
@@ -77,11 +49,11 @@ function SignIn() {
                 loginPassword
             );
             setErrorMessage("");
-            navigate("LiveChat");
+            navigate(`/LiveChat/${name}`);
         } catch (error) {
-            console.log(error);
+            console.log(error," in signin error");
             // showLoginError(error);
-            errorDisplay(error, name, email, setErrorMessage);
+            errorDisplay(error, email, setErrorMessage);
         }
     };
 
@@ -97,7 +69,7 @@ function SignIn() {
                 // IdP data available using getAdditionalUserInfo(result)
                 // ...
                 setErrorMessage("");
-                navigate("LiveChat")
+                // navigate("/LiveChat")
             })
             .catch((error) => {
                 // Handle Errors here.
@@ -113,17 +85,7 @@ function SignIn() {
 
     return (
         <>
-            <h3>Please Register...</h3>
-            {!user && <input
-                id="userName"
-                value={name}
-                onChange={(e) => {
-                    setName(e.target.value);
-                }}
-                type="text"
-                placeholder="Enter Name..."
-            // onKeyDown={handleEnter}
-            />}
+            <h3>Please SignIn...</h3>
             <input
                 id="userEmail"
                 value={email}
@@ -147,8 +109,9 @@ function SignIn() {
             <br />
             <br />
             <button onClick={googleSignIn}>Sign In G</button>
-            {user && <button onClick={handleSignIn}>Sign In</button>}
-            {!user && <button onClick={handleSignUp}>Sign Up</button>}
+            <button onClick={handleSignIn}>Sign In</button>
+            {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
+            <button onClick={()=>navigate("/SignUp")}>New User, SignUp</button>
             <p style={{ color: "red" }}>{errorMessage}</p>
         </>
     );
