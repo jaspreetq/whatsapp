@@ -24,7 +24,7 @@ function SignIn() {
     const auth = getAuth();
     const [user] = useAuthState(auth);
     const { errorMessage, setErrorMessage, email, setEmail,password, setPassword, name} = useContext(messageContext);
-
+    console.log("useeeeeeeeeeer: ",user)
     useEffect(()=>{
         setErrorMessage("")
     },[])
@@ -48,6 +48,8 @@ function SignIn() {
                 loginEmail,
                 loginPassword
             );
+            
+            console.log("userCredential signin ",userCredential)
             setErrorMessage("");
             navigate(`/LiveChat/${name}`);
         } catch (error) {

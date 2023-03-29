@@ -1,17 +1,24 @@
-import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { messageContext } from "../../App";
 import { auth, db } from "../../firebase";
+import { IMAGES } from "../Utillities/Images";
+import "./styles.css"
 
 function SideBar() {
-  
+
   // const dispatch = useDispatch();
   // const chatWith1 = useSelector(state => state.MessageReducer)
   const [users, setUsers] = useState([]);
-  const {chatDisplay,message,setMessage,setChatDisplay,senderDetails,setSenderDetails} = useContext(messageContext);
+  const { activeUser, setActiveUser, chatDisplay, message, setMessage, setChatDisplay, recieverDetails, setRecieverDetails } = useContext(messageContext);
+  let senderUserID;
+  useEffect(()=>{
+    console.log("activeUser iopi",activeUser.name)
+  },[activeUser])
   useEffect(() => {
-    // console.log(setSenderDetails({abc:"ds"},senderDetails))
+    // console.log(setRecieverDetails({abc:"ds"},senderDetails))
     //?
     // const qq = query()
     // console.log("docRef ",auth.currentUser.uid)
@@ -45,42 +52,99 @@ function SideBar() {
   //   console.log("No such document!");
   // }
   // console.log(users[], typeof users)
-  const senderSelected = async (user) => {
-    setSenderDetails(user)
+  // getAuth().onAuthStateChanged((user) => {
+  //   if (user) {
+  //     // User logged in already or has just logged in.
+  //     console.log("user.uid :", user);
+  //     senderUser = user;
+  //   }
+  // });
+  const receiverSelected = async (user) => {
+    //sender - me
+    //reciever - the other person
+    //both can send and recieve, this is just a name
+    setRecieverDetails(user)
     setChatDisplay(true);
-    
+    console.log("recieverDetails:", recieverDetails, "user: ", user, " ")
     const { uid, name } = user;
-    const uid2 = users.at(-1).uid;
-    console.log("uid2 name ",uid2,name)
+    // senderUser = auth.currentUser;
+    console.log("user reciever <><><><>", name)
+    const senderUid = auth.currentUser.uid, recieverUid = uid;
+    senderUserID = senderUid;
+    const senderDetails = users?.find((user) => user.uid == senderUid);
+    setActiveUser(senderDetails);
+    // console.log("db.collection.doc(senderUid).get ",db.collection(db, "users").doc(senderUid).get())
+
+    console.log("auth.currentUser :", auth.currentUser.uid, auth.currentUser, senderDetails)
+    console.log("uid2 name ", user)
     // console.log("name<><><<>< ",name)
-    await addDoc(collection(db, `chat ${uid+uid2}`), {
-      senderUid: uid,
-      recieverUid: uid2,
+    //setDoc
+    await setDoc(doc(db, "chats", `${recieverUid + senderUid}`), {
+      uid: recieverUid + senderUid,
+      senderUid,
+      recieverUid,
       senderDetails,
-      recieverDetails: users.at(-1),
+      recieverDetails: user,
       createdAt: serverTimestamp(),
-      text: message,
+      messages: [{ mess: message }]
     });
+
+    const docRef = doc(db, "chats", `${recieverUid + senderUid}`);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      docSnap.data().messages?.push("dfs");
+      console.log("Document data:", docSnap.data(), "\n docSnap:", docSnap, "\n snaps:", docSnap.data().messages);
+
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+
     // setMessage("");
     //chats, 
   };
   // const senderSelected = (user)=>{
   //   console.log("seeeeeeeee",user)
-  //   setSenderDetails(user)
+  //   setRecieverDetails(user)
   //   setChatDisplay(true);
 
   // }
-  return <>
-    {users?.map((user) => {
-      return (
-        <div>
-          {user?.name}{" "}
-          {/* dispatch(ChatAction()) */}
-          <button onClick={()=>senderSelected(user)}>chat</button>
+// console.log("activeUseractiveUser: ",activeUser.name)
+  return (
+    <>
+      <div class="w-25 p-3 ">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <img class="avatar" src={IMAGES.default} alt="Avatar"/>
+        {/* {JSON.stringify(auth.currentUser)} */}
+        {(users?.find((user) => user.uid == senderUserID)).name}
+          fd
+          <a class="navbar-brand" href="#"></a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+            </ul>
           </div>
-      );
-    })}
-  </>
+        </nav>
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+
+        {users?.map((user) => {
+          if (user.uid == auth.currentUser.uid) return;
+          return (
+            <div>
+              {user?.name}{" "}
+              {/* dispatch(ChatAction()) */}
+              <button onClick={() => receiverSelected(user)}>chat</button>
+            </div>
+          );
+        })}
+      </div>
+
+    </>
+  );
 }
 
 export default SideBar;

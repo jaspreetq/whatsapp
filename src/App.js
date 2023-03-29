@@ -9,20 +9,37 @@ import SendMessage from "./Components/Cells/SendMessage";
 import SideBar from "./Components/SideBar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUp from "./Components/SignUp";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const messageContext = createContext();
 
 function App() {
   const [user] = useAuthState(auth);
-  const [chatDisplay,setChatDisplay] = useState(false)
+  const [chatDisplay, setChatDisplay] = useState(false)
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [senderDetails, setSenderDetails] = useState({});
+  const [recieverDetails, setRecieverDetails] = useState({});
+  const [activeUser, setActiveUser] = useState({});
+  useEffect(()=>{
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        setActiveUser(user);
+        console.log("<><><><><",user.displayName,user.uid);
+        // ...
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
+  
+  },[])
   return (
     <messageContext.Provider
-      value={{ message, setMessage, errorMessage, setErrorMessage, email, setEmail, password, setPassword,chatDisplay,setChatDisplay,senderDetails,setSenderDetails}}
+      value={{ message, setMessage, errorMessage, setErrorMessage, email, setEmail, password, setPassword, chatDisplay, setChatDisplay, recieverDetails, setRecieverDetails, activeUser, setActiveUser }}
     >
       <div className="App">
         <BrowserRouter>
@@ -30,7 +47,7 @@ function App() {
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/" element={<Welcome />} />
             <Route path="/SignIn" element={<SignIn />} />
-            <Route path="/LiveChat/:name" element={user ? <LiveChat />:<Welcome/>} />
+            <Route path="/LiveChat/:name" element={user ? <LiveChat /> : <Welcome />} />
           </Routes>
         </BrowserRouter>
         {/* <br />

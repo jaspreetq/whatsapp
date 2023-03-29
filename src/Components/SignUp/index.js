@@ -39,6 +39,7 @@ function SignUp() {
                 signupEmail,
                 signupPassword
             );
+            console.log("userCredential signup",userCredential);
             const { uid } = auth.currentUser;
             await addDoc(collection(db, "users"), {
                 uid,

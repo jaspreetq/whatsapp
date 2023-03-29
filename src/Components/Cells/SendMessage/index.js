@@ -21,11 +21,21 @@ function SendMessage() {
     // console.log("name<><><<>< ",name)
     await addDoc(collection(db, "messages"), {
       uid,
-      name:db.auth.currentUser.name,
+      displayName:"typed",
       avatar: photoURL,
       createdAt: serverTimestamp(),
       text: message,
     });
+
+    // await setDoc(doc(db, "chats", `${recieverUid+senderUid}`), {
+    //   uid:recieverUid + senderUid,
+    //   senderUid,
+    //   recieverUid,
+    //   senderDetails,
+    //   recieverDetails: user,
+    //   createdAt: serverTimestamp(),
+    //   messages:[{mess:message}]
+    // });
     setMessage("");
     //chats, 
   };
