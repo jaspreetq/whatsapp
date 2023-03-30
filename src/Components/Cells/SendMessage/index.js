@@ -1,42 +1,37 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { messageContext } from "../../../App";
 import { auth, db } from "../../../firebase";
+import { IMAGES } from "../../Utillities/Images";
 import "./styles.css";
 function SendMessage() {
-  const messageState = useContext(messageContext);
-  const { message, setMessage,email } = messageState;
+  const { message, setMessage,email, activeUser,setActiveUser,recieverDetails, setRecieverDetails} = useContext(messageContext);
   // setMessage("dsf")
   // const handleSend = () => { setMessage("") };
   const refDbMessages = collection(db, "messages");
   //refDbMessages.add({})
-  const handleEnter = (e) => e.key == "Enter" && handleSend();
-
+  const handleEnter = (e) => e?.key == "Enter" && handleSend();
+  
   const handleSend = async (event) => {
-    if (message.trim() === "") {
+    const messageLocal = message;
+    setMessage("");
+    if (messageLocal.trim() === "") {
       alert("Enter valid message");
       return;
     }
     const { uid, displayName, photoURL } = auth.currentUser;
-    // console.log("name<><><<>< ",name)
-    await addDoc(collection(db, "messages"), {
-      uid,
-      displayName:"typed",
-      avatar: photoURL,
-      createdAt: serverTimestamp(),
-      text: message,
+    console.log("name<><><<>< ",recieverDetails,activeUser?.uid,activeUser?.name,activeUser?.photoURL)
+          // <img src={activeUser?.photoURL}/>
+    messageLocal && await updateDoc(doc(db, "chats", recieverDetails?.uid+activeUser?.uid), {
+      messages: arrayUnion({
+          uid:activeUser?.uid,
+          name:activeUser?.name,
+          avatar: IMAGES.default,
+          createdAt: ((new Date()).getHours()+":"+(new Date()).getMinutes()),
+          text: messageLocal,
+      }),
     });
 
-    // await setDoc(doc(db, "chats", `${recieverUid+senderUid}`), {
-    //   uid:recieverUid + senderUid,
-    //   senderUid,
-    //   recieverUid,
-    //   senderDetails,
-    //   recieverDetails: user,
-    //   createdAt: serverTimestamp(),
-    //   messages:[{mess:message}]
-    // });
-    setMessage("");
     //chats, 
   };
 

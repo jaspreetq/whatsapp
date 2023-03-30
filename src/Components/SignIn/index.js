@@ -16,20 +16,21 @@ import { errorDisplay } from "../Utillities/errorDisplay";
 // import { signUpEmailPassword } from "../Utillities/signUpEmailPassword";
 import { useNavigate } from "react-router-dom";
 import { IMAGES } from "../Utillities/Images";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp} from "firebase/firestore";
 
 function SignIn() {
     const navigate = useNavigate();
     // const [userDetailsObj, setUserDetailsObj] = useState({});
     const auth = getAuth();
     const [user] = useAuthState(auth);
-    const { errorMessage, setErrorMessage, email, setEmail,password, setPassword, name} = useContext(messageContext);
+    const { errorMessage, setErrorMessage, email, setEmail,password, setPassword, name,setWelcomeChatPage} = useContext(messageContext);
     console.log("useeeeeeeeeeer: ",user)
     useEffect(()=>{
         setErrorMessage("")
     },[])
     // connectAuthEmulator(auth, "http://localhost:9899");
     const handleSignIn = () => {
+        setWelcomeChatPage(true)
         loginEmailPassword();
     };
     // const displayLoginStatus = () => { 

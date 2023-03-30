@@ -14,9 +14,11 @@ function SideBar() {
   const [users, setUsers] = useState([]);
   const { activeUser, setActiveUser, chatDisplay, message, setMessage, setChatDisplay, recieverDetails, setRecieverDetails } = useContext(messageContext);
   let senderUserID;
-  useEffect(()=>{
-    console.log("activeUser iopi",activeUser.name)
-  },[activeUser])
+
+  useEffect(() => {
+    console.log("activeUser iopi", activeUser.name)
+  }, [activeUser])
+
   useEffect(() => {
     // console.log(setRecieverDetails({abc:"ds"},senderDetails))
     //?
@@ -79,27 +81,46 @@ function SideBar() {
     console.log("uid2 name ", user)
     // console.log("name<><><<>< ",name)
     //setDoc
-    await setDoc(doc(db, "chats", `${recieverUid + senderUid}`), {
-      uid: recieverUid + senderUid,
-      senderUid,
-      recieverUid,
-      senderDetails,
-      recieverDetails: user,
-      createdAt: serverTimestamp(),
-      messages: [{ mess: message }]
-    });
+    const existingContact12 = await getDoc(doc(db, "chats", `${recieverUid + senderUid}`))
+    const existingContact21 = await getDoc(doc(db, "chats", `${senderUid + recieverUid}`))
+    let actualDb;
+    // let actualDb = (existingContact12.exists()?existingContact12: existingContact21.exists()? existingContact21:null);
 
+    if(existingContact12.exists())
+      actualDb = existingContact12;
+    else if(existingContact21.exists())
+      actualDb = existingContact21;
+    else
+      actualDb = null;
+
+    console.log(" actualDb ",actualDb)
+
+    if (!actualDb) {
+      // console.log("iid");
+      const iid = await setDoc(doc(db, "chats", `${recieverUid + senderUid}`), {
+        uid: recieverUid + senderUid,
+        senderUid,
+        recieverUid,
+        senderDetails,
+        recieverDetails: user,
+        createdAt: serverTimestamp(),
+        messages: []
+      });
+    }
+      else{
+        console.log("contact exists")
+      }
     const docRef = doc(db, "chats", `${recieverUid + senderUid}`);
     const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      docSnap.data().messages?.push("dfs");
-      console.log("Document data:", docSnap.data(), "\n docSnap:", docSnap, "\n snaps:", docSnap.data().messages);
+    // if (docSnap.exists()) {
+    //   docSnap.data().messages?.push("dfs");
+    //   console.log("Document data:", docSnap.data(), "\n docSnap:", docSnap, "\n snaps:", docSnap.data().messages);
 
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-    }
+    // } else {
+    //   // doc.data() will be undefined in this case
+    //   console.log("No such document!");
+    // }
 
     // setMessage("");
     //chats, 
@@ -110,16 +131,16 @@ function SideBar() {
   //   setChatDisplay(true);
 
   // }
-// console.log("activeUseractiveUser: ",activeUser.name)
+  // console.log("activeUseractiveUser: ",users?.find((user) => {return user.uid == auth.currentUser.uid})?.name)
   return (
     <>
       <div class="w-25 p-3 ">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <img class="avatar" src={IMAGES.default} alt="Avatar"/>
-        {/* {JSON.stringify(auth.currentUser)} */}
-        {(users?.find((user) => user.uid == senderUserID)).name}
-          fd
-          <a class="navbar-brand" href="#"></a>
+          <img class="avatar" src={IMAGES.default} alt="Avatar" />
+          {/* {JSON.stringify(auth.currentUser)} */}
+          {"  "}
+          <h6>{users?.find((user) => { return user.uid == auth.currentUser.uid })?.name}</h6>
+          {/* wordWrap:break-word */}
 
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -130,14 +151,14 @@ function SideBar() {
           </div>
         </nav>
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-
         {users?.map((user) => {
           if (user.uid == auth.currentUser.uid) return;
           return (
-            <div>
-              {user?.name}{" "}
+            <div className="user" onClick={() => receiverSelected(user)}>
+              <img className="avatar" src={IMAGES.default} />
+              {user?.name}
               {/* dispatch(ChatAction()) */}
-              <button onClick={() => receiverSelected(user)}>chat</button>
+              {/* <button onClick={() => receiverSelected(user)}>chat</button> */}
             </div>
           );
         })}

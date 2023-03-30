@@ -22,15 +22,19 @@ function App() {
   const [password, setPassword] = useState("");
   const [recieverDetails, setRecieverDetails] = useState({});
   const [activeUser, setActiveUser] = useState({});
+  const [welcomeChatPage, setWelcomeChatPage] = useState(true)
+  
   useEffect(()=>{
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         setActiveUser(user);
+        setWelcomeChatPage(true);
         console.log("<><><><><",user.displayName,user.uid);
         // ...
       } else {
+        setWelcomeChatPage(true);
         // User is signed out
         // ...
       }
@@ -39,7 +43,7 @@ function App() {
   },[])
   return (
     <messageContext.Provider
-      value={{ message, setMessage, errorMessage, setErrorMessage, email, setEmail, password, setPassword, chatDisplay, setChatDisplay, recieverDetails, setRecieverDetails, activeUser, setActiveUser }}
+      value={{ welcomeChatPage, setWelcomeChatPage,message, setMessage, errorMessage, setErrorMessage, email, setEmail, password, setPassword, chatDisplay, setChatDisplay, recieverDetails, setRecieverDetails, activeUser, setActiveUser }}
     >
       <div className="App">
         <BrowserRouter>
