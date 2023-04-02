@@ -15,23 +15,25 @@ export const messageContext = createContext();
 
 function App() {
   const [user] = useAuthState(auth);
-  const [chatDisplay, setChatDisplay] = useState(false)
+  const [chatDisplay, setChatDisplay] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [recieverDetails, setRecieverDetails] = useState({});
   const [activeUser, setActiveUser] = useState({});
-  const [welcomeChatPage, setWelcomeChatPage] = useState(true)
-  
-  useEffect(()=>{
-    onAuthStateChanged(auth, (user) => {
+  const [welcomeChatPage, setWelcomeChatPage] = useState(true);
+  const [actualDbId, setActualDbId] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const clear = onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         setActiveUser(user);
         setWelcomeChatPage(true);
-        console.log("<><><><><",user.displayName,user.uid);
+        console.log("<><><><><", user.displayName, user.uid);
         // ...
       } else {
         setWelcomeChatPage(true);
@@ -39,11 +41,33 @@ function App() {
         // ...
       }
     });
-  
-  },[])
+
+    return () => clear;
+  }, []);
   return (
     <messageContext.Provider
-      value={{ welcomeChatPage, setWelcomeChatPage,message, setMessage, errorMessage, setErrorMessage, email, setEmail, password, setPassword, chatDisplay, setChatDisplay, recieverDetails, setRecieverDetails, activeUser, setActiveUser }}
+      value={{
+        welcomeChatPage,
+        setWelcomeChatPage,
+        message,
+        setMessage,
+        errorMessage,
+        setErrorMessage,
+        email,
+        setEmail,
+        password,
+        setPassword,
+        chatDisplay,
+        setChatDisplay,
+        recieverDetails,
+        setRecieverDetails,
+        activeUser,
+        setActiveUser,
+        actualDbId,
+        setActualDbId,
+        messages,
+        setMessages,
+      }}
     >
       <div className="App">
         <BrowserRouter>
@@ -51,7 +75,10 @@ function App() {
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/" element={<Welcome />} />
             <Route path="/SignIn" element={<SignIn />} />
-            <Route path="/LiveChat/:name" element={user ? <LiveChat /> : <Welcome />} />
+            <Route
+              path="/LiveChat/:name"
+              element={user ? <LiveChat /> : <Welcome />}
+            />
           </Routes>
         </BrowserRouter>
         {/* <br />

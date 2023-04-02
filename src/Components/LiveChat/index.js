@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../firebase";
-import dp from "../../Assets/dp1.png"
+import dp from "../../Assets/dp1.png";
 // "src/Assets/dp1.svg"
 import "./styles.css";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +11,9 @@ import {
   orderBy,
   onSnapshot,
   limit,
-  where
+  where,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import SendMessage from "../Cells/SendMessage";
 import SignOut from "../Atoms/SignOut";
@@ -22,46 +24,41 @@ import { useParams } from "react-router-dom";
 import { IMAGES } from "../Utillities/Images";
 
 function LiveChat() {
-  const param = useParams()
+  const {
+    setErrorMessage,
+    recieverDetails,
+    setRecieverDetails,
+    welcomeChatPage,
+    setWelcomeChatPage,
+    activeUser,
+    actualDbId,
+    setActualDbId,
+    messages,
+    setMessages,
+  } = useContext(messageContext);
+
+  const param = useParams();
   // const [user] = useAuthState(auth);
   // console.log("user<><><><.", user, param)
-  const docRef = collection(db, "messages");
+  // const docRef = collection(db, "messages");
 
-
-  const { setErrorMessage, recieverDetails, setRecieverDetails,welcomeChatPage, setWelcomeChatPage,activeUser} = useContext(messageContext);
   setErrorMessage("");
   // param = activeUser.name
-  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    if (Object.keys(recieverDetails)?.length > 0) {
-      setWelcomeChatPage(false);
-      const q = query(
-        collection(db, "messages"),
-        orderBy("createdAt"),
-        // limit(50),
-        // auth?.currentUser?.uid && where("uid","==",onSnapshot?.currentUser?.uid),
-      );
-
-      const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
-        let messagesList = [];
-        console.log("<>snapshot<>", QuerySnapshot);
-
-        QuerySnapshot.forEach((doc) => {
-          console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
-          messagesList.push({ ...doc.data(), id: doc.id });
-          console.log("messages<>: ", messagesList)
-        });
-        setMessages(messagesList);
-      });
-      console.log("recieverDetails ",recieverDetails)
-      return () => unsubscribe;
-    }
-    else{
-      setWelcomeChatPage(true)
-    }
-    console.log("recieverDetails ",recieverDetails)
-  }, [recieverDetails])
+    const messageList = [];
+    Object.keys(recieverDetails).length && setWelcomeChatPage(false);
+    // const unsubscribe = onSnapshot(doc(db, "chats", actualDbId), (doc) => {
+    //   if (doc.exists()) {
+    //     setMessages(doc.data()?.messages);
+    //     console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+    //   }
+    //   console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+    //   //setWelcomeChatPage(true);
+    // });
+    // console.log("recieverDetails ", recieverDetails);
+    // return () => unsubscribe;
+  }, [recieverDetails]);
 
   return (
     //RecieveChat
@@ -72,34 +69,53 @@ function LiveChat() {
         <SideBar />
 
         <div>
-        {welcomeChatPage && <div class="align-middle w-100 h-50"> Select a contact to chat</div>}
-          <ul>
-            {messages?.map((message) => (
-              <li>{message.text}</li>
-            ))}
-          </ul>
-          <div className="container">
-            <img
-              src={IMAGES.DP1}
-              alt="Avatar"
-              style={{ width: "100%" }}
-            />
-            <p>Hello. How are you today?</p>
-            <span className="time-right">11:00</span>
-          </div>
-          {/* src/Assets/dp1.jpeg */}
-          <div className="container darker">
-            <img
-              src="https://img.freepik.com/free-photo/close-up-young-successful-man-smiling-camera-standing-casual-outfit-against-blue-background_1258-66609.jpg?w=2000"
-              alt="Avatar"
-              className="right"
-              style={{ width: "100%" }}
-            />
-            <p>fine. Thanks for asking!</p>
-            <span className="time-left">11:01</span>
-          </div>
-          {/* <img src={dp}/> */}
-          <SendMessage />
+          {welcomeChatPage ? (
+            <div class="align-middle w-100 h-50"> Select a contact to chat</div>
+          ) : (
+            <div>
+              <>
+                {recieverDetails.name}
+                <ul>
+                  {messages?.map((message) => {
+                    const cssStr =
+                      message.uid == recieverDetails.uid
+                        ? "-reciever"
+                        : "-sender";
+                    console.log("cssStr: ", cssStr);
+                    return (
+                      <div className={`container${cssStr}`}>
+                        {/* <img
+                          src={IMAGES.default}
+                          alt="Avatar"
+                          style={{ width: "100%" }}
+                        /> */}
+                        <p>{message.text}</p>
+                        <span className="time-right">
+                          {new Date(message?.createdAt).getHours() +
+                            ":" +
+                            new Date(message?.createdAt).getMinutes()}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </ul>
+
+                {/* src/Assets/dp1.jpeg */}
+                {/* <div className="container darker">
+                <img
+                  src="https://img.freepik.com/free-photo/close-up-young-successful-man-smiling-camera-standing-casual-outfit-against-blue-background_1258-66609.jpg?w=2000"
+                  alt="Avatar"
+                  className="right"
+                  style={{ width: "100%" }}
+                />
+                <p>fine. Thanks for asking!</p>
+                <span className="time-left">11:01</span>
+              </div> */}
+                {/* <img src={dp}/> */}
+                <SendMessage />
+              </>
+            </div>
+          )}
         </div>
       </div>
       {/* {setRecieverDetails?.map()} */}
