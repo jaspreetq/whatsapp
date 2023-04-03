@@ -42,7 +42,7 @@ function App() {
       }
     });
 
-    return () => clear;
+    return () => clear();
   }, []);
   return (
     <messageContext.Provider

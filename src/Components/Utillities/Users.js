@@ -20,7 +20,7 @@ function Users() {
           });
           setUsers(users);
         });
-        return () => unsubscribe;
+        return () => unsubscribe();
       }, []);
 
   return (

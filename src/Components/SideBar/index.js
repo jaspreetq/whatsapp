@@ -80,7 +80,7 @@ function SideBar() {
       setUsers(users);
     });
     console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
-    return () => unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const receiverSelected = async (user) => {
