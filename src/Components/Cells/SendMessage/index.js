@@ -33,9 +33,13 @@ function SendMessage() {
     setActualDbId,
   } = useContext(messageContext);
 
+
   useEffect(() => {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
   }, [actualDbId]);
+  
+  const handleEnter = (e) => (e.key === "enter") && handleSend()
+  const { uid, displayName, photoURL } = auth.currentUser;
 
   const handleSend = async () => {
     const messageLocal = message;
@@ -44,49 +48,47 @@ function SendMessage() {
       alert("Enter valid message");
       return;
     }
-    const { uid, displayName, photoURL } = auth.currentUser;
-    // const existingContact = await getDoc(doc(db, "chats", actualDbId));
+      // const existingContact = await getDoc(doc(db, "chats", actualDbId));
 
-    console.log(
-      "name<><><<>< in send ",
-      recieverDetails,
-      activeUser?.uid,
-      activeUser?.name,
-      activeUser?.photoURL,
-      actualDbId
-      // existingContact.exists()
+      console.log(
+        "name<><><<>< in send ",
+        recieverDetails,
+        activeUser?.uid,
+        activeUser?.name,
+        activeUser?.photoURL,
+        actualDbId
+        // existingContact.exists()
+      );
+
+      if (messageLocal && actualDbId) {
+        await updateDoc(doc(db, "chats", actualDbId), {
+          messages: arrayUnion({
+            uid: activeUser?.uid,
+            name: activeUser?.name,
+            avatar: IMAGES.default,
+            createdAt: new Date().toUTCString(),
+            text: messageLocal,
+          }),
+        });
+      }
+
+      //chats,
+    };
+
+    return (
+      <div style={{ width: "98%" }}>
+        <input
+          id="newMessage"
+          value={message}
+          onChange={(e) => {
+            setMessage(e.target.value);
+          }}
+          type="text"
+          placeholder="Send Message..."
+          onKeyDown={handleEnter}
+        />
+        <button onClick={(e) => handleSend(e)}>Send</button>
+      </div>
     );
-
-    if (messageLocal && actualDbId) {
-      await updateDoc(doc(db, "chats", actualDbId), {
-        messages: arrayUnion({
-          uid: activeUser?.uid,
-          name: activeUser?.name,
-          avatar: IMAGES.default,
-          createdAt: new Date().toUTCString(),
-          text: messageLocal,
-        }),
-      });
-    }
-
-    //chats,
-  };
-
-  return (
-    <div style={{ width: "98%" }}>
-      <input
-        id="newMessage"
-        value={message}
-        onChange={(e) => {
-          setMessage(e.target.value);
-        }}
-        type="text"
-        placeholder="Send Message..."
-        // onKeyDown={handleEnter}
-      />
-      <button onClick={handleSend}>Send</button>
-    </div>
-  );
-}
-
+  }
 export default SendMessage;
