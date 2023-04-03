@@ -27,8 +27,8 @@ function LiveChat() {
   const {
     errorMessage,
     setErrorMessage,
-    recieverDetails,
-    setRecieverDetails,
+    receiverDetails,
+    setReceiverDetails,
     welcomeChatPage,
     setWelcomeChatPage,
     activeUser,
@@ -48,11 +48,11 @@ function LiveChat() {
 
   useEffect(() => {
     const messageList = [];
-    Object.keys(recieverDetails).length && setWelcomeChatPage(false);
+    Object.keys(receiverDetails).length && setWelcomeChatPage(false);
 
     console.log(
       "actualDbId in useEffect(LiveCHat) b4: test>>>>>>>>>",
-      recieverDetails,
+      receiverDetails,
       actualDbId
     );
 
@@ -67,9 +67,9 @@ function LiveChat() {
         //setWelcomeChatPage(true);
       }
     );
-    console.log("recieverDetails ", recieverDetails);
+    console.log("receiverDetails ", receiverDetails);
     unsubscribe();
-  }, [recieverDetails?.name]);
+  }, [receiverDetails?.name]);
 
 console.log("messages", messages)
   return (
@@ -86,13 +86,13 @@ console.log("messages", messages)
           ) : (
             <div>
               <>
-                {recieverDetails.name}
+                {receiverDetails.name}
                 <ul>
                   {messages?.map((message) => {
                     console.log("message:::", message);
                     const cssStr =
-                      message.uid == recieverDetails.uid
-                        ? "-reciever"
+                      message.uid == receiverDetails.uid
+                        ? "-receiver"
                         : "-sender";
                     console.log("cssStr: ", cssStr);
                     return (
@@ -114,7 +114,7 @@ console.log("messages", messages)
           )}
         </div>
       </div>
-      {/* {setRecieverDetails?.map()} */}
+      {/* {setReceiverDetails?.map()} */}
     </div>
   );
 }

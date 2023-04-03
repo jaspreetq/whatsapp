@@ -67,8 +67,8 @@ function SideBar() {
     message,
     setMessage,
     setChatDisplay,
-    recieverDetails,
-    setRecieverDetails,
+    receiverDetails,
+    setReceiverDetails,
     actualDbId,
     setActualDbId,
   } = useContext(messageContext);
@@ -96,16 +96,16 @@ function SideBar() {
   }, []);
 
   const receiverSelected = async (user) => {
-    setRecieverDetails(user);
+    setReceiverDetails(user);
     setChatDisplay(true);
-    console.log("recieverDetails:", recieverDetails, "user: ", actualDbId, " ");
+    console.log("receiverDetails:", receiverDetails, "user: ", actualDbId, " ");
     const { uid, name } = user;
     // senderUser = auth.currentUser;
-    console.log("user reciever <><><><>", name);
+    console.log("user receiver <><><><>", name);
     const senderUid = auth.currentUser.uid,
-      recieverUid = uid;
+      receiverUid = uid;
     senderUserID = senderUid;
-    // setActualDbId(recieverUid+senderUid);
+    // setActualDbId(receiverUid+senderUid);
 
     const senderDetails = users?.find((user) => user.uid == senderUid);
     setActiveUser(senderDetails);
@@ -119,17 +119,17 @@ function SideBar() {
     console.log("uid2 name ", user);
 
     const existingContact12 = await getDoc(
-      doc(db, "chats", `${recieverUid + senderUid}`)
+      doc(db, "chats", `${receiverUid + senderUid}`)
     );
     const existingContact21 = await getDoc(
-      doc(db, "chats", `${senderUid + recieverUid}`)
+      doc(db, "chats", `${senderUid + receiverUid}`)
     );
     //
     console.log("actualDbId:", actualDbId);
 
-    // else setActualDbId(recieverUid + senderUid);
+    // else setActualDbId(receiverUid + senderUid);
     const dbExists = existingContact12.exists() || existingContact21.exists();
-    !dbExists && setActualDbId(recieverUid + senderUid);
+    !dbExists && setActualDbId(receiverUid + senderUid);
 
     console.log("actualDbId: i", actualDbId);
 
@@ -138,16 +138,16 @@ function SideBar() {
       await setDoc(doc(db, "chats", actualDbId), {
         uid: actualDbId,
         senderUid,
-        recieverUid,
+        receiverUid,
         senderDetails,
-        recieverDetails: user,
+        receiverDetails: user,
         createdAt: serverTimestamp(),
         messages: [],
       });
     } else {
       if (!actualDbId) {
-        if (existingContact21.exists()) setActualDbId(senderUid + recieverUid);
-        else setActualDbId(recieverUid + senderUid);
+        if (existingContact21.exists()) setActualDbId(senderUid + receiverUid);
+        else setActualDbId(receiverUid + senderUid);
       }
       // setActualDbId();
       console.log("contact exists", actualDbId);

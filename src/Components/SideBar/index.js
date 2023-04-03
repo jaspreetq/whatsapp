@@ -26,10 +26,12 @@ function SideBar() {
     message,
     setMessage,
     setChatDisplay,
-    recieverDetails,
-    setRecieverDetails,
+    receiverDetails,
+    setReceiverDetails,
     actualDbId,
     setActualDbId,
+    actualDbIdCombArray,
+    setActualDbIdCombArray
   } = useContext(messageContext);
   let senderUserID;
 
@@ -38,20 +40,20 @@ function SideBar() {
   }, [activeUser]);
 
   useEffect(() => {
-    console.log("recieverDetails: effect 1 ", recieverDetails);
-  }, [recieverDetails]);
+    console.log("receiverDetails: effect 1 ", receiverDetails);
+  }, [receiverDetails]);
 
   // useEffect(() => {
   //   console.log(
-  //     "actualDbId: effect,reciever",
+  //     "actualDbId: effect,receiver",
   //     actualDbId,
-  //     recieverDetails.name
+  //     receiverDetails.name
   //   );
 
   //   const setDocAsync = async () => {
   //     const docRef = await getDoc(doc(db, "chats", actualDbId));
   //     console.log("doesn't exist without calling", actualDbId, docRef.exists());
-      
+
   //     if (docRef.exists() || !actualDbId) return null;
   //     console.log("doesn't exist");
 
@@ -59,17 +61,17 @@ function SideBar() {
   //       uid: actualDbId,
   //       senderName: activeUser.name,
   //       senderUid: activeUser.uid,
-  //       recieverName: recieverDetails.name,
-  //       recieverUid: recieverDetails.uid,
+  //       receiverName: receiverDetails.name,
+  //       receiverUid: receiverDetails.uid,
   //       // senderDetails: activeUser,
-  //       // recieverDetails,
+  //       // receiverDetails,
   //       createdAt: serverTimestamp(),
   //       messages: [],
   //     });
   //   };
-  //   actualDbId && Object.keys(recieverDetails).length && setDocAsync();
-  //   console.log("actualDbId: effect", actualDbId, recieverDetails);
-  // }, [actualDbId,recieverDetails]);
+  //   actualDbId && Object.keys(receiverDetails).length && setDocAsync();
+  //   console.log("actualDbId: effect", actualDbId, receiverDetails);
+  // }, [actualDbId,receiverDetails]);
 
   useEffect(() => {
     const q = query(collection(db, "users"), orderBy("createdAt"));
@@ -91,16 +93,13 @@ function SideBar() {
   const receiverSelected = async (user) => {
     const { uid, name } = user;
 
-    setRecieverDetails(user);
-    console.log("recieverDetails: clicked", recieverDetails, "user: ", actualDbId, " ");
-    // setChatDisplay(true);
-    // senderUser = auth.currentUser;
-    // console.log("recieverDetails: clicked", recieverDetails, "user: ", actualDbId, " ");
-    console.log("user reciever <><><><>", name,recieverDetails);
+    setReceiverDetails(user);
+    console.log("receiverDetails: clicked", receiverDetails, "user: ", actualDbId, " ");
+    console.log("user receiver <><><><>", name, receiverDetails);
     const senderUid = auth.currentUser.uid,
-      recieverUid = uid;
+      receiverUid = uid;
     senderUserID = senderUid;
-    // setActualDbId(recieverUid+senderUid);
+    // setActualDbId(receiverUid+senderUid);
 
     const senderDetails = users?.find((user) => user.uid == senderUid);
     setActiveUser(senderDetails);
@@ -112,28 +111,29 @@ function SideBar() {
       senderDetails
     );
     console.log("uid2 name ", user);
+    setActualDbIdCombArray([receiverUid + senderUid, senderUid + receiverUid]);
 
-    const existingContact12 = await getDoc(
-      doc(db, "chats", `${recieverUid + senderUid}`)
-    );
-    const existingContact21 = await getDoc(
-      doc(db, "chats", `${senderUid + recieverUid}`)
-    );
+    // const existingContact12 = await getDoc(
+    //   doc(db, "chats", `${receiverUid + senderUid}`)
+    // );
+    // const existingContact21 = await getDoc(
+    //   doc(db, "chats", `${senderUid + receiverUid}`)
+    // );
     //
 
-    // else setActualDbId(recieverUid + senderUid);
+    // else setActualDbId(receiverUid + senderUid);
     // const dbExists = ;
     // !dbExists &&
 
     if (!(existingContact12.exists() || existingContact21.exists()))
-      setActualDbId(recieverUid + senderUid);
+      setActualDbId(receiverUid + senderUid);
     console.log("actualDbId: i", actualDbId);
     // setActualDbId();
     console.log("contact exists", actualDbId);
 
     if (!actualDbId) {
-      if (existingContact21.exists()) setActualDbId(senderUid + recieverUid);
-      else setActualDbId(recieverUid + senderUid);
+      if (existingContact21.exists()) setActualDbId(senderUid + receiverUid);
+      else setActualDbId(receiverUid + senderUid);
     }
 
     console.log("actualDbId: onclick", actualDbId);
@@ -174,7 +174,7 @@ function SideBar() {
           placeholder="Search"
           aria-label="Search"
         />
-        {users?.map((user) => { 
+        {users?.map((user) => {
           if (user.uid == auth.currentUser.uid) return;
           return (
             <div

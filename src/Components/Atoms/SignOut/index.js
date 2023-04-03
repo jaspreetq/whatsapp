@@ -8,8 +8,8 @@ function SignOut() {
   const auth = getAuth();
   const {
     setWelcomeChatPage,
-    recieverDetails,
-    setRecieverDetails,
+    receiverDetails,
+    setReceiverDetails,
     activeUser,
     setActiveUser,
     actualDbId,
@@ -21,7 +21,7 @@ function SignOut() {
   const signOut = () => {
     auth.signOut();
     setWelcomeChatPage(true);
-    setRecieverDetails({});
+    setReceiverDetails({});
     setActiveUser({});
     setActualDbId("");
     setMessages([]);

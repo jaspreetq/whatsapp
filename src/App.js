@@ -20,11 +20,12 @@ function App() {
   const [errorMessage, setErrorMessage] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [recieverDetails, setRecieverDetails] = useState({});
+  const [receiverDetails, setReceiverDetails] = useState({});
   const [activeUser, setActiveUser] = useState({});
   const [welcomeChatPage, setWelcomeChatPage] = useState(true);
   const [actualDbId, setActualDbId] = useState("");
   const [messages, setMessages] = useState([]);
+  const [actualDbIdCombArray,setActualDbIdCombArray] = useState(["",""])
 
   useEffect(() => {
     const clear = onAuthStateChanged(auth, (user) => {
@@ -32,7 +33,7 @@ function App() {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         setActiveUser(user);
-        setRecieverDetails({})
+        setReceiverDetails({})
         setWelcomeChatPage(true);
         console.log("<><><><><", user.displayName, user.uid);
         // ...
@@ -61,14 +62,16 @@ function App() {
         setPassword,
         chatDisplay,
         setChatDisplay,
-        recieverDetails,
-        setRecieverDetails,
+        receiverDetails,
+        setReceiverDetails,
         activeUser,
         setActiveUser,
         actualDbId,
         setActualDbId,
         messages,
         setMessages,
+        actualDbIdCombArray,
+        setActualDbIdCombArray
       }}
     >
       <div className="App">

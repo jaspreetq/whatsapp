@@ -27,8 +27,8 @@ function SendMessage() {
     email,
     activeUser,
     setActiveUser,
-    recieverDetails,
-    setRecieverDetails,
+    receiverDetails,
+    setReceiverDetails,
     actualDbId,
     setActualDbId,
   } = useContext(messageContext);
@@ -52,7 +52,7 @@ function SendMessage() {
 
       console.log(
         "name<><><<>< in send ",
-        recieverDetails,
+        receiverDetails,
         activeUser?.uid,
         activeUser?.name,
         activeUser?.photoURL,
