@@ -13,6 +13,13 @@ import { messageContext } from "../../../App";
 import { auth, db } from "../../../firebase";
 import { IMAGES } from "../../Utillities/Images";
 import "./styles.css";
+// // <img src={activeUser?.photoURL}/>
+// console.log(
+//   "messageLocal,actualDbId,existingContact : ",
+//   messageLocal,
+//   actualDbId
+//   // existingContact
+// );
 function SendMessage() {
   const {
     message,
@@ -49,16 +56,9 @@ function SendMessage() {
       actualDbId
       // existingContact.exists()
     );
-    // <img src={activeUser?.photoURL}/>
-    console.log(
-      "messageLocal,actualDbId,existingContact : ",
-      messageLocal,
-      actualDbId
-      // existingContact
-    );
-    messageLocal &&
-      actualDbId &&
-      (await updateDoc(doc(db, "chats", actualDbId), {
+
+    if (messageLocal && actualDbId) {
+      await updateDoc(doc(db, "chats", actualDbId), {
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,
@@ -66,7 +66,8 @@ function SendMessage() {
           createdAt: new Date().toUTCString(),
           text: messageLocal,
         }),
-      }));
+      });
+    }
 
     //chats,
   };
@@ -83,7 +84,7 @@ function SendMessage() {
         placeholder="Send Message..."
         // onKeyDown={handleEnter}
       />
-      <button onClick={handleSend}>Send{message}</button>
+      <button onClick={handleSend}>Send</button>
     </div>
   );
 }

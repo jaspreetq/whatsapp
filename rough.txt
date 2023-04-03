@@ -20,3 +20,19 @@ Signin:
     //   {/* <input email="userGmail" type="text" placeholder='enter your gmail'>Gmail:</input> */}
     // </div>
     //
+
+
+    //liveChat
+    
+                {/* src/Assets/dp1.jpeg */}
+                {/* <div className="container darker">
+                <img
+                  src="https://img.freepik.com/free-photo/close-up-young-successful-man-smiling-camera-standing-casual-outfit-against-blue-background_1258-66609.jpg?w=2000"
+                  alt="Avatar"
+                  className="right"
+                  style={{ width: "100%" }}
+                />
+                <p>fine. Thanks for asking!</p>
+                <span className="time-left">11:01</span>
+              </div> */}
+                {/* <img src={dp}/> */}

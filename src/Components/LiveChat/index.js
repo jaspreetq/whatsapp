@@ -48,17 +48,26 @@ function LiveChat() {
   useEffect(() => {
     const messageList = [];
     Object.keys(recieverDetails).length && setWelcomeChatPage(false);
-    // const unsubscribe = onSnapshot(doc(db, "chats", actualDbId), (doc) => {
-    //   if (doc.exists()) {
-    //     setMessages(doc.data()?.messages);
-    //     console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
-    //   }
-    //   console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
-    //   //setWelcomeChatPage(true);
-    // });
-    // console.log("recieverDetails ", recieverDetails);
-    // return () => unsubscribe;
-  }, [recieverDetails]);
+
+    console.log(
+      "actualDbId in useEffect(LiveCHat) b4:",
+      recieverDetails,
+      actualDbId
+    );
+
+    const unsubscribe = onSnapshot(
+      doc(db, "chats", actualDbId || "4pcCQ1QwuaoG362WaGtm"),
+      (doc) => {
+        // doc?.exists() && setMessages(doc.data()?.messages);
+        setMessages(doc.data()?.messages);
+        console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+        console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+        //setWelcomeChatPage(true);
+      }
+    );
+    console.log("recieverDetails ", recieverDetails);
+    return () => unsubscribe();
+  }, [actualDbId, recieverDetails]);
 
   return (
     //RecieveChat
@@ -77,6 +86,7 @@ function LiveChat() {
                 {recieverDetails.name}
                 <ul>
                   {messages?.map((message) => {
+                    console.log("message:::", message);
                     const cssStr =
                       message.uid == recieverDetails.uid
                         ? "-reciever"
@@ -84,11 +94,6 @@ function LiveChat() {
                     console.log("cssStr: ", cssStr);
                     return (
                       <div className={`container${cssStr}`}>
-                        {/* <img
-                          src={IMAGES.default}
-                          alt="Avatar"
-                          style={{ width: "100%" }}
-                        /> */}
                         <p>{message.text}</p>
                         <span className="time-right">
                           {new Date(message?.createdAt).getHours() +
@@ -100,18 +105,6 @@ function LiveChat() {
                   })}
                 </ul>
 
-                {/* src/Assets/dp1.jpeg */}
-                {/* <div className="container darker">
-                <img
-                  src="https://img.freepik.com/free-photo/close-up-young-successful-man-smiling-camera-standing-casual-outfit-against-blue-background_1258-66609.jpg?w=2000"
-                  alt="Avatar"
-                  className="right"
-                  style={{ width: "100%" }}
-                />
-                <p>fine. Thanks for asking!</p>
-                <span className="time-left">11:01</span>
-              </div> */}
-                {/* <img src={dp}/> */}
                 <SendMessage />
               </>
             </div>
@@ -124,3 +117,11 @@ function LiveChat() {
 }
 
 export default LiveChat;
+
+{
+  /* <img
+        src={IMAGES.default}
+        alt="Avatar"
+        style={{ width: "100%" }}
+      /> */
+}
