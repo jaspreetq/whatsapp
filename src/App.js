@@ -32,6 +32,7 @@ function App() {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         setActiveUser(user);
+        setRecieverDetails({})
         setWelcomeChatPage(true);
         console.log("<><><><><", user.displayName, user.uid);
         // ...
@@ -44,6 +45,7 @@ function App() {
 
     return () => clear();
   }, []);
+
   return (
     <messageContext.Provider
       value={{

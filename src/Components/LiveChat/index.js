@@ -25,6 +25,7 @@ import { IMAGES } from "../Utillities/Images";
 
 function LiveChat() {
   const {
+    errorMessage,
     setErrorMessage,
     recieverDetails,
     setRecieverDetails,
@@ -50,36 +51,38 @@ function LiveChat() {
     Object.keys(recieverDetails).length && setWelcomeChatPage(false);
 
     console.log(
-      "actualDbId in useEffect(LiveCHat) b4:",
+      "actualDbId in useEffect(LiveCHat) b4: test>>>>>>>>>",
       recieverDetails,
       actualDbId
     );
 
     const unsubscribe = onSnapshot(
-      doc(db, "chats", actualDbId || "4pcCQ1QwuaoG362WaGtm"),
+      doc(db, "chats", actualDbId || "mLhwciwWGdy6WKbOlnrZ"),
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
-        setMessages(doc.data()?.messages);
+        console.log(doc.data()?.messages, "doc.data()?.messages")
+        doc?.exists() && setMessages(doc.data()?.messages);
         console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
         console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
         //setWelcomeChatPage(true);
       }
     );
     console.log("recieverDetails ", recieverDetails);
-    return () => unsubscribe();
-  }, [actualDbId, recieverDetails]);
+    unsubscribe();
+  }, [recieverDetails?.name]);
 
+console.log("messages", messages)
   return (
     //RecieveChat
     <div className="liveChat">
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <SignOut />
-      <div class="d-flex justify-content-start">
+      <div className="d-flex justify-content-start">
         <SideBar />
 
         <div>
           {welcomeChatPage ? (
-            <div class="align-middle w-100 h-50"> Select a contact to chat</div>
+            <div className="align-middle w-100 h-50"> Select a contact to chat</div>
           ) : (
             <div>
               <>
@@ -93,7 +96,7 @@ function LiveChat() {
                         : "-sender";
                     console.log("cssStr: ", cssStr);
                     return (
-                      <div className={`container${cssStr}`}>
+                      <div className={`container${cssStr}`} key={message.uid}>
                         <p>{message.text}</p>
                         <span className="time-right">
                           {new Date(message?.createdAt).getHours() +

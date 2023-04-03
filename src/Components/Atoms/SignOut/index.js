@@ -17,6 +17,7 @@ function SignOut() {
     messages,
     setMessages,
   } = useContext(messageContext);
+  
   const signOut = () => {
     auth.signOut();
     setWelcomeChatPage(true);

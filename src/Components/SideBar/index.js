@@ -38,33 +38,38 @@ function SideBar() {
   }, [activeUser]);
 
   useEffect(() => {
-    console.log("recieverDetails: effect", recieverDetails);
+    console.log("recieverDetails: effect 1 ", recieverDetails);
   }, [recieverDetails]);
 
-  useEffect(() => {
-    console.log(
-      "actualDbId: effect,reciever",
-      actualDbId,
-      recieverDetails.name
-    );
-    const setDocAsync = async () => {
-      const docRef = await getDoc(doc(db, "chats", actualDbId));
-      console.log("doesn't exist", actualDbId, docRef.exists());
-      if (docRef.exists() || !actualDbId) return null;
-      console.log("doesn't exist");
-      await setDoc(doc(db, "chats", actualDbId), {
-        uid: actualDbId,
-        senderUid: activeUser.uid,
-        recieverUid: recieverDetails.uid,
-        senderDetails: activeUser,
-        recieverDetails,
-        createdAt: serverTimestamp(),
-        messages: [],
-      });
-    };
-    actualDbId && Object.keys(recieverDetails).length && setDocAsync();
-    console.log("actualDbId: effect", actualDbId, recieverDetails);
-  }, [actualDbId]);
+  // useEffect(() => {
+  //   console.log(
+  //     "actualDbId: effect,reciever",
+  //     actualDbId,
+  //     recieverDetails.name
+  //   );
+
+  //   const setDocAsync = async () => {
+  //     const docRef = await getDoc(doc(db, "chats", actualDbId));
+  //     console.log("doesn't exist without calling", actualDbId, docRef.exists());
+      
+  //     if (docRef.exists() || !actualDbId) return null;
+  //     console.log("doesn't exist");
+
+  //     await setDoc(doc(db, "chats", actualDbId), {
+  //       uid: actualDbId,
+  //       senderName: activeUser.name,
+  //       senderUid: activeUser.uid,
+  //       recieverName: recieverDetails.name,
+  //       recieverUid: recieverDetails.uid,
+  //       // senderDetails: activeUser,
+  //       // recieverDetails,
+  //       createdAt: serverTimestamp(),
+  //       messages: [],
+  //     });
+  //   };
+  //   actualDbId && Object.keys(recieverDetails).length && setDocAsync();
+  //   console.log("actualDbId: effect", actualDbId, recieverDetails);
+  // }, [actualDbId,recieverDetails]);
 
   useEffect(() => {
     const q = query(collection(db, "users"), orderBy("createdAt"));
@@ -80,16 +85,18 @@ function SideBar() {
       setUsers(users);
     });
     console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
-    return () => unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const receiverSelected = async (user) => {
-    setRecieverDetails(user);
-    setChatDisplay(true);
-    console.log("recieverDetails:", recieverDetails, "user: ", actualDbId, " ");
     const { uid, name } = user;
+
+    setRecieverDetails(user);
+    console.log("recieverDetails: clicked", recieverDetails, "user: ", actualDbId, " ");
+    // setChatDisplay(true);
     // senderUser = auth.currentUser;
-    console.log("user reciever <><><><>", name);
+    // console.log("recieverDetails: clicked", recieverDetails, "user: ", actualDbId, " ");
+    console.log("user reciever <><><><>", name,recieverDetails);
     const senderUid = auth.currentUser.uid,
       recieverUid = uid;
     senderUserID = senderUid;
@@ -113,7 +120,6 @@ function SideBar() {
       doc(db, "chats", `${senderUid + recieverUid}`)
     );
     //
-    console.log("actualDbId:", actualDbId);
 
     // else setActualDbId(recieverUid + senderUid);
     // const dbExists = ;
@@ -129,12 +135,14 @@ function SideBar() {
       if (existingContact21.exists()) setActualDbId(senderUid + recieverUid);
       else setActualDbId(recieverUid + senderUid);
     }
+
+    console.log("actualDbId: onclick", actualDbId);
   };
   return (
     <>
-      <div class="w-25 p-3 ">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <img class="avatar" src={IMAGES.default} alt="Avatar" />
+      <div className="w-25 p-3 ">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <img className="avatar" src={IMAGES.default} alt="Avatar" />
           {"  "}
           <h6>
             {
@@ -146,7 +154,7 @@ function SideBar() {
           {/* wordWrap:break-word */}
 
           <button
-            class="navbar-toggler"
+            className="navbar-toggler"
             type="button"
             data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -154,19 +162,19 @@ function SideBar() {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <span class="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto"></ul>
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav mr-auto"></ul>
           </div>
         </nav>
         <input
-          class="form-control mr-sm-2"
+          className="form-control mr-sm-2"
           type="search"
           placeholder="Search"
           aria-label="Search"
         />
-        {users?.map((user) => {
+        {users?.map((user) => { 
           if (user.uid == auth.currentUser.uid) return;
           return (
             <div

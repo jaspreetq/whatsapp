@@ -21,7 +21,7 @@ import "./styles.css";
 //   // existingContact
 // );
 function SendMessage() {
-  const {
+  const { 
     message,
     setMessage,
     email,
@@ -61,11 +61,11 @@ function SendMessage() {
       );
 
       if (messageLocal && actualDbId) {
+        console.log("sending mess: ",actualDbId,messageLocal)
         await updateDoc(doc(db, "chats", actualDbId), {
           messages: arrayUnion({
             uid: activeUser?.uid,
             name: activeUser?.name,
-            avatar: IMAGES.default,
             createdAt: new Date().toUTCString(),
             text: messageLocal,
           }),
