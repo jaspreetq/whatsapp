@@ -24,7 +24,8 @@ function App() {
   const [activeUser, setActiveUser] = useState({});
   const [welcomeChatPage, setWelcomeChatPage] = useState(true);
   const [actualDbId, setActualDbId] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]); 
+  console.log("checking branch here ");
 
   useEffect(() => {
     const clear = onAuthStateChanged(auth, (user) => {
