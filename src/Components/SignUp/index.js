@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { messageContext } from "../../App";
@@ -40,6 +40,7 @@ function SignUp() {
       console.log("name<><><>", name);
       if (name == "") throw new Error(NAME_ERROR_STRING);
 
+
       console.log(" Sign up in  ", email, password);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -48,7 +49,8 @@ function SignUp() {
       );
       console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
-      await addDoc(collection(db, "users"), {
+      
+      await setDoc(doc(db, "users",uid), {
         uid,
         name,
         email,
@@ -56,6 +58,20 @@ function SignUp() {
         createdAt: serverTimestamp(),
         // details: {uid,email,name,avatar,}
       });
+      
+      await setDoc(doc(db, "sidebar-users", uid), {
+        createdAt: serverTimestamp(),
+      });
+
+      // uid: "",
+      //   userInfo:{},
+      //   senderName: activeUser.name,
+      //   senderUid: activeUser.uid,
+      //   receiverName: receiverDetails.name,
+      //   receiverUid: receiverDetails.uid,
+      //   // senderDetails: activeUser,
+      //   // receiverDetails,
+
       console.log("name ", name, errorMessage);
       navigate(`/LiveChat/${name}`);
     } catch (error) {

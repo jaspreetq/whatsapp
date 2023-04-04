@@ -203,3 +203,35 @@ function SideBar() {
   );
 }
 export default SideBar;
+
+
+//////sidebar user
+
+  useEffect(() => {
+    const q = query(collection(db, "users"), orderBy("createdAt"));
+    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+      let users = [];
+      console.log("<>snapshot<>", QuerySnapshot);
+
+      QuerySnapshot.forEach((doc) => {
+        console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
+        users.push({ ...doc.data() });
+        console.log("messages<>: ", users);
+      });
+    });
+
+    console.log("authUser.name",users, authUser.name);
+
+    // setUsers([...(users?.filter(user => user.uid !== authUser.uid))]);
+    console.log("users?.filter ", users);
+    console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
+    return () => unsubscribe();
+  }, []);
+
+  const addUser = async (user) => {
+    setSidebarUsers([...sidebarUsers, user])
+    // setUsers([...(users?.filter((user) => {
+    //   return !sidebarUsers?.some(sideUser => sideUser.id === user.id)
+    // }))])
+    console.log("users.length : ", users)
+  }

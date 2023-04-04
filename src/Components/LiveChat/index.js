@@ -78,8 +78,8 @@ console.log("messages", messages)
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <SignOut />
       <div className="d-flex justify-content-start">
-        <SideBar />
-
+      <SideBar />
+      
         <div>
           {welcomeChatPage ? (
             <div className="align-middle w-100 h-50"> Select a contact to chat</div>
