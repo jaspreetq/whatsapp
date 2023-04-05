@@ -42,31 +42,6 @@ function SideBar() {
   }, [recieverDetails]);
 
   useEffect(() => {
-    console.log(
-      "actualDbId: effect,reciever",
-      actualDbId,
-      recieverDetails.name
-    );
-    const setDocAsync = async () => {
-      const docRef = await getDoc(doc(db, "chats", actualDbId));
-      console.log("doesn't exist", actualDbId, docRef.exists());
-      if (docRef.exists() || !actualDbId) return null;
-      console.log("doesn't exist");
-      await setDoc(doc(db, "chats", actualDbId), {
-        uid: actualDbId,
-        senderUid: activeUser.uid,
-        recieverUid: recieverDetails.uid,
-        senderDetails: activeUser,
-        recieverDetails,
-        createdAt: serverTimestamp(),
-        messages: [],
-      });
-    };
-    actualDbId && Object.keys(recieverDetails).length && setDocAsync();
-    console.log("actualDbId: effect", actualDbId, recieverDetails);
-  }, [actualDbId]);
-
-  useEffect(() => {
     const q = query(collection(db, "users"), orderBy("createdAt"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
@@ -97,39 +72,8 @@ function SideBar() {
 
     const senderDetails = users?.find((user) => user.uid == senderUid);
     setActiveUser(senderDetails);
-
-    console.log(
-      "auth.currentUser :",
-      auth.currentUser.uid,
-      auth.currentUser,
-      senderDetails
-    );
-    console.log("uid2 name ", user);
-
-    const existingContact12 = await getDoc(
-      doc(db, "chats", `${recieverUid + senderUid}`)
-    );
-    const existingContact21 = await getDoc(
-      doc(db, "chats", `${senderUid + recieverUid}`)
-    );
-    //
-    console.log("actualDbId:", actualDbId);
-
-    // else setActualDbId(recieverUid + senderUid);
-    // const dbExists = ;
-    // !dbExists &&
-
-    if (!(existingContact12.exists() || existingContact21.exists()))
-      setActualDbId(recieverUid + senderUid);
-    console.log("actualDbId: i", actualDbId);
-    // setActualDbId();
-    console.log("contact exists", actualDbId);
-
-    if (!actualDbId) {
-      if (existingContact21.exists()) setActualDbId(senderUid + recieverUid);
-      else setActualDbId(recieverUid + senderUid);
-    }
   };
+  
   return (
     <>
       <div class="w-25 p-3 ">
@@ -160,12 +104,12 @@ function SideBar() {
             <ul class="navbar-nav mr-auto"></ul>
           </div>
         </nav>
-        <input
+        {/* <input
           class="form-control mr-sm-2"
           type="search"
           placeholder="Search"
           aria-label="Search"
-        />
+        /> */}
         {users?.map((user) => {
           if (user.uid == auth.currentUser.uid) return;
           return (

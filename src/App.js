@@ -7,7 +7,7 @@ import Welcome from "./Components/Welcome";
 import LiveChat from "./Components/LiveChat";
 import SendMessage from "./Components/Cells/SendMessage";
 import SideBar from "./Components/SideBar";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import SignUp from "./Components/SignUp";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -70,7 +70,7 @@ function App() {
       }}
     >
       <div className="App">
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/" element={<Welcome />} />
@@ -80,7 +80,7 @@ function App() {
               element={user ? <LiveChat /> : <Welcome />}
             />
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
         {/* <br />
           {user ? (
             <div className="home">

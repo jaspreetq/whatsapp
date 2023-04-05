@@ -41,6 +41,7 @@ function SignIn() {
   }, []);
   // connectAuthEmulator(auth, "http://localhost:9899");
   const handleSignIn = () => {
+    // e.preventDefault();
     setWelcomeChatPage(true);
     loginEmailPassword();
   };
@@ -63,7 +64,7 @@ function SignIn() {
 
       console.log("userCredential signin ", userCredential);
       setErrorMessage("");
-      navigate(`/LiveChat/${activeUser.name}`);
+      navigate(`/LiveChat/${auth.currentUser.uid}`);
     } catch (error) {
       console.log(error, " in signin error");
       // showLoginError(error);
@@ -99,34 +100,40 @@ function SignIn() {
 
   return (
     <>
-      <h3>Please SignIn...</h3>
-      <input
-        id="userEmail"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-        }}
-        type="text"
-        placeholder="Enter email..."
+      <form onSubmit={handleSignIn}>
+        <h3>Please SignIn...</h3>
+
+        <input
+          id="userEmail"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+          type="text"
+          placeholder="Enter email..."
         // onKeyDown={handleEnter}
-      />
-      <input
-        id="userPassword"
-        value={password}
-        onChange={(e) => {
-          setPassword(e.target.value);
-        }}
-        type="password"
-        placeholder="Enter Password..."
+        />
+
+        <input
+          id="userPassword"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+          type="password"
+          placeholder="Enter Password..."
         // onKeyDown={handleEnter}
-      />
-      <br />
-      <br />
-      <button onClick={googleSignIn}>Sign In G</button>
-      <button onClick={handleSignIn}>Sign In</button>
-      {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
-      <button onClick={() => navigate("/SignUp")}>New User, SignUp</button>
-      <p style={{ color: "red" }}>{errorMessage}</p>
+        />
+
+        <br />
+        <br />
+        {/* <button onClick={googleSignIn}>Sign In G</button> */}
+        <button onClick={handleSignIn}>Sign In</button>
+        {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
+        <button onClick={() => navigate("/SignUp")}>New User, SignUp</button>
+        <p style={{ color: "red" }}>{errorMessage}</p>
+
+      </form>
     </>
   );
 }

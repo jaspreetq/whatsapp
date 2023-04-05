@@ -21,6 +21,7 @@ import "./styles.css";
 //   // existingContact
 // );
 function SendMessage() {
+  const [outputMessage,setOutputMessage] = useState("");
   const {
     message,
     setMessage,
@@ -38,7 +39,24 @@ function SendMessage() {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
   }, [actualDbId]);
   
-  const handleEnter = (e) => (e.key === "enter") && handleSend()
+  // useEffect(()=>{
+  //   const updateDocumentAsync = async ()=>await updateDoc(doc(db, "chats", actualDbId), {
+  //     messages: arrayUnion({
+  //       uid: activeUser?.uid,
+  //       name: activeUser?.name,
+  //       avatar: IMAGES.default,
+  //       createdAt: new Date().toUTCString(),
+  //       text: outputMessage,
+  //     }),
+  //   });
+  //   const docRef = await getDoc(doc(db, "chats", actualDbId));
+  //     if (docRef.exists() || !actualDbId) return null;
+  //   if (outputMessage && actualDbId )updateDocumentAsync()
+    
+  // }
+  // ,[outputMessage]);
+  
+  const handleEnter = (e) => (e.key === "Enter") && handleSend()
   const { uid, displayName, photoURL } = auth.currentUser;
 
   const handleSend = async () => {
@@ -60,7 +78,11 @@ function SendMessage() {
         // existingContact.exists()
       );
 
-      if (messageLocal && actualDbId) {
+      // const docRef = await getDoc(doc(db, "chats", actualDbId));
+      // if (!docRef.exists()) return null;
+      // console.log("doesn't exist", actualDbId, docRef.exists());
+      setOutputMessage(messageLocal);
+      if (actualDbId) {
         await updateDoc(doc(db, "chats", actualDbId), {
           messages: arrayUnion({
             uid: activeUser?.uid,
@@ -85,7 +107,7 @@ function SendMessage() {
           }}
           type="text"
           placeholder="Send Message..."
-          onKeyDown={handleEnter}
+          onKeyDown={(e)=>handleEnter(e)}
         />
         <button onClick={(e) => handleSend(e)}>Send</button>
       </div>
