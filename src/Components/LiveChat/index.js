@@ -56,7 +56,7 @@ function LiveChat() {
     );
 
     const unsubscribe = onSnapshot(
-      doc(db, "chats", actualDbId || "4pcCQ1QwuaoG362WaGtm"),
+      doc(db, "chats", actualDbId || "dOy4H8cGozQz6Z8jyWfS"),
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         setMessages(doc.data()?.messages);
