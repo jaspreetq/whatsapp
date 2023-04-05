@@ -60,7 +60,7 @@ function LiveChat() {
       doc(db, "chats", actualDbId || "mLhwciwWGdy6WKbOlnrZ"),
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
-        console.log(doc.data()?.messages, "doc.data()?.messages")
+        console.log(doc.data()?.messages, "doc.data()?.messages");
         doc?.exists() && setMessages(doc.data()?.messages);
         console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
         console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
@@ -69,20 +69,23 @@ function LiveChat() {
     );
     console.log("receiverDetails ", receiverDetails);
     unsubscribe();
-  }, [receiverDetails?.name]);
+  }, [actualDbId]);
 
-console.log("messages", messages)
+  console.log("messages", messages);
   return (
     //RecieveChat
     <div className="liveChat">
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <SignOut />
       <div className="d-flex justify-content-start">
-      <SideBar />
-      
+        <SideBar />
+
         <div>
           {welcomeChatPage ? (
-            <div className="align-middle w-100 h-50"> Select a contact to chat</div>
+            <div className="align-middle w-100 h-50">
+              {" "}
+              Select a contact to chat
+            </div>
           ) : (
             <div>
               <>

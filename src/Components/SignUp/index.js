@@ -1,5 +1,11 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { messageContext } from "../../App";
@@ -40,7 +46,6 @@ function SignUp() {
       console.log("name<><><>", name);
       if (name == "") throw new Error(NAME_ERROR_STRING);
 
-
       console.log(" Sign up in  ", email, password);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -49,8 +54,8 @@ function SignUp() {
       );
       console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
-      
-      await setDoc(doc(db, "users",uid), {
+
+      await setDoc(doc(db, "users", uid), {
         uid,
         name,
         email,
@@ -58,8 +63,9 @@ function SignUp() {
         createdAt: serverTimestamp(),
         // details: {uid,email,name,avatar,}
       });
-      
+
       await setDoc(doc(db, "sidebar-users", uid), {
+        senderUserId: uid,
         createdAt: serverTimestamp(),
       });
 
