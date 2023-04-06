@@ -35,10 +35,11 @@ function SignIn() {
     activeUser,
     setActiveUser,
   } = useContext(messageContext);
-  console.log("useeeeeeeeeeer: ", user);
+  
   useEffect(() => {
     setErrorMessage("");
   }, []);
+  
   // connectAuthEmulator(auth, "http://localhost:9899");
   const handleSignIn = () => {
     // e.preventDefault();
