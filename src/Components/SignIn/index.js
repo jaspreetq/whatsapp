@@ -35,10 +35,11 @@ function SignIn() {
     activeUser,
     setActiveUser,
   } = useContext(messageContext);
-  console.log("useeeeeeeeeeer: ", user);
+  
   useEffect(() => {
     setErrorMessage("");
   }, []);
+
   // connectAuthEmulator(auth, "http://localhost:9899");
   const handleSignIn = () => {
     // e.preventDefault();
@@ -100,7 +101,6 @@ function SignIn() {
 
   return (
     <>
-      <form onSubmit={handleSignIn}>
         <h3>Please SignIn...</h3>
 
         <input
@@ -132,8 +132,7 @@ function SignIn() {
         {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
         <button onClick={() => navigate("/SignUp")}>New User, SignUp</button>
         <p style={{ color: "red" }}>{errorMessage}</p>
-
-      </form>
+        
     </>
   );
 }

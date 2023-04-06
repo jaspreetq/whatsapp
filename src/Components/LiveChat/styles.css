@@ -1,16 +1,30 @@
-.liveChat {
+/* .liveChat {
   margin: 0;
   width: 95%;
   padding: 0;
+} */
+
+.sidebar{
+  height: 100vh;
+}
+.container {
+  display: flex;
+  overflow: hidden;
+  max-height: 100%;
 }
 
+.left-box, .right-box {
+  flex: 1;
+  overflow-y: scroll;
+  max-height: 100%;
+}
 .container-reciever {
   border: 2px solid #dedede;
   background-color: #f1f1f1;
   border-radius: 15px;
   padding: 10px;
   margin: 10px 0;
-  width: 200%;
+  width: 25%;
 }
 
 .container-sender {
@@ -20,7 +34,7 @@
   padding: 10px;
   margin: 10px 0;
   margin-right: 0;
-  width: 200%;
+  width: 25%;
 }
 
 .darker {

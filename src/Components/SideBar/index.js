@@ -73,22 +73,27 @@ function SideBar() {
     const senderDetails = users?.find((user) => user.uid == senderUid);
     setActiveUser(senderDetails);
   };
-  
+
   return (
     <>
-      <div class="w-25 p-3 ">
+      <div class="col-5 p-3 h-100">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
           <img class="avatar" src={IMAGES.default} alt="Avatar" />
           {"  "}
-          <h6>
-            {
-              users?.find((user) => {
-                return user.uid == auth.currentUser.uid;
-              })?.name
-            }
-          </h6>
+          <div>
+            <h6>
+              {
+                users?.find((user) => {
+                  return user.uid == auth.currentUser.uid;
+                })?.name
+              }
+            </h6>
+          </div>
           {/* wordWrap:break-word */}
-
+          {/* <div className=".justify-content-lg-end">
+              ⁝
+          </div> */}
           <button
             class="navbar-toggler"
             type="button"
@@ -110,19 +115,21 @@ function SideBar() {
           placeholder="Search"
           aria-label="Search"
         /> */}
-        {users?.map((user) => {
-          if (user.uid == auth.currentUser.uid) return;
-          return (
-            <div
-              className="user"
-              key={user.uid}
-              onClick={() => receiverSelected(user)}
-            >
-              <img className="avatar" src={IMAGES.default} />
-              {user?.name}
-            </div>
-          );
-        })}
+        <div className="scroll-left">
+          {users?.map((user) => {
+            if (user.uid == auth.currentUser.uid) return;
+            return (
+              <div
+                className="user"
+                key={user.uid}
+                onClick={() => receiverSelected(user)}
+              >
+                <img className="avatar" src={IMAGES.default} />
+                {user?.name}{ }
+              </div>
+            );
+          })}
+        </div>
       </div>
     </>
   );

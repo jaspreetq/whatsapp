@@ -39,22 +39,6 @@ function SendMessage() {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
   }, [actualDbId]);
   
-  // useEffect(()=>{
-  //   const updateDocumentAsync = async ()=>await updateDoc(doc(db, "chats", actualDbId), {
-  //     messages: arrayUnion({
-  //       uid: activeUser?.uid,
-  //       name: activeUser?.name,
-  //       avatar: IMAGES.default,
-  //       createdAt: new Date().toUTCString(),
-  //       text: outputMessage,
-  //     }),
-  //   });
-  //   const docRef = await getDoc(doc(db, "chats", actualDbId));
-  //     if (docRef.exists() || !actualDbId) return null;
-  //   if (outputMessage && actualDbId )updateDocumentAsync()
-    
-  // }
-  // ,[outputMessage]);
   
   const handleEnter = (e) => (e.key === "Enter") && handleSend()
   const { uid, displayName, photoURL } = auth.currentUser;
@@ -66,22 +50,8 @@ function SendMessage() {
       alert("Enter valid message");
       return;
     }
-      // const existingContact = await getDoc(doc(db, "chats", actualDbId));
-
-      console.log(
-        "name<><><<>< in send ",
-        recieverDetails,
-        activeUser?.uid,
-        activeUser?.name,
-        activeUser?.photoURL,
-        actualDbId
-        // existingContact.exists()
-      );
-
-      // const docRef = await getDoc(doc(db, "chats", actualDbId));
-      // if (!docRef.exists()) return null;
-      // console.log("doesn't exist", actualDbId, docRef.exists());
-      setOutputMessage(messageLocal);
+    
+     setOutputMessage(messageLocal);
       if (actualDbId) {
         await updateDoc(doc(db, "chats", actualDbId), {
           messages: arrayUnion({
@@ -98,7 +68,7 @@ function SendMessage() {
     };
 
     return (
-      <div style={{ width: "98%" }}>
+      <div className="input-chat">
         <input
           id="newMessage"
           value={message}
@@ -114,3 +84,20 @@ function SendMessage() {
     );
   }
 export default SendMessage;
+
+  // useEffect(()=>{
+  //   const updateDocumentAsync = async ()=>await updateDoc(doc(db, "chats", actualDbId), {
+  //     messages: arrayUnion({
+  //       uid: activeUser?.uid,
+  //       name: activeUser?.name,
+  //       avatar: IMAGES.default,
+  //       createdAt: new Date().toUTCString(),
+  //       text: outputMessage,
+  //     }),
+  //   });
+  //   const docRef = await getDoc(doc(db, "chats", actualDbId));
+  //     if (docRef.exists() || !actualDbId) return null;
+  //   if (outputMessage && actualDbId )updateDocumentAsync()
+    
+  // }
+  // ,[outputMessage]);

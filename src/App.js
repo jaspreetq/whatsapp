@@ -70,17 +70,17 @@ function App() {
       }}
     >
       <div className="App">
-        <HashRouter>
+        <BrowserRouter>
           <Routes>
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/" element={<Welcome />} />
             <Route path="/SignIn" element={<SignIn />} />
             <Route
-              path="/LiveChat/:name"
+              path="/LiveChat/:uid"
               element={user ? <LiveChat /> : <Welcome />}
             />
           </Routes>
-        </HashRouter>
+        </BrowserRouter>
         {/* <br />
           {user ? (
             <div className="home">

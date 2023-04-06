@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0 ;
     max-width: 24%;
+    height: 100%;
     /* align; */
     margin-left: 0;
 }
@@ -16,3 +17,18 @@
     cursor: pointer;
     margin-left: 0;
   }
+
+  .scroll-left{
+    overflow-y: scroll;
+    max-height: 100%;
+
+  }
+  /* .container {
+    display: flex;
+    overflow: hidden;
+    max-height: 100%;
+  }
+  
+  .left-box, .right-box {
+    flex: 1;
+  } */

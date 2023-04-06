@@ -48,15 +48,15 @@ function LiveChat() {
       "actualDbId: effect,reciever",
       recieverDetails.name
     );
-    dbId = (recieverDetails.uid > activeUser.uid)? recieverDetails.uid + activeUser.uid : (activeUser.uid + recieverDetails.uid)
+    dbId = (recieverDetails.uid > activeUser.uid) ? recieverDetails.uid + activeUser.uid : (activeUser.uid + recieverDetails.uid)
     setActualDbId(dbId)
-  }, [recieverDetails?.uid,activeUser?.uid]);
+  }, [recieverDetails?.uid, activeUser?.uid]);
 
 
   useEffect(() => {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
     // console.log("dbId new",dbId)
-    
+
     const setDocAsync = async () => {
       const docRef = await getDoc(doc(db, "chats", actualDbId));
       console.log("doesn't exist", actualDbId, docRef.exists());
@@ -102,51 +102,62 @@ function LiveChat() {
   }, [actualDbId]);
 
   return (
+
     //RecieveChat
     <div className="liveChat">
-      {/* {!auth.currentUser.uid && console.log("null chak")} */}
+
       <SignOut />
-      <div class="d-flex justify-content-start">
+
+      {/* {!auth.currentUser.uid && console.log("null chak")} */}
+      <div className="d-flex justify-content-start sidebar">
         <SideBar />
-
-        <div>
-        {/* welcomeChatPage */}
-          {welcomeChatPage ? (
-            <div class="align-middle w-100 h-50"> Select a contact to chat</div>
-          ) : (
-            <div>
-              <>
-                {recieverDetails.name}
-                <ul>
-                  {messages?.map((message) => {
-                    console.log("message:::", message);
-                    const cssStr =
-                      message.uid == recieverDetails.uid
-                        ? "-reciever"
-                        : "-sender";
-                    console.log("cssStr: ", cssStr);
-                    return (
-                      <div className={`container${cssStr}`}>
-                        <p>{message.text}</p>
-                        <span className="time-right">
-                          {new Date(message?.createdAt).getHours() +
-                            ":" +
-                            new Date(message?.createdAt).getMinutes()}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </ul>
-
-                <SendMessage />
-              </>
-            </div>
-          )}
+        <div className="w-100 pt-3 ">
+          <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <img className="avatar" src={IMAGES.default} alt="Avatar" />
+            {"  "}
+            <h6>
+              {recieverDetails.name}
+            </h6>
+          </nav>
         </div>
       </div>
-      {/* {setRecieverDetails?.map()} */}
+      {/* welcomeChatPage */}
+      {welcomeChatPage ? (
+        <div className="align-middle w-100 h-50"> Select a contact to chat</div>
+      ) : (
+        <div>
+          {recieverDetails.name}
+          <>
+            <ul>
+              {messages?.map((message) => {
+                console.log("message:::", message);
+                const cssStr =
+                  message.uid === recieverDetails.uid
+                    ? "-reciever"
+                    : "-sender";
+                console.log("cssStr: ", cssStr);
+                return (
+                  <div className={`container${cssStr}`}>
+                    <p>{message.text}</p>
+                    <span className="time-right">
+                      {new Date(message?.createdAt).getHours() +
+                        ":" +
+                        new Date(message?.createdAt).getMinutes()}
+                    </span>
+                  </div>
+                );
+              })}
+            </ul>
+
+            <SendMessage />
+          </>
+        </div>
+      )}
+      <div>
     </div>
-  );
+        {/* {setRecieverDetails?.map()} */ }
+      </div >
+      );
 }
 
 export default LiveChat;
@@ -165,7 +176,7 @@ export default LiveChat;
     // const docRef = collection(db, "messages");
   // param = activeUser.name
 
-  ////////get unique db id 
+  ////////get unique db id
   // console.log(
   //   "auth.currentUser :",
   //   auth.currentUser.uid,
