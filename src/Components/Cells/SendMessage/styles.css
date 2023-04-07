@@ -1,5 +1,5 @@
 input{
-  width: 70%;
+  width: 60%;
   margin-right: 8px;  
   appearance: none;
   background-color: #FAFBFC;
@@ -16,4 +16,7 @@ input{
   line-height: 20px;
   list-style: none;
   padding: 6px 16px;
+}
+.react-emoji {
+  width: 75%;
 }

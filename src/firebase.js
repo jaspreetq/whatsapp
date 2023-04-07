@@ -21,6 +21,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -37,7 +38,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyB7WeYmsnl_A-4cZED8s6TOuPhmjgGAyjg",
   authDomain: "whatsapp-d9816.firebaseapp.com",
   projectId: "whatsapp-d9816",
-  storageBucket: "whatsapp-d9816.appspot.com",
+  storageBucket: "gs://whatsapp-d9816.appspot.com",
   messagingSenderId: "866401384266",
   appId: "1:866401384266:web:45d2703674a4d634cfb3b3",
 };
@@ -48,4 +49,4 @@ const analytics = getAnalytics(app);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const storage = getFirestore();
+export const storage = getStorage(app);
