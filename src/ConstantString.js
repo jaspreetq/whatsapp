@@ -1,0 +1,1 @@
+export const RANDOM_TEXT = "AFD232kjhdaA8";

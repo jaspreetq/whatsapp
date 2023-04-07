@@ -1,4 +1,4 @@
-input{
+custom-input-text{
   width: 60%;
   margin-right: 8px;  
   appearance: none;
@@ -19,4 +19,13 @@ input{
 }
 .react-emoji {
   width: 75%;
+}
+
+#attachement{
+  border-style: "none";
+  padding: 0;
+  width: 50%;
+}
+.send-message{
+  margin-top: 35px;
 }

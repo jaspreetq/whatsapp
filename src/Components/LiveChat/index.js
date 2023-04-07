@@ -24,6 +24,7 @@ import { getAuth, updateCurrentUser } from "firebase/auth";
 import SideBar from "../SideBar";
 import { useParams } from "react-router-dom";
 import { IMAGES } from "../Utillities/Images";
+import { RANDOM_TEXT } from "../../ConstantString";
 
 function LiveChat() {
   const {
@@ -88,7 +89,7 @@ function LiveChat() {
     );
 
     const unsubscribe = onSnapshot(
-      doc(db, "chats", actualDbId || "dOy4H8cGozQz6Z8jyWfS"),
+      doc(db, "chats", actualDbId || RANDOM_TEXT),
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         setMessages(doc.data()?.messages);
@@ -102,7 +103,6 @@ function LiveChat() {
   }, [actualDbId]);
 
   return (
-
     //RecieveChat
     <div className="liveChat">
 
@@ -138,11 +138,12 @@ function LiveChat() {
                 console.log("cssStr: ", cssStr);
                 return (
                   <div className={`container${cssStr}`}>
+                  {console.log(console.log("message?.img)",message?.img))}
                     <p>{message.text}</p>
+                    {message?.img && <img src={message.img}></img>}
+                    {message?.pdf && console.log(message.pdf?.name)}
                     <span className="time-right">
-                      {new Date(message?.createdAt).getHours() +
-                        ":" +
-                        new Date(message?.createdAt).getMinutes()}
+                      {message?.time}
                     </span>
                   </div>
                 );
@@ -153,11 +154,8 @@ function LiveChat() {
           </>
         </div>
       )}
-      <div>
     </div>
-        {/* {setRecieverDetails?.map()} */ }
-      </div >
-      );
+  );
 }
 
 export default LiveChat;
