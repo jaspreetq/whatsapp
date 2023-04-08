@@ -1,5 +1,11 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { messageContext } from "../../App";
@@ -68,6 +74,7 @@ function SignUp() {
     <div>
       <h3>Please Register...</h3>
       <input
+        className="textInput"
         id="userName"
         value={name}
         onChange={(e) => {
@@ -79,6 +86,7 @@ function SignUp() {
         // onKeyDown={handleEnter}
       />
       <input
+        className="textInput"
         id="userEmail"
         value={email}
         onChange={(e) => {
@@ -89,6 +97,7 @@ function SignUp() {
         // onKeyDown={handleEnter}
       />
       <input
+        className="textInput"
         id="userPassword"
         value={password}
         onChange={(e) => {

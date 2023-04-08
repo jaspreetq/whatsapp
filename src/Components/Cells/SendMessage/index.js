@@ -16,6 +16,7 @@ import { IMAGES } from "../../Utillities/Images";
 import InputEmoji from "react-input-emoji";
 import "./styles.css";
 import { RANDOM_TEXT } from "../../../ConstantString";
+import { getTime } from "../../Utillities/getTime";
 
 // import { storage } from "./firebase";
 
@@ -58,13 +59,6 @@ function SendMessage() {
   useEffect(() => {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
   }, [actualDbId]);
-
-  const getTime = () => {
-    const date = new Date();
-    return date.getMinutes() < 10
-      ? `${date.getHours()}:0${date.getMinutes()}`
-      : `${date.getHours()}:${date.getMinutes()}`;
-  };
 
   function handleFileChange(e) {
     document.getElementsByClassName(" react-input-emoji--input")?.[0].focus();

@@ -121,6 +121,7 @@ function LiveChat() {
                 <img className="avatar" src={IMAGES.default} alt="Avatar" />
                 {"  "}
                 <h6>{recieverDetails.name}</h6>
+                {/* <button>+</button> */}
               </nav>
               <div className="scroll-right" style={{ height: "397px" }}>
                 <ul>

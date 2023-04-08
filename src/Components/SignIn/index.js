@@ -35,7 +35,7 @@ function SignIn() {
     activeUser,
     setActiveUser,
   } = useContext(messageContext);
-  
+
   useEffect(() => {
     setErrorMessage("");
   }, []);
@@ -101,38 +101,39 @@ function SignIn() {
 
   return (
     <>
-        <h3>Please SignIn...</h3>
+      <h3>Please SignIn...</h3>
 
-        <input
-          id="userEmail"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-          type="text"
-          placeholder="Enter email..."
+      <input
+        className="textInput"
+        id="userEmail"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
+        type="text"
+        placeholder="Enter email..."
         // onKeyDown={handleEnter}
-        />
+      />
 
-        <input
-          id="userPassword"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          type="password"
-          placeholder="Enter Password..."
+      <input
+        className="textInput"
+        id="userPassword"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+        }}
+        type="password"
+        placeholder="Enter Password..."
         // onKeyDown={handleEnter}
-        />
+      />
 
-        <br />
-        <br />
-        {/* <button onClick={googleSignIn}>Sign In G</button> */}
-        <button onClick={handleSignIn}>Sign In</button>
-        {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
-        <button onClick={() => navigate("/SignUp")}>New User, SignUp</button>
-        <p style={{ color: "red" }}>{errorMessage}</p>
-        
+      <br />
+      <br />
+      {/* <button onClick={googleSignIn}>Sign In G</button> */}
+      <button onClick={handleSignIn}>Sign In</button>
+      {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
+      <button onClick={() => navigate("/SignUp")}>New User, SignUp</button>
+      <p style={{ color: "red" }}>{errorMessage}</p>
     </>
   );
 }
