@@ -26,7 +26,11 @@ function SignOut() {
     setMessages([]);
     navigate("/");
   };
-  return <button onClick={signOut}>Sign Out</button>;
+  return (
+    <button className="signOut" onClick={signOut}>
+      Sign Out
+    </button>
+  );
 }
 
 export default SignOut;

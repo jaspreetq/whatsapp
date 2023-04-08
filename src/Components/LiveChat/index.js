@@ -45,14 +45,13 @@ function LiveChat() {
   setErrorMessage("");
 
   useEffect(() => {
-    console.log(
-      "actualDbId: effect,reciever",
-      recieverDetails.name
-    );
-    dbId = (recieverDetails.uid > activeUser.uid) ? recieverDetails.uid + activeUser.uid : (activeUser.uid + recieverDetails.uid)
-    setActualDbId(dbId)
+    console.log("actualDbId: effect,reciever", recieverDetails.name);
+    dbId =
+      recieverDetails.uid > activeUser.uid
+        ? recieverDetails.uid + activeUser.uid
+        : activeUser.uid + recieverDetails.uid;
+    setActualDbId(dbId);
   }, [recieverDetails?.uid, activeUser?.uid]);
-
 
   useEffect(() => {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
@@ -105,55 +104,50 @@ function LiveChat() {
   return (
     //RecieveChat
     <div className="liveChat">
-
       <SignOut />
 
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar">
         <SideBar />
         <div className="w-100 pt-3 ">
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <img className="avatar" src={IMAGES.default} alt="Avatar" />
-            {"  "}
-            <h6>
-              {recieverDetails.name}
-            </h6>
-          </nav>
+          {welcomeChatPage ? (
+            <div className="align-middle w-100 h-50">
+              {" "}
+              Select a contact to chat
+            </div>
+          ) : (
+            <>
+              <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <img className="avatar" src={IMAGES.default} alt="Avatar" />
+                {"  "}
+                <h6>{recieverDetails.name}</h6>
+              </nav>
+              <div className="scroll-right" style={{ height: "397px" }}>
+                <ul>
+                  {messages?.map((message) => {
+                    console.log("message:::", message);
+                    const cssStr =
+                      message.uid === recieverDetails.uid
+                        ? "-reciever"
+                        : "-sender";
+                    console.log("cssStr: ", cssStr);
+                    return (
+                      <div className={`container${cssStr}`}>
+                        <p>{message.text}</p>
+                        {message?.img && <img src={message.img}></img>}
+                        {message?.pdf && console.log(message.pdf?.name)}
+                        <span className="time-right">{message?.time}</span>
+                      </div>
+                    );
+                  })}
+                </ul>
+              </div>
+              <SendMessage />
+            </>
+          )}
         </div>
       </div>
       {/* welcomeChatPage */}
-      {welcomeChatPage ? (
-        <div className="align-middle w-100 h-50"> Select a contact to chat</div>
-      ) : (
-        <div>
-          {recieverDetails.name}
-          <>
-            <ul>
-              {messages?.map((message) => {
-                console.log("message:::", message);
-                const cssStr =
-                  message.uid === recieverDetails.uid
-                    ? "-reciever"
-                    : "-sender";
-                console.log("cssStr: ", cssStr);
-                return (
-                  <div className={`container${cssStr}`}>
-                  {console.log(console.log("message?.img)",message?.img))}
-                    <p>{message.text}</p>
-                    {message?.img && <img src={message.img}></img>}
-                    {message?.pdf && console.log(message.pdf?.name)}
-                    <span className="time-right">
-                      {message?.time}
-                    </span>
-                  </div>
-                );
-              })}
-            </ul>
-
-            <SendMessage />
-          </>
-        </div>
-      )}
     </div>
   );
 }
@@ -168,41 +162,40 @@ export default LiveChat;
       /> */
 }
 
+// const [user] = useAuthState(auth);
+// console.log("user<><><><.", user, param)
+// const docRef = collection(db, "messages");
+// param = activeUser.name
 
-    // const [user] = useAuthState(auth);
-    // console.log("user<><><><.", user, param)
-    // const docRef = collection(db, "messages");
-  // param = activeUser.name
+////////get unique db id
+// console.log(
+//   "auth.currentUser :",
+//   auth.currentUser.uid,
+//   auth.currentUser,
+//   senderDetails
+// );
+// console.log("uid2 name ", user);
 
-  ////////get unique db id
-  // console.log(
-  //   "auth.currentUser :",
-  //   auth.currentUser.uid,
-  //   auth.currentUser,
-  //   senderDetails
-  // );
-  // console.log("uid2 name ", user);
+// const existingContact12 = await getDoc(
+//   doc(db, "chats", `${recieverUid + senderUid}`)
+// );
+// const existingContact21 = await getDoc(
+//   doc(db, "chats", `${senderUid + recieverUid}`)
+// );
+// //
+// console.log("actualDbId:", actualDbId);
 
-  // const existingContact12 = await getDoc(
-  //   doc(db, "chats", `${recieverUid + senderUid}`)
-  // );
-  // const existingContact21 = await getDoc(
-  //   doc(db, "chats", `${senderUid + recieverUid}`)
-  // );
-  // //
-  // console.log("actualDbId:", actualDbId);
+// // else setActualDbId(recieverUid + senderUid);
+// // const dbExists = ;
+// // !dbExists &&
 
-  // // else setActualDbId(recieverUid + senderUid);
-  // // const dbExists = ;
-  // // !dbExists &&
+// if (!(existingContact12.exists() || existingContact21.exists()))
+//   setActualDbId(recieverUid + senderUid);
+// console.log("actualDbId: i", actualDbId);
+// // setActualDbId();
+// console.log("contact exists", actualDbId);
 
-  // if (!(existingContact12.exists() || existingContact21.exists()))
-  //   setActualDbId(recieverUid + senderUid);
-  // console.log("actualDbId: i", actualDbId);
-  // // setActualDbId();
-  // console.log("contact exists", actualDbId);
-
-  // if (!actualDbId) {
-  //   if (existingContact21.exists()) setActualDbId(senderUid + recieverUid);
-  //   else setActualDbId(recieverUid + senderUid);
-  // }
+// if (!actualDbId) {
+//   if (existingContact21.exists()) setActualDbId(senderUid + recieverUid);
+//   else setActualDbId(recieverUid + senderUid);
+// }

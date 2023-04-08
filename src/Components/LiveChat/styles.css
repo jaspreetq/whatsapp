@@ -4,7 +4,7 @@
   padding: 0;
 } */
 
-.sidebar{
+.sidebar {
   height: 100vh;
 }
 .container {
@@ -12,8 +12,14 @@
   overflow: hidden;
   max-height: 100%;
 }
+.scroll-right {
+  flex: 1;
+  overflow-y: scroll;
+  max-height: 100%;
+}
 
-.left-box, .right-box {
+.left-box,
+.right-box {
   flex: 1;
   overflow-y: scroll;
   max-height: 100%;
@@ -25,6 +31,7 @@
   padding: 10px;
   margin: 10px 0;
   width: 25%;
+  word-wrap: break-word;
 }
 
 .container-sender {
@@ -35,6 +42,7 @@
   margin: 10px 0;
   margin-right: 0;
   width: 25%;
+  word-wrap: break-word;
 }
 
 .darker {

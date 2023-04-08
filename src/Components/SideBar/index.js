@@ -78,17 +78,31 @@ function SideBar() {
     <>
       <div class="col-5 p-3 h-100">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-
           <img class="avatar" src={IMAGES.default} alt="Avatar" />
           {"  "}
-          <div>
-            <h6>
+          <div className="d-flex justify-content-start">
+            <div style={{ width: "390px", "margin-top": "6px" }}>
               {
                 users?.find((user) => {
                   return user.uid == auth.currentUser.uid;
                 })?.name
               }
-            </h6>
+            </div>
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <div className="dropdown-menu" aria-labelledby=" ⁝ ">
+                  <a class="dropdown-item" href="#">
+                    Action
+                  </a>
+                  <a class="dropdown-item" href="#">
+                    Another action
+                  </a>
+                  <a class="dropdown-item" href="#">
+                    Something else here
+                  </a>
+                </div>
+              </li>
+            </ul>
           </div>
           {/* wordWrap:break-word */}
           {/* <div className=".justify-content-lg-end">
@@ -118,14 +132,16 @@ function SideBar() {
         <div className="scroll-left">
           {users?.map((user) => {
             if (user.uid == auth.currentUser.uid) return;
+            const cssUser = recieverDetails.uid === user.uid ? " selected" : "";
             return (
               <div
-                className="user"
+                className={`user${cssUser}`}
                 key={user.uid}
                 onClick={() => receiverSelected(user)}
               >
                 <img className="avatar" src={IMAGES.default} />
-                {user?.name}{ }
+                {user?.name}
+                {}
               </div>
             );
           })}
