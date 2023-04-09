@@ -25,6 +25,7 @@ function App() {
   const [welcomeChatPage, setWelcomeChatPage] = useState(true);
   const [actualDbId, setActualDbId] = useState("");
   const [messages, setMessages] = useState([]);
+  const [actualDbGroupId, setActualDbGroupId] = useState("");
 
   useEffect(() => {
     const clear = onAuthStateChanged(auth, (user) => {
@@ -67,6 +68,8 @@ function App() {
         setActualDbId,
         messages,
         setMessages,
+        actualDbGroupId,
+        setActualDbGroupId,
       }}
     >
       <div className="App">

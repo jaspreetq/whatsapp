@@ -18,11 +18,14 @@ import { IMAGES } from "../Utillities/Images";
 import "./styles.css";
 import Header from "../Atoms/Header";
 import SelectParticipants from "../Cells/SelectParticipants";
+import { rightArrow, threeDotsHamburger } from "../Utillities/icons";
+import EnterNewGroupDetail from "../Cells/EnterNewGroupDetail";
 
 function SideBar() {
   const [users, setUsers] = useState([]);
   const [selectedParticipants, setSelectedParticipants] = useState([{}]);
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
+  const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
   const {
     activeUser,
     setActiveUser,
@@ -84,30 +87,54 @@ function SideBar() {
         {showGroupAddComp ? (
           <>
             <Header
-              title="Add Participants"
-              goBack={() => setShowGroupAddComp(false)}
+              title={isNewGroupBtnClicked ? "New Group" : "Add Participants"}
+              goBack={() =>
+                isNewGroupBtnClicked
+                  ? setIsNewGroupBtnClicked(false)
+                  : setShowGroupAddComp(false)
+              }
             />
-            <SelectParticipants
-              users={users}
-              selectedParticipants={selectedParticipants}
-              setSelectedParticipants={setSelectedParticipants}
-            />
+            {isNewGroupBtnClicked ? (
+              <EnterNewGroupDetail
+                selectedParticipants={selectedParticipants}
+                isNewGroupBtnClicked={isNewGroupBtnClicked}
+                setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
+                showGroupAddComp={showGroupAddComp}
+                setShowGroupAddComp={setShowGroupAddComp}
+              />
+            ) : (
+              showGroupAddComp && (
+                <SelectParticipants
+                  users={users}
+                  selectedParticipants={selectedParticipants}
+                  setSelectedParticipants={setSelectedParticipants}
+                  isNewGroup={true}
+                  isNewGroupBtnClicked={isNewGroupBtnClicked}
+                  setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
+                />
+              )
+            )}
           </>
         ) : (
           <>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
               <img class="avatar" src={IMAGES.default} alt="Avatar" />
               {"  "}
-              <div className="d-flex justify-content-start">
-                <div style={{ width: "390px", "margin-top": "6px" }}>
+              <div className="d-flex justify-content-start w-100">
+                <div style={{ width: "99%", "margin-top": "6px" }}>
                   {
                     users?.find((user) => {
                       return user.uid == auth.currentUser.uid;
                     })?.name
                   }
                 </div>
-                <button onClick={() => setShowGroupAddComp(true)}>+</button>
-                <ul className="navbar-nav">
+                <button
+                  style={{ border: "none" }}
+                  onClick={() => setShowGroupAddComp(true)}
+                >
+                  {threeDotsHamburger}
+                </button>
+                {/* <ul className="navbar-nav">
                   <li className="nav-item dropdown">
                     <div className="dropdown-menu" aria-labelledby=" ⁝ ">
                       <a className="dropdown-item" href="#">
@@ -121,7 +148,7 @@ function SideBar() {
                       </a>
                     </div>
                   </li>
-                </ul>
+                </ul> */}
               </div>
               {/* wordWrap:break-word */}
               {/* <div className=".justify-content-lg-end">
@@ -155,7 +182,7 @@ function SideBar() {
               {users?.map((user) => {
                 if (user.uid == auth.currentUser.uid) return;
                 const cssUser =
-                  recieverDetails.uid === user.uid ? " selected" : "";
+                  recieverDetails.uid === user.uid ? " selected" : ""; //||selectedGroup.uid === user.uid
                 return (
                   <div
                     className={`user${cssUser}`}
@@ -163,8 +190,7 @@ function SideBar() {
                     onClick={() => receiverSelected(user)}
                   >
                     <img className="avatar" src={IMAGES.default} />
-                    {user?.name}
-                    {}
+                    {user?.groupName || user?.name}
                   </div>
                 );
               })}

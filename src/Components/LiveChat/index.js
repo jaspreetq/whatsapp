@@ -45,48 +45,54 @@ function LiveChat() {
   setErrorMessage("");
 
   useEffect(() => {
-    console.log("actualDbId: effect,reciever", recieverDetails.name);
-    dbId =
-      recieverDetails.uid > activeUser.uid
-        ? recieverDetails.uid + activeUser.uid
-        : activeUser.uid + recieverDetails.uid;
-    setActualDbId(dbId);
-  }, [recieverDetails?.uid, activeUser?.uid]);
+    // console.log("actualDbId: effect,reciever", );
+    if (recieverDetails?.groupName) {
+      setActualDbId(recieverDetails?.uid);
+    } else {
+      dbId =
+        recieverDetails.uid > activeUser.uid
+          ? recieverDetails.uid + activeUser.uid
+          : activeUser.uid + recieverDetails.uid;
+      setActualDbId(dbId);
+    }
+  }, [recieverDetails?.uid]);
 
   useEffect(() => {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
     // console.log("dbId new",dbId)
 
-    const setDocAsync = async () => {
-      const docRef = await getDoc(doc(db, "chats", actualDbId));
-      console.log("doesn't exist", actualDbId, docRef.exists());
-      if (docRef.exists() || !actualDbId) return null;
-      console.log("doesn't exist");
-      await setDoc(doc(db, "chats", actualDbId), {
-        uid: actualDbId,
-        senderUid: activeUser.uid,
-        senderName: activeUser.name,
-        recieverUid: recieverDetails.uid,
-        recieverName: recieverDetails.name,
-        senderDetails: activeUser,
+    if (actualDbId?.length > 35) {
+      const setDocAsync = async () => {
+        const docRef = await getDoc(doc(db, "chats", actualDbId));
+        console.log("doesn't exist", actualDbId, docRef.exists());
+        if (docRef.exists() || !actualDbId) return null;
+        console.log("doesn't exist");
+        await setDoc(doc(db, "chats", actualDbId), {
+          uid: actualDbId,
+          senderUid: activeUser.uid,
+          senderName: activeUser.name,
+          recieverUid: recieverDetails.uid,
+          recieverName: recieverDetails.name,
+          senderDetails: activeUser,
+          recieverDetails,
+          createdAt: serverTimestamp(),
+          messages: [],
+        });
+      };
+
+      actualDbId && Object.keys(recieverDetails).length && setDocAsync();
+
+      console.log("actualDbId: effect", actualDbId, recieverDetails);
+      const messageList = [];
+      Object.keys(recieverDetails).length && setWelcomeChatPage(false);
+
+      console.log(
+        "actualDbId in useEffect(LiveCHat) b4:",
         recieverDetails,
-        createdAt: serverTimestamp(),
-        messages: [],
-      });
-    };
-
-    actualDbId && Object.keys(recieverDetails).length && setDocAsync();
-
-    console.log("actualDbId: effect", actualDbId, recieverDetails);
-    const messageList = [];
+        actualDbId
+      );
+    }
     Object.keys(recieverDetails).length && setWelcomeChatPage(false);
-
-    console.log(
-      "actualDbId in useEffect(LiveCHat) b4:",
-      recieverDetails,
-      actualDbId
-    );
-
     const unsubscribe = onSnapshot(
       doc(db, "chats", actualDbId || RANDOM_TEXT),
       (doc) => {
@@ -120,7 +126,7 @@ function LiveChat() {
               <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <img className="avatar" src={IMAGES.default} alt="Avatar" />
                 {"  "}
-                <h6>{recieverDetails.name}</h6>
+                <h6>{recieverDetails?.name || recieverDetails?.groupName}</h6>
                 {/* <button>+</button> */}
               </nav>
               <div className="scroll-right" style={{ height: "397px" }}>
@@ -128,9 +134,9 @@ function LiveChat() {
                   {messages?.map((message) => {
                     console.log("message:::", message);
                     const cssStr =
-                      message.uid === recieverDetails.uid
-                        ? "-reciever"
-                        : "-sender";
+                      message.uid === auth.currentUser.uid
+                        ? "-sender"
+                        : "-reciever";
                     console.log("cssStr: ", cssStr);
                     return (
                       <div className={`container${cssStr}`}>
