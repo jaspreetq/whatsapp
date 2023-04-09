@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { rightArrow } from "../../Utillities/icons";
+import { messageContext } from "../../../App";
 
 function SelectParticipants(props) {
   const actualDbGroupId = "";
@@ -10,14 +11,22 @@ function SelectParticipants(props) {
     isNewGroupBtnClicked,
     setIsNewGroupBtnClicked,
   } = props;
+  const { activeUser, setActiveUser } = useContext(messageContext);
   const [groupEmptyError, setGroupEmptyError] = useState("");
+
+  useEffect(() => {
+    !selectedParticipants?.some(
+      (participant) => participant?.uid === activeUser.uid
+    ) && setSelectedParticipants((prevState) => [...prevState, activeUser]);
+  }, []);
+
   return (
     <div>
       <div>
         {users?.map((user) => {
           return (
             <div key={user.uid}>
-              {!user?.groupName && (
+              {!user?.groupName && !user?.uid !== activeUser?.uid && (
                 <label>
                   <input
                     name={user?.uid}
