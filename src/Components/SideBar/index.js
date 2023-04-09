@@ -41,7 +41,12 @@ function SideBar() {
   let senderUserID;
 
   useEffect(() => {
+    isNewGroupBtnClicked && setShowGroupAddComp(false);
+  }, [isNewGroupBtnClicked]);
+
+  useEffect(() => {
     console.log("activeUser iopi", activeUser.name);
+    setSelectedParticipants(() => [...selectedParticipants, activeUser]);
   }, [activeUser]);
 
   useEffect(() => {
@@ -87,33 +92,19 @@ function SideBar() {
         {showGroupAddComp ? (
           <>
             <Header
-              title={isNewGroupBtnClicked ? "New Group" : "Add Participants"}
-              goBack={() =>
-                isNewGroupBtnClicked
-                  ? setIsNewGroupBtnClicked(false)
-                  : setShowGroupAddComp(false)
-              }
+              title="Create New group"
+              goBack={() => setShowGroupAddComp(false)}
             />
-            {isNewGroupBtnClicked ? (
-              <EnterNewGroupDetail
-                selectedParticipants={selectedParticipants}
-                isNewGroupBtnClicked={isNewGroupBtnClicked}
-                setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
-                showGroupAddComp={showGroupAddComp}
-                setShowGroupAddComp={setShowGroupAddComp}
-              />
-            ) : (
-              showGroupAddComp && (
-                <SelectParticipants
-                  users={users}
-                  selectedParticipants={selectedParticipants}
-                  setSelectedParticipants={setSelectedParticipants}
-                  isNewGroup={true}
-                  isNewGroupBtnClicked={isNewGroupBtnClicked}
-                  setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
-                />
-              )
-            )}
+            <SelectParticipants
+              users={users}
+              selectedParticipants={selectedParticipants}
+              setSelectedParticipants={setSelectedParticipants}
+              isNewGroup={true}
+              isNewGroupBtnClicked={isNewGroupBtnClicked}
+              setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
+              showGroupAddComp={showGroupAddComp}
+              setShowGroupAddComp={setShowGroupAddComp}
+            />
           </>
         ) : (
           <>
