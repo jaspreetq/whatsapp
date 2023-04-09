@@ -1,87 +1,26 @@
 import React, { useContext, useState } from "react";
 import { rightArrow } from "../../Utillities/icons";
 import { messageContext } from "../../../App";
-import { auth, db } from "../../../firebase";
-import { getTime } from "../../Utillities/getTime";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { IMAGES } from "../../Utillities/Images";
 
 function SelectParticipants(props) {
+  const actualDbGroupId = "";
   const {
     users,
     selectedParticipants,
     setSelectedParticipants,
     isNewGroupBtnClicked,
     setIsNewGroupBtnClicked,
-    showGroupAddComp,
-    setShowGroupAddComp,
   } = props;
-
-  const {
-    actualDbGroupId,
-    setActualDbGroupId,
-    actualDbId,
-    setActualDbId,
-    activeUser,
-  } = useContext(messageContext);
-
+  const { activeUser, setActiveUser } = useContext(messageContext);
   const [groupEmptyError, setGroupEmptyError] = useState("");
-  const [errorName, setErrorName] = useState("");
-
-  const [groupName, setGroupName] = useState("");
-  const createNewGroupId = () => {
-    return `${auth.currentUser.uid}${getTime()}`;
-  };
-
-  //   const userCheckboxChange = (e, checkedUser) => {};
-  const createChatGroup = async () => {
-    //GET DOC
-    //TRUE UPDATE
-    //FALSE SETDOC
-
-    const gid = createNewGroupId();
-    console.log("gid", gid);
-    await setDoc(doc(db, "users", gid), {
-      uid: gid,
-      groupName,
-      avatar: IMAGES.DP1, //random array dp generator
-      createdAt: serverTimestamp(),
-      participants: selectedParticipants,
-      // details: {uid,email,name,avatar,}
-    });
-
-    await setDoc(doc(db, "chats", gid), {
-      uid: gid,
-      creatorUid: auth.currentUser.uid,
-      //   creator :activeUser,
-      createdAt: serverTimestamp(),
-      participants: selectedParticipants,
-      messages: [{}],
-    });
-    //create new
-    setActualDbGroupId(gid);
-    setActualDbId(gid);
-    setIsNewGroupBtnClicked(true);
-  };
-
   return (
     <div>
       <div>
-        <input
-          className="textInput"
-          type="text"
-          value={groupName}
-          onChange={(e) => {
-            setGroupName(e.target.value);
-          }}
-          placeholder="Enter group name..."
-        />
-      </div>
-      <div>
+        {" "}
         {users?.map((user) => {
           return (
             <div key={user.uid}>
-              {!user?.groupName && (
+              {!user?.groupName && !user?.uid !== activeUser?.uid && (
                 <label>
                   <input
                     name={user?.uid}
@@ -112,14 +51,14 @@ function SelectParticipants(props) {
           );
         })}
       </div>
-      <p className="text-danger">{errorName}</p>
+      <p className="text-danger">{groupEmptyError}</p>
       <div>
         {/* (selectedParticipants?.length < 1)?setGroupEmptyError("Select a member") */}
         <button
           onClick={() => {
-            !groupName
-              ? setErrorName("Please enter group name.")
-              : createChatGroup();
+            if (!isNewGroupBtnClicked) {
+              setIsNewGroupBtnClicked(true);
+            }
           }}
         >
           {rightArrow}
