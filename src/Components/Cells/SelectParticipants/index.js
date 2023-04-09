@@ -14,19 +14,13 @@ function SelectParticipants(props) {
   const { activeUser, setActiveUser } = useContext(messageContext);
   const [groupEmptyError, setGroupEmptyError] = useState("");
 
-  useEffect(() => {
-    !selectedParticipants?.some(
-      (participant) => participant?.uid === activeUser.uid
-    ) && setSelectedParticipants((prevState) => [...prevState, activeUser]);
-  }, []);
-
   return (
     <div>
       <div>
         {users?.map((user) => {
           return (
             <div key={user.uid}>
-              {!user?.groupName && !user?.uid !== activeUser?.uid && (
+              {!user?.groupName && user?.uid !== activeUser?.uid && (
                 <label>
                   <input
                     name={user?.uid}

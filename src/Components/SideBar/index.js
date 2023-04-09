@@ -41,8 +41,8 @@ function SideBar() {
   let senderUserID;
 
   useEffect(() => {
-    console.log("activeUser iopi", activeUser.name);
-  }, [activeUser]);
+    console.log("selectedParticipants iopi", selectedParticipants);
+  }, [selectedParticipants]);
 
   useEffect(() => {
     console.log("recieverDetails: effect", recieverDetails);
@@ -128,6 +128,11 @@ function SideBar() {
                     })?.name
                   }
                 </div>
+                {/* <div>
+                  <button onClick={handleOpen}>Dropdown</button>
+                  {open ? <div>Is Open</div> : <div>Is Closed</div>}
+                </div> */}
+
                 <button
                   style={{ border: "none" }}
                   onClick={() => setShowGroupAddComp(true)}

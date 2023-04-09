@@ -32,7 +32,7 @@ function EnterNewGroupDetail(props) {
     try {
       if (!actualDbGroupId) {
         const gid = createNewGroupId();
-        console.log("gid", gid);
+        console.log("gid", gid, selectedParticipants);
         await setDoc(doc(db, "users", gid), {
           uid: gid,
           groupName,
