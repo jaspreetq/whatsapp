@@ -25,6 +25,11 @@ import SideBar from "../SideBar";
 import { useParams } from "react-router-dom";
 import { IMAGES } from "../Utillities/Images";
 import { RANDOM_TEXT } from "../../ConstantString";
+import { threeDotsHamburger } from "../Utillities/icons";
+import SelectParticipants from "../Cells/SelectParticipants";
+import CustomModal from "../CustomComponents/CustomModal";
+import Header from "../Atoms/Header";
+import { GrpParticipantContext } from "../../Context/GrpParticipantContextDefination";
 
 function LiveChat() {
   const {
@@ -38,16 +43,25 @@ function LiveChat() {
     setActualDbId,
     messages,
     setMessages,
+    users,
+    setUsers
   } = useContext(messageContext);
   let dbId;
-
+  const [showMemberEditFormOnTheRight,setShowMemberEditFormOnTheRight] = useState(false);
+  const [selectedParticipantsChat,setSelectedParticipantsChat] = useState(recieverDetails?.participants)
+  const [isEditGrpBtnClicked,setIsEditGrpBtnClicked] = useState(false)
+  // const [groupName,setGroupName] = useState(recieverDetails?.groupName);
+  const {groupName,setGroupName} = useContext(GrpParticipantContext);
   const param = useParams();
+  let groupNameTemp = recieverDetails?.groupName;
   setErrorMessage("");
 
   useEffect(() => {
     // console.log("actualDbId: effect,reciever", );
     if (recieverDetails?.groupName) {
       setActualDbId(recieverDetails?.uid);
+      setGroupName(recieverDetails?.name)
+      groupNameTemp = recieverDetails?.groupName;
     } else {
       dbId =
         recieverDetails.uid > activeUser.uid
@@ -92,7 +106,8 @@ function LiveChat() {
         actualDbId
       );
     }
-    Object.keys(recieverDetails).length && setWelcomeChatPage(false);
+    Object.keys(recieverDetails)?.length && setWelcomeChatPage(false);
+    console.log(actualDbId, "actualDbId after grp made")
     const unsubscribe = onSnapshot(
       doc(db, "chats", actualDbId || RANDOM_TEXT),
       (doc) => {
@@ -110,8 +125,10 @@ function LiveChat() {
   return (
     //RecieveChat
     <div className="liveChat">
+      {/* {showMemberEditFormOnTheRight && <CustomModal { children, show, setEditedGroupName = ()=>{}, string, handleEditGroupName, editedGroupName, handleGroupNameEdit, setShow, channelName, title, selectedList, setSelectedList, addChannel, addUser=()=>{}, handleSelect=()=>{}, showHead, showFoot }) >
+      </CustomModal>} */}
       <SignOut />
-
+      {console.log("recieverDetails in <><><><>",recieverDetails)}
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar">
         <SideBar />
@@ -126,10 +143,27 @@ function LiveChat() {
               <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <img className="avatar" src={IMAGES.default} alt="Avatar" />
                 {"  "}
-                <h6>{recieverDetails?.name || recieverDetails?.groupName}</h6>
+                <div style={{ width: "95%" }}>
+                  <p>{recieverDetails?.name || recieverDetails?.groupName}</p>
+                </div>
+                <p className="text-primary blockquote-footer" style={{}}>
+                  {recieverDetails?.groupName &&
+                    recieverDetails?.participants?.map(member => `${member.name},`)}
+                </p>
+                <button
+                  style={{ border: "none" }}
+                  onClick={() => {
+                    //MODAL SELECTPARTS
+                    if (recieverDetails?.groupName) setShowMemberEditFormOnTheRight(true);
+
+                    console.log("dfs")
+                  }}
+                >
+                  {threeDotsHamburger}
+                </button>
                 {/* <button>+</button> */}
               </nav>
-              <div className="scroll-right" style={{ height: "397px" }}>
+              <div className="scroll-right" style={{ "background": "beige", height: "68%" }}>
                 <ul>
                   {messages?.map((message) => {
                     console.log("message:::", message);
@@ -138,6 +172,8 @@ function LiveChat() {
                         ? "-sender"
                         : "-reciever";
                     console.log("cssStr: ", cssStr);
+                    if (!(message.text || message.img || message.pdf))
+                      return null;
                     return (
                       <div className={`container${cssStr}`}>
                         <p className="text-info blockquote-footer">
@@ -156,6 +192,22 @@ function LiveChat() {
             </>
           )}
         </div>
+        {showMemberEditFormOnTheRight && <div className="selectParticipants-right">
+          <Header
+              title="Edit Group"
+              goBack={() => setShowMemberEditFormOnTheRight(false)}
+            />
+            <br/>
+            {console.log(groupName,"groupName<><><>><<><><><><>><><")}
+         <SelectParticipants users={users}
+          selectedParticipants={recieverDetails?.participants}
+          setSelectedParticipants={setSelectedParticipantsChat}
+          isNewGroup={true}
+          isNewGroupBtnClicked={isEditGrpBtnClicked}
+          setIsNewGroupBtnClicked={setIsEditGrpBtnClicked}
+          showGroupAddComp={showMemberEditFormOnTheRight}
+          setShowGroupAddComp={setShowMemberEditFormOnTheRight}/>
+          </div>}
       </div>
       {/* welcomeChatPage */}
     </div>

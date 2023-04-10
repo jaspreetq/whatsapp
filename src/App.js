@@ -26,6 +26,7 @@ function App() {
   const [actualDbId, setActualDbId] = useState("");
   const [messages, setMessages] = useState([]);
   const [actualDbGroupId, setActualDbGroupId] = useState("");
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const clear = onAuthStateChanged(auth, (user) => {
@@ -70,6 +71,8 @@ function App() {
         setMessages,
         actualDbGroupId,
         setActualDbGroupId,
+        users,
+        setUsers
       }}
     >
       <div className="App">

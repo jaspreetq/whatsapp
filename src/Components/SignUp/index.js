@@ -58,7 +58,7 @@ function SignUp() {
         uid,
         name,
         email,
-        avatar: IMAGES.DP1, //random array dp generator
+        avatar: IMAGES.default, //random array dp generator
         createdAt: serverTimestamp(),
         // details: {uid,email,name,avatar,}
       });

@@ -81,3 +81,8 @@
   float: left;
   color: #999;
 }
+
+.selectParticipants-right{
+  width: 50%;
+  margin:1%
+}

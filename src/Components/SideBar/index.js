@@ -10,7 +10,7 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
-import React, { useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { messageContext } from "../../App";
 import { auth, db } from "../../firebase";
@@ -20,12 +20,9 @@ import Header from "../Atoms/Header";
 import SelectParticipants from "../Cells/SelectParticipants";
 import { rightArrow, threeDotsHamburger } from "../Utillities/icons";
 import EnterNewGroupDetail from "../Cells/EnterNewGroupDetail";
+export const GrpParticipantContext = createContext();
 
 function SideBar() {
-  const [users, setUsers] = useState([]);
-  const [selectedParticipants, setSelectedParticipants] = useState([{}]);
-  const [showGroupAddComp, setShowGroupAddComp] = useState(false);
-  const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
   const {
     activeUser,
     setActiveUser,
@@ -37,16 +34,23 @@ function SideBar() {
     setRecieverDetails,
     actualDbId,
     setActualDbId,
+    users,setUsers
   } = useContext(messageContext);
   let senderUserID;
-
+  // const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid)
+  const [selectedParticipants, setSelectedParticipants] = useState([{}]);
+  const [showGroupAddComp, setShowGroupAddComp] = useState(false);
+  const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  
   useEffect(() => {
     isNewGroupBtnClicked && setShowGroupAddComp(false);
   }, [isNewGroupBtnClicked]);
 
   useEffect(() => {
     console.log("activeUser iopi", activeUser.name);
-    setSelectedParticipants(() => [...selectedParticipants, activeUser]);
+    setSelectedParticipants(() => [...selectedParticipants]);
+    console.log("selectedParticipants: ",selectedParticipants)
   }, [activeUser]);
 
   useEffect(() => {
@@ -90,6 +94,7 @@ function SideBar() {
     <>
       <div class="col-5 p-3 h-100">
         {showGroupAddComp ? (
+          
           <>
             <Header
               title="Create New group"
@@ -104,6 +109,8 @@ function SideBar() {
               setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
               showGroupAddComp={showGroupAddComp}
               setShowGroupAddComp={setShowGroupAddComp}
+              groupName = {groupName}
+              setGroupName={setGroupName}
             />
           </>
         ) : (
@@ -121,7 +128,11 @@ function SideBar() {
                 </div>
                 <button
                   style={{ border: "none" }}
-                  onClick={() => setShowGroupAddComp(true)}
+                  onClick={() => {
+                    const initialSelected = users[0].uid===auth.currentUser.uid?users[1]:users[0]
+                    setRecieverDetails(initialSelected);
+                    setShowGroupAddComp(true);
+                    }}
                 >
                   {threeDotsHamburger}
                 </button>
@@ -171,7 +182,10 @@ function SideBar() {
         /> */}
             <div className="scroll-left">
               {users?.map((user) => {
-                if (user.uid == auth.currentUser.uid) return;
+                if (user.uid == auth.currentUser.uid ) return;
+                const isCurrentUserAMemberOfThisGroup = user?.participants?.some(member => member.uid === auth.currentUser.uid)
+                console.log(isCurrentUserAMemberOfThisGroup,"isCurrentUserAMemberOfThisGroup ")
+                if(user?.groupName && !isCurrentUserAMemberOfThisGroup)return;
                 const cssUser =
                   recieverDetails.uid === user.uid ? " selected" : ""; //||selectedGroup.uid === user.uid
                 return (
@@ -180,7 +194,7 @@ function SideBar() {
                     key={user.uid}
                     onClick={() => receiverSelected(user)}
                   >
-                    <img className="avatar" src={IMAGES.default} />
+                    <img className="avatar" src={user?.avatar} />
                     {user?.groupName || user?.name}
                   </div>
                 );
