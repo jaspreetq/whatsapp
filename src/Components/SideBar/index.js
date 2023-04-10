@@ -20,7 +20,7 @@ import Header from "../Atoms/Header";
 import SelectParticipants from "../Cells/SelectParticipants";
 import { rightArrow, threeDotsHamburger } from "../Utillities/icons";
 import EnterNewGroupDetail from "../Cells/EnterNewGroupDetail";
-export const GrpParticipantContext = createContext();
+// export const GrpParticipantContext = createContext();
 
 function SideBar() {
   const {
@@ -34,7 +34,8 @@ function SideBar() {
     setRecieverDetails,
     actualDbId,
     setActualDbId,
-    users,setUsers
+    users,
+    setUsers,
   } = useContext(messageContext);
   let senderUserID;
   // const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid)
@@ -42,15 +43,15 @@ function SideBar() {
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
   const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
   const [groupName, setGroupName] = useState("");
-  
+
   useEffect(() => {
     isNewGroupBtnClicked && setShowGroupAddComp(false);
   }, [isNewGroupBtnClicked]);
 
   useEffect(() => {
-    console.log("activeUser iopi", activeUser.name);
+    console.log("activeUser iopi", activeUser?.name);
     setSelectedParticipants(() => [...selectedParticipants]);
-    console.log("selectedParticipants: ",selectedParticipants)
+    console.log("selectedParticipants: ", selectedParticipants);
   }, [activeUser]);
 
   useEffect(() => {
@@ -86,7 +87,9 @@ function SideBar() {
     senderUserID = senderUid;
     // setActualDbId(recieverUid+senderUid);
 
-    const senderDetails = users?.find((user) => user.uid == senderUid);
+    const senderDetails = users?.find(
+      (user) => user.uid == auth.currentUser.uid
+    );
     setActiveUser(senderDetails);
   };
 
@@ -94,7 +97,6 @@ function SideBar() {
     <>
       <div class="col-5 p-3 h-100">
         {showGroupAddComp ? (
-          
           <>
             <Header
               title="Create New group"
@@ -109,7 +111,7 @@ function SideBar() {
               setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
               showGroupAddComp={showGroupAddComp}
               setShowGroupAddComp={setShowGroupAddComp}
-              groupName = {groupName}
+              groupName={groupName}
               setGroupName={setGroupName}
             />
           </>
@@ -129,10 +131,13 @@ function SideBar() {
                 <button
                   style={{ border: "none" }}
                   onClick={() => {
-                    const initialSelected = users[0].uid===auth.currentUser.uid?users[1]:users[0]
+                    const initialSelected =
+                      users[0].uid === auth.currentUser.uid
+                        ? users[1]
+                        : users[0];
                     setRecieverDetails(initialSelected);
                     setShowGroupAddComp(true);
-                    }}
+                  }}
                 >
                   {threeDotsHamburger}
                 </button>
@@ -182,10 +187,16 @@ function SideBar() {
         /> */}
             <div className="scroll-left">
               {users?.map((user) => {
-                if (user.uid == auth.currentUser.uid ) return;
-                const isCurrentUserAMemberOfThisGroup = user?.participants?.some(member => member.uid === auth.currentUser.uid)
-                console.log(isCurrentUserAMemberOfThisGroup,"isCurrentUserAMemberOfThisGroup ")
-                if(user?.groupName && !isCurrentUserAMemberOfThisGroup)return;
+                if (user.uid == auth.currentUser.uid) return;
+                const isCurrentUserAMemberOfThisGroup =
+                  user?.participants?.some(
+                    (member) => member.uid === auth.currentUser.uid
+                  );
+                console.log(
+                  isCurrentUserAMemberOfThisGroup,
+                  "isCurrentUserAMemberOfThisGroup "
+                );
+                if (user?.groupName && !isCurrentUserAMemberOfThisGroup) return;
                 const cssUser =
                   recieverDetails.uid === user.uid ? " selected" : ""; //||selectedGroup.uid === user.uid
                 return (

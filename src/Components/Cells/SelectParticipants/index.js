@@ -16,18 +16,21 @@ function SelectParticipants(props) {
     setIsNewGroupBtnClicked,
     showGroupAddComp,
     setShowGroupAddComp,
-    isNewGroup
+    isNewGroup,
+    groupName,
+    setGroupName,
   } = props;
-// console.log(groupName,"groupName")
+  // console.log(groupName,"groupName")
   const {
     actualDbGroupId,
     setActualDbGroupId,
     actualDbId,
     setActualDbId,
-    activeUser,recieverDetails,
-    setRecieverDetails
+    activeUser,
+    recieverDetails,
+    setRecieverDetails,
   } = useContext(messageContext);
-  const {groupName,setGroupName} = useContext(GrpParticipantContext)
+  // const { groupName, setGroupName } = useContext(GrpParticipantContext);
 
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
@@ -41,10 +44,12 @@ function SelectParticipants(props) {
     //FALSE SETDOC
     const gid = recieverDetails?.uid;
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
-    const currentUser0 =  users?.find((user) => user.uid == auth.currentUser.uid)
+    const currentUser0 = users?.find(
+      (user) => user.uid == auth.currentUser.uid
+    );
     const tempSelectedParticipants = [...selectedParticipants];
     // tempSelectedParticipants[0] = currentUser0;
-    console.log(tempSelectedParticipants,"tempSelectedParticipants :")
+    console.log(tempSelectedParticipants, "tempSelectedParticipants :");
     console.log("gid", gid);
     await updateDoc(doc(db, "users", gid), {
       uid: gid,
@@ -54,7 +59,7 @@ function SelectParticipants(props) {
       participants: tempSelectedParticipants,
       // details: {uid,email,name,avatar,}
     });
-    
+
     await updateDoc(doc(db, "chats", gid), {
       uid: gid,
       creatorUid: auth.currentUser.uid,
@@ -67,8 +72,8 @@ function SelectParticipants(props) {
     // setActualDbGroupId(gid);
     setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
-    setSelectedParticipants([{}])
-    setShowGroupAddComp(false)
+    setSelectedParticipants([{}]);
+    setShowGroupAddComp(false);
   };
   // const [recentGroupName,setRecentGroupName]
   //   const userCheckboxChange = (e, checkedUser) => {};
@@ -78,10 +83,12 @@ function SelectParticipants(props) {
     //FALSE SETDOC
     const gid = createNewGroupId();
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
-    const currentUser0 =  users?.find((user) => user.uid == auth.currentUser.uid)
+    const currentUser0 = users?.find(
+      (user) => user.uid == auth.currentUser.uid
+    );
     const tempSelectedParticipants = [...selectedParticipants];
     tempSelectedParticipants[0] = currentUser0;
-    console.log(tempSelectedParticipants,"tempSelectedParticipants :")
+    console.log(tempSelectedParticipants, "tempSelectedParticipants :");
     console.log("gid", gid);
     await setDoc(doc(db, "users", gid), {
       uid: gid,
@@ -91,7 +98,7 @@ function SelectParticipants(props) {
       participants: tempSelectedParticipants,
       // details: {uid,email,name,avatar,}
     });
-    
+
     await setDoc(doc(db, "chats", gid), {
       uid: gid,
       creatorUid: auth.currentUser.uid,
@@ -104,8 +111,8 @@ function SelectParticipants(props) {
     // setActualDbGroupId(gid);
     setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
-    setSelectedParticipants([{}])
-    setShowGroupAddComp(false)
+    setSelectedParticipants([{}]);
+    setShowGroupAddComp(false);
   };
 
   return (
@@ -122,12 +129,16 @@ function SelectParticipants(props) {
         />
       </div>
       <div>
-      <br/>
-      <h6 className="text-primary">Select group participants</h6>
+        <br />
+        <h6 className="text-primary">
+          {isNewGroup
+            ? "Select group participants"
+            : "Add/Remove group participants"}
+        </h6>
         {users?.map((user) => {
           return (
             <div key={user.uid}>
-              {!user?.groupName && user?.uid !== activeUser.uid &&(
+              {!user?.groupName && user?.uid !== activeUser?.uid && (
                 <label>
                   <input
                     name={user?.uid}
@@ -165,7 +176,9 @@ function SelectParticipants(props) {
           onClick={() => {
             !groupName
               ? setErrorName("Please enter group name.")
-              : (isNewGroup)?updateChatGroup() :createChatGroup();
+              : isNewGroup
+              ? createChatGroup()
+              : updateChatGroup();
           }}
         >
           {rightArrow}

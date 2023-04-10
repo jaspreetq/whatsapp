@@ -18,7 +18,7 @@
 //     //     // message: arrayUnion({
 //     //     //   uid: auth.currentUser.id,
 //     //     //   name: activeUser?.name,
-//     //     //   avatar: activeUser.photoURL,
+//     //     //   avatar: activeUser?.photoURL,
 //     //     //   createdAt: new Date().toUTCString(),
 //     //     //   img: img && url,
 //     //     //   fileName: imgName ? imgName : "",

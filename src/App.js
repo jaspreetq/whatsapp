@@ -33,7 +33,7 @@ function App() {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
-        setActiveUser(user);
+        setActiveUser();
         setWelcomeChatPage(true);
         console.log("<><><><><", user.displayName, user.uid);
         // ...
@@ -72,7 +72,7 @@ function App() {
         actualDbGroupId,
         setActualDbGroupId,
         users,
-        setUsers
+        setUsers,
       }}
     >
       <div className="App">

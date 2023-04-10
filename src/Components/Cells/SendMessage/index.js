@@ -108,7 +108,7 @@ function SendMessage() {
               message: arrayUnion({
                 uid: auth.currentUser.id,
                 name: activeUser?.name,
-                avatar: activeUser.photoURL,
+                avatar: activeUser?.avatar,
                 createdAt: new Date().toUTCString(),
                 img: img && url,
                 fileName: imgName ? imgName : "",
@@ -144,7 +144,7 @@ function SendMessage() {
               message: arrayUnion({
                 uid: auth.currentUser.id,
                 name: activeUser?.name,
-                avatar: activeUser.photoURL,
+                avatar: activeUser?.avatar,
                 createdAt: new Date().toUTCString(),
                 pdf: pdf && url,
                 fileName: pdfName ? pdfName : "",
@@ -180,7 +180,7 @@ function SendMessage() {
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,
-          avatar: IMAGES.default,
+          avatar: activeUser?.avatar,
           createdAt: new Date().toUTCString(),
           time: getTime(),
           text: messageLocal,

@@ -41,6 +41,7 @@
   padding: 10px;
   margin: 10px 0;
   margin-right: 0;
+  margin-left: 68%;
   width: 25%;
   word-wrap: break-word;
 }
@@ -82,7 +83,7 @@
   color: #999;
 }
 
-.selectParticipants-right{
+.selectParticipants-right {
   width: 50%;
-  margin:1%
+  margin: 1%;
 }

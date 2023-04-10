@@ -75,7 +75,7 @@ function SideBar() {
   let senderUserID;
 
   useEffect(() => {
-    console.log("activeUser iopi", activeUser.name);
+    console.log("activeUser iopi", activeUser?.name);
   }, [activeUser]);
 
   useEffect(() => {
