@@ -43,7 +43,8 @@ function SendMessage() {
   const [invalid, setInvalid] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   const [fileUrl, setFileUrl] = useState("");
-  const [pdfUrl,setPdfUrl] = useState();
+  const [pdfUrl, setPdfUrl] = useState();
+  let imgURL,pdfURL;
   const date = new Date();
   const {
     message,
@@ -59,7 +60,7 @@ function SendMessage() {
 
   useEffect(() => {
     console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
-  }, [actualDbId]);
+  }, [img]);
 
   function handleFileChange(e) {
     document.getElementsByClassName(" react-input-emoji--input")?.[0].focus();
@@ -99,26 +100,13 @@ function SendMessage() {
           // update progress
           setPercent(percent);
         },
-        (err) => console.log(err),
         () => {
           console.log("next log");
-          // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
-            console.log("getDownloadURL: ", imgUrl, activeUser);
-            await updateDoc(doc(db, "chats", actualDbId), {
-              message: arrayUnion({
-                uid: auth.currentUser.id,
-                name: activeUser?.name,
-                avatar: activeUser?.avatar,
-                createdAt: new Date().toUTCString(),
-                img: img && url,
-                fileName: imgName ? imgName : "",
-                time: getTime(),
-                text: message,
-              }),
-            });
-          });
+            imgURL = url;
+            console.log(url,"url ::")
+          })
         }
       );
     } else if (pdf) {
@@ -136,25 +124,13 @@ function SendMessage() {
           // update progress
           setPercent(percent);
         },
-        (err) => console.log(err),
         () => {
           console.log("next log");
           // download url
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+          getDownloadURL(uploadTask.snapshot.ref).then( (url) => {
             setPdfUrl(url);
-            await updateDoc(doc(db, "chats", actualDbId || RANDOM_TEXT), {
-              message: arrayUnion({
-                uid: auth.currentUser.id,
-                name: activeUser?.name,
-                avatar: activeUser?.avatar,
-                createdAt: new Date().toUTCString(),
-                pdf: pdf && url,
-                fileName: pdfName ? pdfName : "",
-                time: getTime(),
-                text: message,
-              }),
-            });
-          });
+            pdfURL = url;
+          })
         }
       );
     }
@@ -180,11 +156,11 @@ function SendMessage() {
           name: activeUser?.name,
           avatar: activeUser?.avatar,
           createdAt: new Date().toUTCString(),
-          pdf: pdfUrl,
-          fileName: pdfName ? pdfName : imgName,
-          img: imgUrl,
+          pdf: pdfURL|| "",
+          fileName: (pdfName ? pdfName : imgName) || "",
+          img: imgURL,
           time: getTime(),
-          text: message,
+          text: message||"",
         }),
       });
     }
@@ -330,3 +306,39 @@ export default SendMessage;
         }}
       /> */
 }
+
+
+// ---------------------
+// getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+//   setImgUrl(url);
+//   console.log("getDownloadURL: ", imgUrl, activeUser);
+//   await updateDoc(doc(db, "chats", actualDbId), {
+//     message: arrayUnion({
+//       uid: auth.currentUser.id,
+//       name: activeUser?.name,
+//       avatar: activeUser?.avatar,
+//       createdAt: new Date().toUTCString(),
+//       img: img && url,
+//       fileName: imgName ? imgName : "",
+//       time: getTime(),
+//       text: message,
+//     }),
+//   });
+// });
+
+// ----------------
+// getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+//   setPdfUrl(url);
+//   await updateDoc(doc(db, "chats", actualDbId || RANDOM_TEXT), {
+//     message: arrayUnion({
+//       uid: auth.currentUser.id,
+//       name: activeUser?.name,
+//       avatar: activeUser?.avatar,
+//       createdAt: new Date().toUTCString(),
+//       pdf: pdf && url,
+//       fileName: pdfName ? pdfName : "",
+//       time: getTime(),
+//       text: message,
+//     }),
+//   });
+// });
