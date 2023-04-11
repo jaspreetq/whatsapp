@@ -57,6 +57,8 @@ function LiveChat() {
   // const [groupName,setGroupName] = useState(recieverDetails?.groupName);
   const param = useParams();
   let groupNameTemp = recieverDetails?.groupName;
+  
+  const presentUser = (users?.find(user=>user.uid === auth.currentUser.uid));
   setErrorMessage("");
 
   // useEffect(() => {
@@ -144,6 +146,8 @@ function LiveChat() {
     return () => unsubscribe();
   }, [actualDbId]);
 
+  const checkIfPresentUserIsAdmin = ()=> presentUser?.uid?.includes(auth.currentUser.uid);
+
   return (
     //RecieveChat
     <div className="liveChat">
@@ -172,7 +176,9 @@ function LiveChat() {
                 <div style={{ width: "95%" }}>
                   <p>{(users?.find(user=>user.uid === actualDbId))?.groupName || recieverDetails?.name}</p>
                 </div>
-                <p className="text-primary blockquote-footer overflow-hidden" style={{}}>
+                {console.log("presentUser? : ",actualDbId?.length > (auth.currentUser.uid).length)}
+                
+                {recieverDetails?.participants?.length && <p className="text-primary blockquote-footer overflow-hidden" style={{}}>
                   {recieverDetails?.groupName &&
                     (users?.find(user=>user.uid === actualDbId))?.participants?.map(
                       (member) => {
@@ -180,19 +186,20 @@ function LiveChat() {
                           return `${member.name},`
                           }//(users?.find(user=>user.uid === actualDbId))
                     )}
-                </p>
+                </p>}
+                {recieverDetails?.groupName && actualDbId?.includes(auth.currentUser.uid) && actualDbId?.length > (auth.currentUser.uid).length && <>
                 <button
                   style={{ border: "none" }}
                   onClick={() => {
                     //MODAL SELECTPARTS
                     if (recieverDetails?.groupName)
                       setShowMemberEditFormOnTheRight(true);
-
                     console.log("dfs");
                   }}
                 >
                   {edit}
                 </button>
+                </>}
                 {/* <button>+</button> */}
               </nav>
               <div
