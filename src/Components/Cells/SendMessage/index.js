@@ -102,10 +102,23 @@ function SendMessage() {
         },
         (err) => console.log(err),
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
             imgURL = url;
             console.log(url, imgURL, "url ::");
+            await updateDoc(doc(db, "chats", actualDbId), {
+              messages: arrayUnion({
+                uid: activeUser?.uid,
+                name: activeUser?.name,
+                avatar: activeUser?.avatar,
+                createdAt: new Date().toUTCString(),
+                pdf: pdfURL || "",
+                fileName: (pdfName ? pdfName : imgName) || "",
+                img: imgURL || "",
+                time: getTime(),
+                text: message || "",
+              }),
+            });
           });
         }
       );
@@ -128,10 +141,23 @@ function SendMessage() {
         () => {
           console.log("next log");
           // download url
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setPdfUrl(url);
             console.log("urlurl", url);
             pdfURL = url;
+            await updateDoc(doc(db, "chats", actualDbId), {
+              messages: arrayUnion({
+                uid: activeUser?.uid,
+                name: activeUser?.name,
+                avatar: activeUser?.avatar,
+                createdAt: new Date().toUTCString(),
+                pdf: pdfURL || "",
+                fileName: (pdfName ? pdfName : imgName) || "",
+                img: imgURL || "",
+                time: getTime(),
+                text: message || "",
+              }),
+            });
           });
         }
       );
