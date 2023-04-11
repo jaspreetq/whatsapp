@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { rightArrow } from "../../Utillities/icons";
 import { messageContext } from "../../../App";
 import { auth, db } from "../../../firebase";
@@ -20,7 +20,7 @@ function SelectParticipants(props) {
     groupName,
     setGroupName,
   } = props;
-  // console.log(groupName,"groupName")
+  console.log(selectedParticipants,"groupName selectedParticipants")
   const {
     actualDbGroupId,
     setActualDbGroupId,
@@ -30,10 +30,25 @@ function SelectParticipants(props) {
     recieverDetails,
     setRecieverDetails,
   } = useContext(messageContext);
+  console.log(activeUser,actualDbId,"users in part")
+  const grp = users?.find(
+    (user) => user.uid == actualDbId
+  );
+  const [localGroupName,setLocalGroupName] = useState(grp?.groupName)
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
-
+  // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
+
+  // useEffect(()=>{
+  //   recieverDetails?.uid !== grp?.uid && setShowGroupAddComp(false)
+  // },[recieverDetails?])
+
+
+  const currentUser0 = users?.find(
+    (user) => user.uid == auth.currentUser.uid
+  );
+
   const createNewGroupId = () => {
     return `${auth.currentUser.uid}${getTime()}${users?.length}`;
   };
@@ -42,7 +57,8 @@ function SelectParticipants(props) {
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
-    const gid = recieverDetails?.uid;
+    const gid = recieverDetails?.uid;//grp
+
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const currentUser0 = users?.find(
       (user) => user.uid == auth.currentUser.uid
@@ -53,7 +69,8 @@ function SelectParticipants(props) {
     console.log("gid", gid);
     await updateDoc(doc(db, "users", gid), {
       uid: gid,
-      groupName,
+      // creatorUid:
+      groupName:localGroupName,
       avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: tempSelectedParticipants,
@@ -62,7 +79,7 @@ function SelectParticipants(props) {
 
     await updateDoc(doc(db, "chats", gid), {
       uid: gid,
-      creatorUid: auth.currentUser.uid,
+      creatorUid:auth.currentUser.uid,
       //   creator :activeUser,
       createdAt: serverTimestamp(),
       participants: tempSelectedParticipants,
@@ -70,10 +87,11 @@ function SelectParticipants(props) {
     });
     //create new
     // setActualDbGroupId(gid);
-    setActualDbId(gid);
+    // setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
     setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
+    // setRecieverDetails(?.participants)
   };
   // const [recentGroupName,setRecentGroupName]
   //   const userCheckboxChange = (e, checkedUser) => {};
@@ -83,16 +101,14 @@ function SelectParticipants(props) {
     //FALSE SETDOC
     const gid = createNewGroupId();
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
-    const currentUser0 = users?.find(
-      (user) => user.uid == auth.currentUser.uid
-    );
     const tempSelectedParticipants = [...selectedParticipants];
     tempSelectedParticipants[0] = currentUser0;
     console.log(tempSelectedParticipants, "tempSelectedParticipants :");
     console.log("gid", gid);
     await setDoc(doc(db, "users", gid), {
       uid: gid,
-      groupName,
+      groupName:localGroupName,
+      creatorUid: auth.currentUser.uid,
       avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: tempSelectedParticipants,
@@ -121,10 +137,11 @@ function SelectParticipants(props) {
         <input
           className="textInput"
           type="text"
-          value={groupName}
+          value={localGroupName}
           onChange={(e) => {
-            return setGroupName(e.target.value);
+            return setLocalGroupName(e.target.value);
           }}
+          //setgrpname
           placeholder="Enter group name..."
         />
       </div>
@@ -138,7 +155,7 @@ function SelectParticipants(props) {
         {users?.map((user) => {
           return (
             <div key={user.uid}>
-              {!user?.groupName && user?.uid !== activeUser?.uid && (
+              {!user?.groupName && user?.uid !== currentUser0?.uid && (
                 <label>
                   <input
                     name={user?.uid}
@@ -174,7 +191,7 @@ function SelectParticipants(props) {
         {/* (selectedParticipants?.length < 1)?setGroupEmptyError("Select a member") */}
         <button
           onClick={() => {
-            !groupName
+            !localGroupName
               ? setErrorName("Please enter group name.")
               : isNewGroup
               ? createChatGroup()

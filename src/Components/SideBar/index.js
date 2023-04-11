@@ -161,7 +161,7 @@ function SideBar() {
               {/* <div className=".justify-content-lg-end">
               ⁝
           </div> */}
-              <button
+              {/* <button
                 className="navbar-toggler"
                 type="button"
                 data-toggle="collapse"
@@ -171,7 +171,7 @@ function SideBar() {
                 aria-label="Toggle navigation"
               >
                 <span className="navbar-toggler-icon"></span>
-              </button>
+              </button> */}
               <div
                 className="collapse navbar-collapse"
                 id="navbarSupportedContent"

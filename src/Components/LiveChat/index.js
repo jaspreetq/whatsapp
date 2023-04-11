@@ -59,12 +59,30 @@ function LiveChat() {
   let groupNameTemp = recieverDetails?.groupName;
   setErrorMessage("");
 
+  // useEffect(() => {
+  //   const q = query(collection(db, "users"), orderBy("createdAt"));
+  //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+  //     let users = [];
+  //     console.log("<>snapshot<>", QuerySnapshot);
+
+  //     QuerySnapshot.forEach((doc) => {
+  //       console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
+  //       users.push({ ...doc.data() });
+  //       console.log("messages<>: ", users);
+  //     });
+  //     setUsers(users);
+  //   });
+  //   console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
+  //   return () => unsubscribe;
+  // }, []);
+
   useEffect(() => {
     // console.log("actualDbId: effect,reciever", );
     if (recieverDetails?.groupName) {
       setActualDbId(recieverDetails?.uid);
       setGroupName(recieverDetails?.name);
       groupNameTemp = recieverDetails?.groupName;
+      setSelectedParticipantsChat(recieverDetails?.participants);
     } else {
       dbId =
         recieverDetails.uid > activeUser?.uid
@@ -149,14 +167,17 @@ function LiveChat() {
                   src={recieverDetails?.avatar}
                   alt="Avatar"
                 />
-                {"  "}
+                {"  "}{console.log("users:<><><<>",users)} 
                 <div style={{ width: "95%" }}>
-                  <p>{recieverDetails?.name || recieverDetails?.groupName}</p>
+                  <p>{(users?.find(user=>user.uid === actualDbId))?.groupName || recieverDetails?.name}</p>
                 </div>
                 <p className="text-primary blockquote-footer" style={{}}>
                   {recieverDetails?.groupName &&
-                    recieverDetails?.participants?.map(
-                      (member) => `${member.name},`
+                    (users?.find(user=>user.uid === actualDbId))?.participants?.map(
+                      (member) => {
+                        if(member?.uid !== member?.creator)
+                          return `${member.name},`
+                          }//(users?.find(user=>user.uid === actualDbId))
                     )}
                 </p>
                 <button
@@ -215,7 +236,7 @@ function LiveChat() {
             {console.log(groupName, "groupName<><><>><<><><><><>><><")}
             <SelectParticipants
               users={users}
-              selectedParticipants={recieverDetails?.participants}
+              selectedParticipants={selectedParticipantsChat}
               setSelectedParticipants={setSelectedParticipantsChat}
               isNewGroup={false}
               isNewGroupBtnClicked={isEditGrpBtnClicked}
