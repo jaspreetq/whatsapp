@@ -29,6 +29,13 @@
 .navbar {
   border-bottom: 1px solid black;
 }
+/* .dropdown-toggle::after{
+  display: none;
+}
+
+.dropdown-toggle{
+  display: none;
+} */
 /* .container {
     display: flex;
     overflow: hidden;

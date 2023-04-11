@@ -24,6 +24,14 @@
   padding: 6px 16px;
 }
 
+.dropdown-toggle::after{
+  display: hidden;
+}
+
+.dropdown-toggle{
+  display: hidden;
+}
+
 /* CSS */
 button {
   background-color: #fafbfc;

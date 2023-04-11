@@ -25,7 +25,7 @@ import SideBar from "../SideBar";
 import { useParams } from "react-router-dom";
 import { IMAGES } from "../Utillities/Images";
 import { RANDOM_TEXT } from "../../ConstantString";
-import { threeDotsHamburger } from "../Utillities/icons";
+import { edit, threeDotsHamburger } from "../Utillities/icons";
 import SelectParticipants from "../Cells/SelectParticipants";
 import CustomModal from "../CustomComponents/CustomModal";
 import Header from "../Atoms/Header";
@@ -148,7 +148,7 @@ function LiveChat() {
     <div className="liveChat">
       {/* {showMemberEditFormOnTheRight && <CustomModal { children, show, setEditedGroupName = ()=>{}, string, handleEditGroupName, editedGroupName, handleGroupNameEdit, setShow, channelName, title, selectedList, setSelectedList, addChannel, addUser=()=>{}, handleSelect=()=>{}, showHead, showFoot }) >
       </CustomModal>} */}
-      <SignOut />
+      {/* <SignOut /> */}
       {console.log("recieverDetails in <><><><>", recieverDetails)}
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar">
@@ -171,7 +171,7 @@ function LiveChat() {
                 <div style={{ width: "95%" }}>
                   <p>{(users?.find(user=>user.uid === actualDbId))?.groupName || recieverDetails?.name}</p>
                 </div>
-                <p className="text-primary blockquote-footer" style={{}}>
+                <p className="text-primary blockquote-footer overflow-hidden" style={{}}>
                   {recieverDetails?.groupName &&
                     (users?.find(user=>user.uid === actualDbId))?.participants?.map(
                       (member) => {
@@ -190,7 +190,7 @@ function LiveChat() {
                     console.log("dfs");
                   }}
                 >
-                  {threeDotsHamburger}
+                  {edit}
                 </button>
                 {/* <button>+</button> */}
               </nav>

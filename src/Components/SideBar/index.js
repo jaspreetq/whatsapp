@@ -20,12 +20,16 @@ import Header from "../Atoms/Header";
 import SelectParticipants from "../Cells/SelectParticipants";
 import { rightArrow, threeDotsHamburger } from "../Utillities/icons";
 import EnterNewGroupDetail from "../Cells/EnterNewGroupDetail";
+import { useNavigate } from "react-router-dom";
 // export const GrpParticipantContext = createContext();
 
 function SideBar() {
   const {
     activeUser,
     setActiveUser,
+    setWelcomeChatPage,
+    messages,
+    setMessages,
     chatDisplay,
     message,
     setMessage,
@@ -43,6 +47,19 @@ function SideBar() {
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
   const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
   const [groupName, setGroupName] = useState("");
+  const navigate = useNavigate();
+  //SIGN-OUT
+  const auth = getAuth();
+
+  const signOut = () => {
+    auth.signOut();
+    setWelcomeChatPage(true);
+    setRecieverDetails({});
+    setActiveUser({});
+    setActualDbId("");
+    setMessages([]);
+    navigate("/");
+  };
 
   useEffect(() => {
     isNewGroupBtnClicked && setShowGroupAddComp(false);
@@ -128,6 +145,7 @@ function SideBar() {
                     })?.name
                   }
                 </div>
+{/* 
                 <button
                   style={{ border: "none" }}
                   onClick={() => {
@@ -140,38 +158,28 @@ function SideBar() {
                   }}
                 >
                   {threeDotsHamburger}
-                </button>
-                {/* <ul className="navbar-nav">
-                  <li className="nav-item dropdown">
-                    <div className="dropdown-menu" aria-labelledby=" ⁝ ">
-                      <a className="dropdown-item" href="#">
-                        Action
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Another action
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Something else here
-                      </a>
-                    </div>
-                  </li>
-                </ul> */}
+                </button> */}
               </div>
-              {/* wordWrap:break-word */}
-              {/* <div className=".justify-content-lg-end">
-              ⁝
-          </div> */}
-              {/* <button
-                className="navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span className="navbar-toggler-icon"></span>
-              </button> */}
+              <div class="dropdown">
+                {/* <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> */}
+                  <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    style={{ color: "white", border: "none" }}
+                  >
+                    {threeDotsHamburger}
+                  </button>
+                {/* </button> */}
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" onClick={() => {
+                      const initialSelected =
+                        users[0].uid === auth.currentUser.uid
+                          ? users[1]
+                          : users[0];
+                      setRecieverDetails(initialSelected);
+                      setShowGroupAddComp(true);
+                    }} href="#">Create Group</a>
+                  <a class="dropdown-item" style={{cursor:"pointer"}} onClick={signOut}>SignOut</a>
+                </div>
+              </div>
               <div
                 className="collapse navbar-collapse"
                 id="navbarSupportedContent"
