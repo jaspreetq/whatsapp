@@ -102,7 +102,7 @@ function SendMessage() {
         },
         (err) => console.log(err),
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
             setImgUrl(url);
             imgURL = url;
             console.log(url, imgURL, "url ::");
@@ -160,7 +160,7 @@ function SendMessage() {
           createdAt: new Date().toUTCString(),
           pdf: pdfURL || "",
           fileName: (pdfName ? pdfName : imgName) || "",
-          img: String(imgURL) || "",
+          img: imgURL || "",
           time: getTime(),
           text: message || "",
         }),
