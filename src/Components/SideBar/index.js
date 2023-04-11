@@ -145,7 +145,7 @@ function SideBar() {
                     })?.name
                   }
                 </div>
-{/* 
+                {/* 
                 <button
                   style={{ border: "none" }}
                   onClick={() => {
@@ -162,22 +162,40 @@ function SideBar() {
               </div>
               <div class="dropdown">
                 {/* <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> */}
-                  <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    style={{ color: "white", border: "none" }}
-                  >
-                    {threeDotsHamburger}
-                  </button>
+                <button
+                  className="dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  style={{ color: "white", border: "none" }}
+                >
+                  {threeDotsHamburger}
+                </button>
                 {/* </button> */}
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" onClick={() => {
+                  <a
+                    class="dropdown-item"
+                    onClick={() => {
                       const initialSelected =
                         users[0].uid === auth.currentUser.uid
                           ? users[1]
                           : users[0];
                       setRecieverDetails(initialSelected);
                       setShowGroupAddComp(true);
-                    }} href="#">Create Group</a>
-                  <a class="dropdown-item" style={{cursor:"pointer"}} onClick={signOut}>SignOut</a>
+                    }}
+                    href="#"
+                  >
+                    Create Group
+                  </a>
+                  <a
+                    class="dropdown-item"
+                    style={{ cursor: "pointer" }}
+                    onClick={signOut}
+                  >
+                    SignOut
+                  </a>
                 </div>
               </div>
               <div

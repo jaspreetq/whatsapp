@@ -44,7 +44,7 @@ function SendMessage() {
   const [imgUrl, setImgUrl] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState();
-  let imgURL,pdfURL;
+  let imgURL, pdfURL;
   const date = new Date();
   const {
     message,
@@ -58,9 +58,9 @@ function SendMessage() {
     setActualDbId,
   } = useContext(messageContext);
 
-  useEffect(() => {
-    console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
-  }, [img]);
+  // useEffect(() => {
+  //   console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
+  // }, [img]);
 
   function handleFileChange(e) {
     document.getElementsByClassName(" react-input-emoji--input")?.[0].focus();
@@ -100,13 +100,13 @@ function SendMessage() {
           // update progress
           setPercent(percent);
         },
+        (err) => console.log(err),
         () => {
-          console.log("next log");
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
             imgURL = url;
-            console.log(url,"url ::")
-          })
+            console.log(url, imgURL, "url ::");
+          });
         }
       );
     } else if (pdf) {
@@ -124,13 +124,15 @@ function SendMessage() {
           // update progress
           setPercent(percent);
         },
+        (err) => console.log(err),
         () => {
           console.log("next log");
           // download url
-          getDownloadURL(uploadTask.snapshot.ref).then( (url) => {
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
             setPdfUrl(url);
+            console.log("urlurl", url);
             pdfURL = url;
-          })
+          });
         }
       );
     }
@@ -147,7 +149,7 @@ function SendMessage() {
       alert("Enter valid message");
       return;
     }
-
+    console.log("activeUser,pdfURL,imgURL :", activeUser, pdfURL, imgURL || "");
     setOutputMessage(messageLocal);
     if (actualDbId) {
       await updateDoc(doc(db, "chats", actualDbId), {
@@ -156,11 +158,11 @@ function SendMessage() {
           name: activeUser?.name,
           avatar: activeUser?.avatar,
           createdAt: new Date().toUTCString(),
-          pdf: pdfURL|| "",
+          pdf: pdfURL || "",
           fileName: (pdfName ? pdfName : imgName) || "",
-          img: imgURL,
+          img: String(imgURL) || "",
           time: getTime(),
-          text: message||"",
+          text: message || "",
         }),
       });
     }
@@ -306,7 +308,6 @@ export default SendMessage;
         }}
       /> */
 }
-
 
 // ---------------------
 // getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
