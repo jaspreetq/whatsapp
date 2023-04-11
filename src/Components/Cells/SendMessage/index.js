@@ -41,8 +41,9 @@ function SendMessage() {
   const [loading, setLoading] = useState(false);
   const [fileStatus, setFileStatus] = useState(false);
   const [invalid, setInvalid] = useState(false);
-  const [imgUrl, setImgUrl] = useState(false);
-  const [fileUrl, setFileUrl] = useState(false);
+  const [imgUrl, setImgUrl] = useState("");
+  const [fileUrl, setFileUrl] = useState("");
+  const [pdfUrl,setPdfUrl] = useState();
   const date = new Date();
   const {
     message,
@@ -104,7 +105,8 @@ function SendMessage() {
           // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
-            await updateDoc(doc(db, "chats", actualDbId || RANDOM_TEXT), {
+            console.log("getDownloadURL: ", imgUrl, activeUser);
+            await updateDoc(doc(db, "chats", actualDbId), {
               message: arrayUnion({
                 uid: auth.currentUser.id,
                 name: activeUser?.name,
@@ -139,7 +141,7 @@ function SendMessage() {
           console.log("next log");
           // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            setImgUrl(url);
+            setPdfUrl(url);
             await updateDoc(doc(db, "chats", actualDbId || RANDOM_TEXT), {
               message: arrayUnion({
                 uid: auth.currentUser.id,
@@ -165,11 +167,7 @@ function SendMessage() {
     handleUpload();
     const messageLocal = message;
     setMessage("");
-    if (
-      messageLocal?.trim() === "" &&
-      !messageLocal?.img &&
-      !messageLocal?.pdf
-    ) {
+    if (messageLocal?.trim() === "" && !img && !pdf) {
       alert("Enter valid message");
       return;
     }
@@ -182,8 +180,11 @@ function SendMessage() {
           name: activeUser?.name,
           avatar: activeUser?.avatar,
           createdAt: new Date().toUTCString(),
+          pdf: pdfUrl,
+          fileName: pdfName ? pdfName : imgName,
+          img: imgUrl,
           time: getTime(),
-          text: messageLocal,
+          text: message,
         }),
       });
     }
@@ -216,7 +217,7 @@ function SendMessage() {
       </label> */}
 
         {/* display:contents */}
-        {/* <div>
+        <div>
           <label htmlFor="attachement">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -237,7 +238,7 @@ function SendMessage() {
             accept="image/*,application/pdf"
           />
           {/* style={{"border-style": "none","padding":0 }} */}
-        {/* </div> */}
+        </div>
         {/* */}
 
         {/* onClick={handleUpload} */}
@@ -248,7 +249,7 @@ function SendMessage() {
           </button>
         </div>
       </div>
-      {/* <p color="green">{percent}% done</p> */}
+      <p color="green">{percent}% done</p>
     </div>
   );
 }

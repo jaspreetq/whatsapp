@@ -218,9 +218,9 @@ function LiveChat() {
                       return null;
                     return (
                       <div className={`container${cssStr}`}>
-                        <p className="text-info blockquote-footer">
+                        {recieverDetails?.groupName && <p className="text-info blockquote-footer">
                           {recieverDetails?.groupName && message.name}
-                        </p>
+                        </p>}
                         <p>{message.text}</p>
                         {message?.img && <img src={message.img}></img>}
                         {message?.pdf && console.log(message.pdf?.name)}
