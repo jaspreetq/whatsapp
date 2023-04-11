@@ -83,6 +83,7 @@ function LiveChat() {
       setGroupName(recieverDetails?.name);
       groupNameTemp = recieverDetails?.groupName;
       setSelectedParticipantsChat(recieverDetails?.participants);
+      // setShowMemberEditFormOnTheRight()
     } else {
       dbId =
         recieverDetails.uid > activeUser?.uid

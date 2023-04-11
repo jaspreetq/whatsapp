@@ -3,7 +3,7 @@ import { rightArrow } from "../../Utillities/icons";
 import { messageContext } from "../../../App";
 import { auth, db } from "../../../firebase";
 import { getTime } from "../../Utillities/getTime";
-import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { IMAGES } from "../../Utillities/Images";
 import { GrpParticipantContext } from "../../../Context/GrpParticipantContextDefination";
 
@@ -20,7 +20,7 @@ function SelectParticipants(props) {
     groupName,
     setGroupName,
   } = props;
-  console.log(selectedParticipants,"groupName selectedParticipants")
+  console.log(selectedParticipants, "groupName selectedParticipants")
   const {
     actualDbGroupId,
     setActualDbGroupId,
@@ -28,26 +28,48 @@ function SelectParticipants(props) {
     setActualDbId,
     activeUser,
     recieverDetails,
-    setRecieverDetails,
+    setRecieverDetails,messages,
+    setMessages
   } = useContext(messageContext);
-  console.log(activeUser,actualDbId,"users in part")
+  
   const grp = users?.find(
     (user) => user.uid == actualDbId
   );
-  const [localGroupName,setLocalGroupName] = useState(grp?.groupName)
+  const [localGroupName, setLocalGroupName] = useState(grp?.groupName)
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
+  
+  
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(db, "chats", actualDbId),
+      (doc) => {
+        // doc?.exists() && setMessages(doc.data()?.messages);
+        setMessages(doc.data()?.messages);
+        console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+        console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+        //setWelcomeChatPage(true);
+      }
+    );
+    console.log("recieverDetails ", recieverDetails);
+    return () => unsubscribe();
+  }, []);
 
-  // useEffect(()=>{
-  //   recieverDetails?.uid !== grp?.uid && setShowGroupAddComp(false)
-  // },[recieverDetails?])
 
+  useEffect(() => {
+    if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
+      setIsNewGroupBtnClicked(true);
+      setSelectedParticipants([{}]);
+      setShowGroupAddComp(false)
+    }
+  }, [recieverDetails?.uid])
+  
 
   const currentUser0 = users?.find(
     (user) => user.uid == auth.currentUser.uid
-  );
+    );
 
   const createNewGroupId = () => {
     return `${auth.currentUser.uid}${getTime()}${users?.length}`;
@@ -70,20 +92,24 @@ function SelectParticipants(props) {
     await updateDoc(doc(db, "users", gid), {
       uid: gid,
       // creatorUid:
-      groupName:localGroupName,
+      groupName: localGroupName,
       avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: tempSelectedParticipants,
       // details: {uid,email,name,avatar,}
     });
+    // await get
+    const docRef = await getDoc(doc(db, "chats", gid));
+    console.log("doesn't exist", actualDbId, docRef.exists());
+    // if (docRef.exists()) return null;
 
     await updateDoc(doc(db, "chats", gid), {
       uid: gid,
-      creatorUid:auth.currentUser.uid,
+      creatorUid: auth.currentUser.uid,
       //   creator :activeUser,
       createdAt: serverTimestamp(),
       participants: tempSelectedParticipants,
-      messages: [{}],
+      messages
     });
     //create new
     // setActualDbGroupId(gid);
@@ -107,7 +133,7 @@ function SelectParticipants(props) {
     console.log("gid", gid);
     await setDoc(doc(db, "users", gid), {
       uid: gid,
-      groupName:localGroupName,
+      groupName: localGroupName,
       creatorUid: auth.currentUser.uid,
       avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
@@ -194,8 +220,8 @@ function SelectParticipants(props) {
             !localGroupName
               ? setErrorName("Please enter group name.")
               : isNewGroup
-              ? createChatGroup()
-              : updateChatGroup();
+                ? createChatGroup()
+                : updateChatGroup();
           }}
         >
           {rightArrow}
