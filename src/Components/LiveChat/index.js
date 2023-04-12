@@ -234,9 +234,9 @@ function LiveChat() {
                 </div> :
                 <div
                   className="scroll-right"
-                  style={{ background: "beige", height: "68%" }}
+                  style={{ background: "beige", height: "68%", width:"100%"}}
                 >
-                  <ul>
+                  <ul >
                     {messages?.map((message) => {
                       console.log("message:::", message);
                       const cssStr =
@@ -254,7 +254,7 @@ function LiveChat() {
                           </p>}
                           <p>{message.text}</p>
                           {console.log(message?.img, "message?.img::::::")}
-                          {message?.img && <img src={message?.img} alt="img" height="100px" width="100px" />}
+                          {message?.img && <a target="blank" href={message?.img} download><img src={message?.img} alt="img" height="100px" width="100px" /></a>}
                           {message?.pdf && console.log(message.pdf?.name)}
                           {message?.pdf && <a target="blank" href={message?.pdf} download>{filePdf}{`\n${message?.fileName}`}</a>}
                           <span className="time-right">{message?.time}</span>
