@@ -55,6 +55,9 @@ function SendMessage() {
   function handleFileChange(e) {
     document.getElementsByClassName(" react-input-emoji--input")?.[0].focus();
     // setFileStatus(true)
+    setImg("")
+    setPdf("")
+    
     if (
       e.target.files[0].type == "image/png" ||
       e.target.files[0].type == "image/jpeg"
@@ -74,7 +77,7 @@ function SendMessage() {
   const handleEnter = (e) => e.key === "Enter" && handleSend();
   const { uid, displayName, photoURL } = auth.currentUser;
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     setFileStatus(false)
     console.log("pdf<><>><><><",pdf)
     if (img) {
@@ -147,29 +150,8 @@ function SendMessage() {
         }
       );
     }
-    setText("");
-    setImg(null);
-    setPdf(null);
-    setPdfName("")
-    setImgUrl("")
-    setFileUrl("")
-
-    // progress can be paused and resumed. It also exposes progress updates.
-    // Receives the storage reference and the file to upload.
-  };
-
-  const handleSend = async () => {
-    handleUpload();
-    const messageLocal = message;
-    setMessage("");
-    if (messageLocal?.trim() === "" && !img && !pdf) {
-      alert("Enter valid message");
-      return;
-    }
-    console.log("activeUser,pdfURL,imgURL :", activeUser, pdfURL, imgURL || "");
-    setOutputMessage(messageLocal);
-    if (actualDbId) {
-      await updateDoc(doc(db, "chats", actualDbId), {
+    else{
+       message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,
@@ -180,9 +162,45 @@ function SendMessage() {
           img: imgURL || "",
           time: getTime(),
           text: message || "",
-        }),
-      });
-    }
+        }),   
+    })
+  }
+    setText("");
+    setImg(null);
+    setPdf(null);
+    setPdfName("")
+    setImgUrl("")
+    setFileUrl("")
+    setMessage("");
+    // progress can be paused and resumed. It also exposes progress updates.
+    // Receives the storage reference and the file to upload.
+  };
+
+  const handleSend = async () => {
+    handleUpload();
+    // const messageLocal = message;
+    // setMessage("");
+    // if (messageLocal?.trim() === "" && !img && !pdf) {
+    //   alert("Enter valid message");
+    //   return;
+    // }
+    // console.log("activeUser,pdfURL,imgURL :", activeUser, pdfURL, imgURL || "");
+    // setOutputMessage(messageLocal);
+    // if (actualDbId) {
+    //   await updateDoc(doc(db, "chats", actualDbId), {
+    //     messages: arrayUnion({
+    //       uid: activeUser?.uid,
+    //       name: activeUser?.name,
+    //       avatar: activeUser?.avatar,
+    //       createdAt: new Date().toUTCString(),
+    //       pdf: pdfURL || "",
+    //       fileName: (pdfName ? pdfName : imgName) || "",
+    //       img: imgURL || "",
+    //       time: getTime(),
+    //       text: message || "",
+    //     }),
+    //   });
+    // }
 
     //chats,
   };
@@ -244,7 +262,7 @@ function SendMessage() {
           </button>
         </div>
       </div>
-      <p color="green">{percent}% done</p>
+      {/* <p color="green">{percent}% done</p> */}
     </div>
   );
 }
