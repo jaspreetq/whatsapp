@@ -25,7 +25,7 @@ import SideBar from "../SideBar";
 import { useParams } from "react-router-dom";
 import { IMAGES } from "../Utillities/Images";
 import { RANDOM_TEXT } from "../../ConstantString";
-import { edit, threeDotsHamburger } from "../Utillities/icons";
+import { edit, filePdf, threeDotsHamburger } from "../Utillities/icons";
 import SelectParticipants from "../Cells/SelectParticipants";
 import CustomModal from "../CustomComponents/CustomModal";
 import Header from "../Atoms/Header";
@@ -256,7 +256,7 @@ function LiveChat() {
                           {console.log(message?.img, "message?.img::::::")}
                           {message?.img && <img src={message?.img} alt="img" height="100px" width="100px" />}
                           {message?.pdf && console.log(message.pdf?.name)}
-                          {message?.pdf && <a href={message?.pdf} download>pdf</a>}
+                          {message?.pdf && <a target="blank" href={message?.pdf} download>{filePdf}{`\n${message?.fileName}`}</a>}
                           <span className="time-right">{message?.time}</span>
                         </div>
                       );

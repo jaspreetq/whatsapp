@@ -76,6 +76,7 @@ function SendMessage() {
 
   const handleUpload = () => {
     setFileStatus(false)
+    console.log("pdf<><>><><><",pdf)
     if (img) {
       const localFileNewURL = `/files/${img.name}${auth.currentUser.uid}`;
       const storageRef = ref(storage, localFileNewURL);
@@ -121,21 +122,12 @@ function SendMessage() {
       // setFileUrl(localFileNewURL)
       setPdf("")
       uploadTask.then(
-        "state_changed",
-        (snapshot) => {
-          const percent = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-
-          // update progress
-          setPercent(percent);
-        },
-        (err) => console.log(err),
         () => {
           console.log("next log");
           // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setPdfUrl(url);
+            setFileUrl(url);
             console.log("urlurl", url);
             pdfURL = url;
             await updateDoc(doc(db, "chats", actualDbId), {
