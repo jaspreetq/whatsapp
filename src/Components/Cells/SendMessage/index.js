@@ -17,6 +17,7 @@ import InputEmoji from "react-input-emoji";
 import "./styles.css";
 import { RANDOM_TEXT } from "../../../ConstantString";
 import { getTime } from "../../Utillities/getTime";
+import { FileContext } from "../../LiveChat";
 
 // import { storage } from "./firebase";
 
@@ -32,18 +33,7 @@ function SendMessage() {
   const [file, setFile] = useState("");
   // progress
   const [percent, setPercent] = useState(0);
-  const [outputMessage, setOutputMessage] = useState("");
-  const [text, setText] = useState("");
-  const [img, setImg] = useState(null);
-  const [imgName, setImgName] = useState("");
-  const [pdf, setPdf] = useState(null);
-  const [pdfName, setPdfName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [fileStatus, setFileStatus] = useState(false);
-  const [invalid, setInvalid] = useState(false);
-  const [imgUrl, setImgUrl] = useState("");
-  const [fileUrl, setFileUrl] = useState("");
-  const [pdfUrl, setPdfUrl] = useState();
+  const { outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
   let imgURL, pdfURL;
   const date = new Date();
   const {
@@ -85,11 +75,12 @@ function SendMessage() {
   const { uid, displayName, photoURL } = auth.currentUser;
 
   const handleUpload = () => {
+    setFileStatus(false)
     if (img) {
-      const fileUrl = `/files/${img.name}${auth.currentUser.uid}`;
-      const storageRef = ref(storage, fileUrl);
-      const uploadTask = uploadBytesResumable(storageRef, fileUrl);
-
+      const localFileNewURL = `/files/${img.name}${auth.currentUser.uid}`;
+      const storageRef = ref(storage, localFileNewURL);
+      const uploadTask = uploadBytesResumable(storageRef, img);
+      setImg("")
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -113,7 +104,7 @@ function SendMessage() {
                 avatar: activeUser?.avatar,
                 createdAt: new Date().toUTCString(),
                 pdf: pdfURL || "",
-                fileName: (pdfName ? pdfName : imgName) || "",
+                fileName: imgName,
                 img: imgURL || "",
                 time: getTime(),
                 text: message || "",
@@ -123,10 +114,12 @@ function SendMessage() {
         }
       );
     } else if (pdf) {
-      const fileUrl = `/files/${pdf.name}${auth.currentUser.uid}`;
-      const storageRef = ref(storage, fileUrl);
-      const uploadTask = uploadBytesResumable(storageRef, fileUrl);
-
+      const localFileNewURL = `/files/${pdf.name}${auth.currentUser.uid}`;
+      const storageRef = ref(storage, localFileNewURL);
+      const uploadTask = uploadBytesResumable(storageRef, pdf);
+      console.log("in pdf::::::::::",pdf,localFileNewURL);
+      // setFileUrl(localFileNewURL)
+      setPdf("")
       uploadTask.then(
         "state_changed",
         (snapshot) => {
@@ -151,9 +144,9 @@ function SendMessage() {
                 name: activeUser?.name,
                 avatar: activeUser?.avatar,
                 createdAt: new Date().toUTCString(),
-                pdf: pdfURL || "",
+                pdf: url || "",
                 fileName: (pdfName ? pdfName : imgName) || "",
-                img: imgURL || "",
+                // img: imgURL || "",
                 time: getTime(),
                 text: message || "",
               }),
@@ -162,6 +155,12 @@ function SendMessage() {
         }
       );
     }
+    setText("");
+    setImg(null);
+    setPdf(null);
+    setPdfName("")
+    setImgUrl("")
+    setFileUrl("")
 
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.

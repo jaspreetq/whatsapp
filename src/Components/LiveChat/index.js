@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { createContext, useContext } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../firebase";
 import dp from "../../Assets/dp1.png";
@@ -30,8 +30,21 @@ import SelectParticipants from "../Cells/SelectParticipants";
 import CustomModal from "../CustomComponents/CustomModal";
 import Header from "../Atoms/Header";
 import { GrpParticipantContext } from "../../Context/GrpParticipantContextDefination";
+export const FileContext = createContext();
 
 function LiveChat() {
+  const [outputMessage, setOutputMessage] = useState("");
+  const [text, setText] = useState("");
+  const [img, setImg] = useState(null);
+  const [imgName, setImgName] = useState("");
+  const [pdf, setPdf] = useState(null);
+  const [pdfName, setPdfName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [fileStatus, setFileStatus] = useState(false);
+  const [invalid, setInvalid] = useState(false);
+  const [imgUrl, setImgUrl] = useState("");
+  const [fileUrl, setFileUrl] = useState("");
+  const [pdfUrl, setPdfUrl] = useState();
   const {
     setErrorMessage,
     recieverDetails,
@@ -57,8 +70,8 @@ function LiveChat() {
   // const [groupName,setGroupName] = useState(recieverDetails?.groupName);
   const param = useParams();
   let groupNameTemp = recieverDetails?.groupName;
-  
-  const presentUser = (users?.find(user=>user.uid === auth.currentUser.uid));
+
+  const presentUser = (users?.find(user => user.uid === auth.currentUser.uid));
   setErrorMessage("");
 
   // useEffect(() => {
@@ -146,7 +159,7 @@ function LiveChat() {
     return () => unsubscribe();
   }, [actualDbId]);
 
-  const checkIfPresentUserIsAdmin = ()=> presentUser?.uid?.includes(auth.currentUser.uid);
+  const checkIfPresentUserIsAdmin = () => presentUser?.uid?.includes(auth.currentUser.uid);
 
   return (
     //RecieveChat
@@ -172,65 +185,87 @@ function LiveChat() {
                   src={recieverDetails?.avatar}
                   alt="Avatar"
                 />
-                {"  "}{console.log("users:<><><<>",users)} 
+                {"  "}{console.log("users:<><><<>", users)}
                 <div style={{ width: "95%" }}>
-                  <p>{(users?.find(user=>user.uid === actualDbId))?.groupName || recieverDetails?.name}</p>
+                  <p>{(users?.find(user => user.uid === actualDbId))?.groupName || recieverDetails?.name}</p>
                 </div>
-                {console.log("presentUser? : ",actualDbId?.length > (auth.currentUser.uid).length)}
-                
+                {console.log("presentUser? : ", actualDbId?.length > (auth.currentUser.uid).length)}
+
                 {recieverDetails?.participants?.length && <p className="text-primary blockquote-footer overflow-hidden" style={{}}>
                   {recieverDetails?.groupName &&
-                    (users?.find(user=>user.uid === actualDbId))?.participants?.map(
+                    (users?.find(user => user.uid === actualDbId))?.participants?.map(
                       (member) => {
-                        if(member?.uid !== member?.creator)
+                        if (member?.uid !== member?.creator)
                           return `${member.name},`
-                          }//(users?.find(user=>user.uid === actualDbId))
+                      }//(users?.find(user=>user.uid === actualDbId))
                     )}
                 </p>}
                 {recieverDetails?.groupName && actualDbId?.includes(auth.currentUser.uid) && actualDbId?.length > (auth.currentUser.uid).length && <>
-                <button
-                  style={{ border: "none" }}
-                  onClick={() => {
-                    //MODAL SELECTPARTS
-                    if (recieverDetails?.groupName)
-                      setShowMemberEditFormOnTheRight(true);
-                    console.log("dfs");
-                  }}
-                >
-                  {edit}
-                </button>
+                  <button
+                    style={{ border: "none" }}
+                    onClick={() => {
+                      //MODAL SELECTPARTS
+                      if (recieverDetails?.groupName)
+                        setShowMemberEditFormOnTheRight(true);
+                      console.log("dfs");
+                    }}
+                  >
+                    {edit}
+                  </button>
                 </>}
                 {/* <button>+</button> */}
               </nav>
-              <div
-                className="scroll-right"
-                style={{ background: "beige", height: "68%" }}
-              >
-                <ul>
-                  {messages?.map((message) => {
-                    console.log("message:::", message);
-                    const cssStr =
-                      message.uid === auth.currentUser.uid
-                        ? "-sender"
-                        : "-reciever";
-                    console.log("cssStr: ", cssStr);
-                    if (!(message.text || message.img || message.pdf))
-                      return null;
-                    return (
-                      <div className={`container${cssStr}`}>
-                        {recieverDetails?.groupName && <p className="text-info blockquote-footer">
-                          {recieverDetails?.groupName && message.name}
-                        </p>}
-                        <p>{message.text}</p>
-                        {message?.img && <img src={message.img}></img>}
-                        {message?.pdf && console.log(message.pdf?.name)}
-                        <span className="time-right">{message?.time}</span>
-                      </div>
-                    );
-                  })}
-                </ul>
-              </div>
-              <SendMessage />
+
+              {fileStatus ?
+                <div style={{ background: "#bfc7cc00", height: "68%" }}>
+                  {img && <div className="uploadedImage" >
+                    <label className="center" style={{display:"block" }}>{imgName}</label>
+                    <img className="uploadImg" src={URL.createObjectURL(img)} width="50%" height="80%"></img>
+                  </div>}
+
+
+
+                  {pdf && <div className="uploadedImage">
+                    <object data={URL.createObjectURL(pdf)} width="30%" height="75%"></object>
+                    <label>{pdfName}</label>
+                  </div>}
+
+                  {/* {message?.img && <img src={message?.img} alt="img" height="100px" width="100px" />} */}
+                </div> :
+                <div
+                  className="scroll-right"
+                  style={{ background: "beige", height: "68%" }}
+                >
+                  <ul>
+                    {messages?.map((message) => {
+                      console.log("message:::", message);
+                      const cssStr =
+                        message.uid === auth.currentUser.uid
+                          ? "-sender"
+                          : "-reciever";
+                      console.log("cssStr: ", cssStr);
+                      if (!(message.text || message.img || message.pdf))
+                        return null;
+                      return (
+                        <div className={`container${cssStr}`}>
+                          {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
+                          {recieverDetails?.groupName && <p className="text-info blockquote-footer">
+                            {recieverDetails?.groupName && message.name}
+                          </p>}
+                          <p>{message.text}</p>
+                          {console.log(message?.img, "message?.img::::::")}
+                          {message?.img && <img src={message?.img} alt="img" height="100px" width="100px" />}
+                          {message?.pdf && console.log(message.pdf?.name)}
+                          {message?.pdf && <a href={message?.pdf} download>pdf</a>}
+                          <span className="time-right">{message?.time}</span>
+                        </div>
+                      );
+                    })}
+                  </ul>
+                </div>}
+              <FileContext.Provider value={{ outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStatus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl,fileUrl, setFileUrl}}>
+                <SendMessage />
+              </FileContext.Provider>
             </>
           )}
         </div>

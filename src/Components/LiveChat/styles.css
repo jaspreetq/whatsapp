@@ -87,3 +87,9 @@
   width: 50%;
   margin: 1%;
 }
+
+.uploadedImage{
+  height: 100%;
+  padding: 5%;
+    padding-left: 30%;
+}
