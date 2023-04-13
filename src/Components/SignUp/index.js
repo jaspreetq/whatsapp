@@ -60,6 +60,8 @@ function SignUp() {
         email,
         avatar: IMAGES.default, //random array dp generator
         createdAt: serverTimestamp(),
+        lastMessage:"",
+        lastMessageDate:""
         // details: {uid,email,name,avatar,}
       });
       console.log("name ", name, errorMessage);

@@ -33,7 +33,7 @@ function SendMessage() {
   const [file, setFile] = useState("");
   // progress
   const [percent, setPercent] = useState(0);
-  const { outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
+  const { outputMessage, setOutputMessage, text, setText, img="", setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
   let imgURL, pdfURL;
   const date = new Date();
   const {
@@ -72,6 +72,7 @@ function SendMessage() {
     }
     e.target.value = null;
     // setFile(event.target.files[0]);
+    handleUpload()
   }
 
   const handleEnter = (e) => e.key === "Enter" && handleSend();
@@ -208,16 +209,6 @@ function SendMessage() {
   return (
     <div>
       <div className="d-flex justify-content-start file-upload">
-        {/* <input
-          id="newMessage"
-          value={message}
-          onChange={(e) => {
-            setMessage(e.target.value);
-          }}
-          type="text"
-          placeholder="Send Message..."
-          onKeyDown={(e)=>handleEnter(e)}
-        /> */}
         <InputEmoji
           value={message}
           onChange={setMessage}
@@ -257,7 +248,7 @@ function SendMessage() {
         {/* onClick={handleUpload} */}
         {/* <button style={{"border-style": "none"}} onClick={}>📎</button> */}
         <div>
-          <button className="send-message" onClick={(e) => handleSend(e)}>
+          <button className="send-message" onClick={() => handleSend()}>
             Send
           </button>
         </div>

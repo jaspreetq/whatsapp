@@ -21,6 +21,7 @@ import SelectParticipants from "../Cells/SelectParticipants";
 import { rightArrow, threeDotsHamburger } from "../Utillities/icons";
 import EnterNewGroupDetail from "../Cells/EnterNewGroupDetail";
 import { useNavigate } from "react-router-dom";
+import UserProfile from "../Cells/UserProfile";
 // export const GrpParticipantContext = createContext();
 
 function SideBar() {
@@ -46,6 +47,7 @@ function SideBar() {
   const [selectedParticipants, setSelectedParticipants] = useState([{}]);
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
   const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
+  const [editIndividualCurrentUserProfile,setEditIndividualCurrentUserProfile] = useState(false);
   const [groupName, setGroupName] = useState("");
   const navigate = useNavigate();
   //SIGN-OUT
@@ -104,11 +106,13 @@ function SideBar() {
     senderUserID = senderUid;
     // setActualDbId(recieverUid+senderUid);
 
-    const senderDetails = users?.find(
-      (user) => user.uid == auth.currentUser.uid
-    );
+    const senderDetails = getCurrentUser();
     setActiveUser(senderDetails);
   };
+
+  const getCurrentUser = () => users?.find((user) => {
+    return user.uid == auth.currentUser.uid;
+  })
 
   return (
     <>
@@ -134,16 +138,18 @@ function SideBar() {
           </>
         ) : (
           <>
+          {editIndividualCurrentUserProfile ? <>
+            <Header title="Profile" goBack={()=>setEditIndividualCurrentUserProfile(false)}/>
+            <UserProfile activeUser={getCurrentUser()} setEditIndividualCurrentUserProfile={setEditIndividualCurrentUserProfile}/>
+          </>:
+          <>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-              <img class="avatar" src={IMAGES.default} alt="Avatar" />
+            {/* getCurrentUser */}
+              <img className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={()=>setEditIndividualCurrentUserProfile(true)}/>
               {"  "}
               <div className="d-flex justify-content-start w-100">
                 <div style={{ width: "99%", "margin-top": "6px" }}>
-                  {
-                    users?.find((user) => {
-                      return user.uid == auth.currentUser.uid;
-                    })?.name
-                  }
+                  {getCurrentUser()?.name}
                 </div>
                 {/* 
                 <button
@@ -198,12 +204,7 @@ function SideBar() {
                   </a>
                 </div>
               </div>
-              <div
-                className="collapse navbar-collapse"
-                id="navbarSupportedContent"
-              >
-                <ul className="navbar-nav mr-auto"></ul>
-              </div>
+
             </nav>
             {/* <input
           class="form-control mr-sm-2"
@@ -237,6 +238,8 @@ function SideBar() {
                 );
               })}
             </div>
+            </>
+          }
           </>
         )}
       </div>

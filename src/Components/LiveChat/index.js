@@ -30,14 +30,15 @@ import SelectParticipants from "../Cells/SelectParticipants";
 import CustomModal from "../CustomComponents/CustomModal";
 import Header from "../Atoms/Header";
 import { GrpParticipantContext } from "../../Context/GrpParticipantContextDefination";
+import UserProfile from "../Cells/UserProfile";
 export const FileContext = createContext();
 
 function LiveChat() {
   const [outputMessage, setOutputMessage] = useState("");
   const [text, setText] = useState("");
-  const [img, setImg] = useState(null);
+  const [img, setImg] = useState("");
   const [imgName, setImgName] = useState("");
-  const [pdf, setPdf] = useState(null);
+  const [pdf, setPdf] = useState("");
   const [pdfName, setPdfName] = useState("");
   const [loading, setLoading] = useState(false);
   const [fileStatus, setFileStatus] = useState(false);
@@ -220,7 +221,7 @@ function LiveChat() {
                 <div style={{ background: "#bfc7cc00", height: "68%" }}>
                   {img && <div className="uploadedImage" >
                     <label className="center" style={{display:"block" }}>{imgName}</label>
-                    <img className="uploadImg" src={URL.createObjectURL(img)} width="50%" height="80%"></img>
+                    <img className="uploadImg" src={URL.createObjectURL(img)} width="50%" height="80%"/>
                   </div>}
 
 
@@ -265,6 +266,7 @@ function LiveChat() {
                 </div>}
               <FileContext.Provider value={{ outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStatus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl,fileUrl, setFileUrl}}>
                 <SendMessage />
+                {/* <UserProfile activeUser={activeUser}/> */}
               </FileContext.Provider>
             </>
           )}
