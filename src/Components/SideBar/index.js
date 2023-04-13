@@ -47,7 +47,7 @@ function SideBar() {
   const [selectedParticipants, setSelectedParticipants] = useState([{}]);
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
   const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
-  const [editIndividualCurrentUserProfile,setEditIndividualCurrentUserProfile] = useState(false);
+  const [editProfile,setEditProfile] = useState(false);
   const [groupName, setGroupName] = useState("");
   const navigate = useNavigate();
   //SIGN-OUT
@@ -138,14 +138,14 @@ function SideBar() {
           </>
         ) : (
           <>
-          {editIndividualCurrentUserProfile ? <>
-            <Header title="Profile" goBack={()=>setEditIndividualCurrentUserProfile(false)}/>
-            <UserProfile activeUser={getCurrentUser()} setEditIndividualCurrentUserProfile={setEditIndividualCurrentUserProfile}/>
+          {editProfile ? <>
+            <Header title="Profile" goBack={()=>setEditProfile(false)}/>
+            <UserProfile activeUser={getCurrentUser()} setEditProfile={setEditProfile}/>
           </>:
           <>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
             {/* getCurrentUser */}
-              <img className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={()=>setEditIndividualCurrentUserProfile(true)}/>
+              <img className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={()=>setEditProfile(true)}/>
               {"  "}
               <div className="d-flex justify-content-start w-100">
                 <div style={{ width: "99%", "margin-top": "6px" }}>

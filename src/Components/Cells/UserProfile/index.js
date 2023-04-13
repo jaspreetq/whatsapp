@@ -6,12 +6,12 @@ import { FileContext } from '../../LiveChat';
 import { rightArrow } from '../../Utillities/icons';
 import { IMAGES } from '../../Utillities/Images'
 
-function UserProfile({ activeUser,setEditIndividualCurrentUserProfile }) {
-    const [userName, setUserName] = useState(activeUser?.name)
-    const [img,setImg] = useState("")
+function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
+    const [userName, setUserName] = useState(activeUser?.name || activeUser?.groupName)
+    const [img, setImg] = useState("")
     const [imgName, setImgName] = useState("")
-    const [fileStatus,setFileStatus] = useState(false)
-    const [imgUrl,setImgUrl] = useState("")
+    const [fileStatus, setFileStatus] = useState(false)
+    const [imgUrl, setImgUrl] = useState("")
     let imgURL;
     function handleDpChange(e) {
         // setFileStatus(true)
@@ -30,7 +30,18 @@ function UserProfile({ activeUser,setEditIndividualCurrentUserProfile }) {
 
     // const handleEnter = (e) => e.key === "Enter" && handleSend();
     const handleNameChange = async () => {
-        userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
+        activeUser?.groupName && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
+            uid: activeUser.uid,
+            groupName: userName,
+            participants: activeUser?.participants,
+            avatar: activeUser.avatar, //random array dp generator
+            createdAt: activeUser.createdAt,
+            creatorUid: activeUser.creatorUid,
+            lastMessage: "",
+            lastMessageDate: ""
+        })
+
+        activeUser?.name && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
             uid: activeUser.uid,
             name: userName,
             email: activeUser.email,
@@ -40,16 +51,16 @@ function UserProfile({ activeUser,setEditIndividualCurrentUserProfile }) {
             lastMessageDate: ""
         })
     }
-    
+
     const handleUpload = async () => {
         setFileStatus(false)
-        console.log("imgimg",img)
+
         if (img) {
-            console.log("imgimgin",img)
+            console.log("imgimgin", img)
             const localFileNewURL = `/profiles/${img.name}${auth.currentUser.uid}`;
             const storageRef = ref(storage, localFileNewURL);
             const uploadTask = uploadBytesResumable(storageRef, img);
-            
+
             uploadTask.on(
                 "state_changed",
                 (snapshot) => {
@@ -66,7 +77,18 @@ function UserProfile({ activeUser,setEditIndividualCurrentUserProfile }) {
                         setImgUrl(url);
                         imgURL = url;
                         console.log(url, imgURL, "url ::");
-                        await updateDoc(doc(db, "users", activeUser?.uid), {
+                        activeUser?.groupName && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
+                            uid: activeUser.uid,
+                            groupName: userName,
+                            participants: activeUser?.participants,
+                            avatar: url, //random array dp generator
+                            createdAt: activeUser.createdAt,
+                            creatorUid: activeUser.creatorUid,
+                            lastMessage: "",
+                            lastMessageDate: ""
+                        })
+
+                        activeUser?.name && await updateDoc(doc(db, "users", activeUser?.uid), {
                             uid: activeUser.uid,
                             name: userName,
                             email: activeUser.email,
@@ -92,8 +114,10 @@ function UserProfile({ activeUser,setEditIndividualCurrentUserProfile }) {
             <div className='h-100'>
 
                 <label htmlFor="profilePicture">
-                {img ? <img className="avatar" src={URL.createObjectURL(img)} width="50%" height="80%"/> : <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" />}
-                {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
+                    {img ?
+                        <img className="avatar" src={URL.createObjectURL(img)} width="50%" height="80%" />
+                        : <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" />}
+                    {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
                 </label>
                 <input
                     id="profilePicture"
@@ -103,30 +127,30 @@ function UserProfile({ activeUser,setEditIndividualCurrentUserProfile }) {
                     accept="image/*"
                 />
             </div>
-            <div>
-                <input
-                    id="newName"
-                    className='textInput'
-                    value={userName}
-                    onChange={(e) => {
-                        setUserName(e.target.value);
-                    }}
-                    type="text"
-                    placeholder="Name..."
-                // onKeyDown={(e) => handleEnter(e)}
-                />
+            <>
+                <div>
+                    <input
+                        id="newName"
+                        className='textInput'
+                        value={userName}
+                        onChange={(e) => {
+                            setUserName(e.target.value);
+                        }}
+                        type="text"
+                        placeholder="Name..."
+                    // onKeyDown={(e) => handleEnter(e)}
+                    />
 
-            </div>
-
-            <button onClick={() => {
-                activeUser?.name !== userName && handleNameChange()
-                activeUser?.avatar !== img && handleUpload()
-                // handleUpload()
-                setEditIndividualCurrentUserProfile(false)
-            }}>
-                {rightArrow}
-            </button>
-
+                </div>
+                <button onClick={() => {
+                    ((activeUser?.name !== userName) || (activeUser?.groupName !== userName)) && handleNameChange()
+                    activeUser?.avatar !== img && handleUpload()
+                    // handleUpload()
+                    setEditProfile(false)
+                }}>
+                    {rightArrow}
+                </button>
+            </>
         </div>
     )
 }

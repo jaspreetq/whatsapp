@@ -61,6 +61,7 @@ function LiveChat() {
     setUsers,
   } = useContext(messageContext);
   let dbId;
+  const isAdmin = () => actualDbId?.includes(auth.currentUser.uid)
   const [showMemberEditFormOnTheRight, setShowMemberEditFormOnTheRight] =
     useState(false);
   const [selectedParticipantsChat, setSelectedParticipantsChat] = useState(
@@ -186,6 +187,21 @@ function LiveChat() {
                   src={recieverDetails?.avatar}
                   alt="Avatar"
                 />
+
+                {/* {recieverDetails?.groupName && actualDbId?.length > (auth.currentUser.uid).length && <>
+                  <button
+                    style={{ border: "none" }}
+                    onClick={() => {
+                      //MODAL SELECTPARTS
+                      if (recieverDetails?.groupName)
+                        setShowMemberEditFormOnTheRight(true);
+                      console.log("dfs");
+                    }}
+                  >
+                    {edit}
+                  </button>
+                </>} */}
+
                 {"  "}{console.log("users:<><><<>", users)}
                 <div style={{ width: "95%" }}>
                   <p>{(users?.find(user => user.uid === actualDbId))?.groupName || recieverDetails?.name}</p>
@@ -201,7 +217,7 @@ function LiveChat() {
                       }//(users?.find(user=>user.uid === actualDbId))
                     )}
                 </p>}
-                {recieverDetails?.groupName && actualDbId?.includes(auth.currentUser.uid) && actualDbId?.length > (auth.currentUser.uid).length && <>
+                {recieverDetails?.groupName && isAdmin() && actualDbId?.length > (auth.currentUser.uid).length && <>
                   <button
                     style={{ border: "none" }}
                     onClick={() => {
@@ -278,7 +294,8 @@ function LiveChat() {
               goBack={() => setShowMemberEditFormOnTheRight(false)}
             />
             <br />
-            {console.log(groupName, "groupName<><><>><<><><><><>><><")}
+            {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
+            <UserProfile activeUser={recieverDetails} setEditProfile={setShowMemberEditFormOnTheRight} isGroup={true}/>
             <SelectParticipants
               users={users}
               selectedParticipants={selectedParticipantsChat}
