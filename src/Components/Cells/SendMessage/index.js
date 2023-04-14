@@ -33,7 +33,7 @@ function SendMessage() {
   const [file, setFile] = useState("");
   // progress
   const [percent, setPercent] = useState(0);
-  const { outputMessage, setOutputMessage, text, setText, img="", setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
+  const { outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
   let imgURL, pdfURL;
   const date = new Date();
   const {
@@ -55,8 +55,8 @@ function SendMessage() {
   function handleFileChange(e) {
     document.getElementsByClassName(" react-input-emoji--input")?.[0].focus();
     // setFileStatus(true)
-    setImg("")
-    setPdf("")
+    setImg(null)
+    setPdf(null)
     
     if (
       e.target.files[0].type == "image/png" ||
@@ -72,7 +72,6 @@ function SendMessage() {
     }
     e.target.value = null;
     // setFile(event.target.files[0]);
-    handleUpload()
   }
 
   const handleEnter = (e) => e.key === "Enter" && handleSend();
@@ -85,7 +84,7 @@ function SendMessage() {
       const localFileNewURL = `/files/${img.name}${auth.currentUser.uid}`;
       const storageRef = ref(storage, localFileNewURL);
       const uploadTask = uploadBytesResumable(storageRef, img);
-      setImg("")
+      setImg(null)
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -124,7 +123,7 @@ function SendMessage() {
       const uploadTask = uploadBytesResumable(storageRef, pdf);
       console.log("in pdf::::::::::",pdf,localFileNewURL);
       // setFileUrl(localFileNewURL)
-      setPdf("")
+      setPdf(null)
       uploadTask.then(
         () => {
           console.log("next log");
