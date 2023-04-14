@@ -6,6 +6,8 @@ import { FileContext } from '../../LiveChat';
 import { rightArrow } from '../../Utillities/icons';
 import { IMAGES } from '../../Utillities/Images'
 
+
+//active user - 2meanings 
 function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
     const [userName, setUserName] = useState(activeUser?.name || activeUser?.groupName)
     const [img, setImg] = useState("")
@@ -110,12 +112,12 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
     };
 
     return (
-        <div>
-            <div className='h-100'>
+        <div className='h-100 w-100'>
+            <div>
 
                 <label htmlFor="profilePicture">
                     {img ?
-                        <img className="avatar" src={URL.createObjectURL(img)} width="50%" height="80%" />
+                        <img className="avatar" src={URL.createObjectURL(img)} width="500px" height="500px" />
                         : <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" />}
                     {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
                 </label>

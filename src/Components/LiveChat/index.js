@@ -46,6 +46,8 @@ function LiveChat() {
   const [imgUrl, setImgUrl] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState();
+  
+  const [showGroupInfoEditForm,setShowGroupInfoEditForm] = useState(false)
   const {
     setErrorMessage,
     recieverDetails,
@@ -69,6 +71,7 @@ function LiveChat() {
   );
   const [isEditGrpBtnClicked, setIsEditGrpBtnClicked] = useState(false);
   const [groupName, setGroupName] = useState("");
+  
   // const [groupName,setGroupName] = useState(recieverDetails?.groupName);
   const param = useParams();
   let groupNameTemp = recieverDetails?.groupName;
@@ -186,6 +189,7 @@ function LiveChat() {
                   className="avatar"
                   src={recieverDetails?.avatar}
                   alt="Avatar"
+                  onClick={()=>setShowGroupInfoEditForm(true)}
                 />
 
                 {/* {recieverDetails?.groupName && actualDbId?.length > (auth.currentUser.uid).length && <>
@@ -287,6 +291,13 @@ function LiveChat() {
             </>
           )}
         </div>
+        {showGroupInfoEditForm && <div className="d-block">
+          {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
+          <Header title="Group Info"
+              goBack={() => setShowGroupInfoEditForm(false)}
+            />
+            <UserProfile activeUser={recieverDetails} setEditProfile={setShowGroupInfoEditForm} isGroup={true}/>
+        </div>}
         {showMemberEditFormOnTheRight && (
           <div className="selectParticipants-right">
             <Header
@@ -294,8 +305,6 @@ function LiveChat() {
               goBack={() => setShowMemberEditFormOnTheRight(false)}
             />
             <br />
-            {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
-            <UserProfile activeUser={recieverDetails} setEditProfile={setShowMemberEditFormOnTheRight} isGroup={true}/>
             <SelectParticipants
               users={users}
               selectedParticipants={selectedParticipantsChat}
