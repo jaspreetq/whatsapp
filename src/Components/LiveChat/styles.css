@@ -1,8 +1,9 @@
-/* .liveChat {
-  margin: 0;
+.liveChat {
+  /* margin: 0;
   width: 95%;
-  padding: 0;
-} */
+  padding: 0; */
+  /* background-image: url("background.png"); */
+}
 
 .sidebar {
   height: 100vh;

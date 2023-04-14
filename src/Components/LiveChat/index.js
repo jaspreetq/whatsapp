@@ -46,8 +46,8 @@ function LiveChat() {
   const [imgUrl, setImgUrl] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState();
-  
-  const [showGroupInfoEditForm,setShowGroupInfoEditForm] = useState(false)
+
+  const [showGroupInfoEditForm, setShowGroupInfoEditForm] = useState(false)
   const {
     setErrorMessage,
     recieverDetails,
@@ -71,7 +71,7 @@ function LiveChat() {
   );
   const [isEditGrpBtnClicked, setIsEditGrpBtnClicked] = useState(false);
   const [groupName, setGroupName] = useState("");
-  
+
   // const [groupName,setGroupName] = useState(recieverDetails?.groupName);
   const param = useParams();
   let groupNameTemp = recieverDetails?.groupName;
@@ -79,22 +79,28 @@ function LiveChat() {
   const presentUser = (users?.find(user => user.uid === auth.currentUser.uid));
   setErrorMessage("");
 
-  // useEffect(() => {
-  //   const q = query(collection(db, "users"), orderBy("createdAt"));
-  //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
-  //     let users = [];
-  //     console.log("<>snapshot<>", QuerySnapshot);
 
-  //     QuerySnapshot.forEach((doc) => {
-  //       console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
-  //       users.push({ ...doc.data() });
-  //       console.log("messages<>: ", users);
-  //     });
-  //     setUsers(users);
-  //   });
-  //   console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
-  //   return () => unsubscribe;
-  // }, []);
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(db, "users", recieverDetails?.uid || actualDbId || RANDOM_TEXT),
+      (doc) => {
+        // doc?.exists() && setMessages(doc.data()?.messages);
+        if (doc?.exists()) {
+          const { avatar, name, groupName, participants } = doc.data();
+          if (name)
+            setRecieverDetails({ ...recieverDetails, ["avatar"]: avatar, ["name"]: name })
+          else
+            setRecieverDetails({ ...recieverDetails, ["avatar"]: avatar, ["groupName"]: groupName, ["participants"]: participants })
+        }
+
+        // console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+        // console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+        //setWelcomeChatPage(true);
+      }
+    );
+    console.log("recieverDetails ", recieverDetails);
+    return () => unsubscribe();
+  }, [recieverDetails?.name, recieverDetails?.groupName, recieverDetails?.avatar, recieverDetails?.participants]);
 
   useEffect(() => {
     // console.log("actualDbId: effect,reciever", );
@@ -102,7 +108,7 @@ function LiveChat() {
       setActualDbId(recieverDetails?.uid);
       setGroupName(recieverDetails?.name);
       groupNameTemp = recieverDetails?.groupName;
-      setSelectedParticipantsChat(recieverDetails?.participants);
+      setSelectedParticipantsChat([...recieverDetails?.participants]);
       // setShowMemberEditFormOnTheRight()
     } else {
       dbId =
@@ -189,7 +195,7 @@ function LiveChat() {
                   className="avatar"
                   src={recieverDetails?.avatar}
                   alt="Avatar"
-                  onClick={()=>setShowGroupInfoEditForm(true)}
+                  onClick={() => setShowGroupInfoEditForm(true)}
                 />
 
                 {/* {recieverDetails?.groupName && actualDbId?.length > (auth.currentUser.uid).length && <>
@@ -237,14 +243,18 @@ function LiveChat() {
                 {/* <button>+</button> */}
               </nav>
 
-              {fileStatus ?
-                <div style={{ background: "#bfc7cc00", height: "68%" }}>
-                  {img && <div className="uploadedImage" >
-                    <label className="center" style={{display:"block" }}>{imgName}</label>
-                    <img className="uploadImg" src={URL.createObjectURL(img)} width="50%" height="80%"/>
-                  </div>}
-
-
+              {fileStatus?
+                <>
+                  <Header
+                    title=""
+                    goBack={() => setFileStatus(false)}
+                  />
+                  <div style={{ background: "#bfc7cc00", height: "68%" }}>
+                    {img && <div className="uploadedImage" >
+                      <label className="center" style={{ display: "block" }}>{imgName}</label>
+                      <img className="uploadImg" src={URL.createObjectURL(img)} width="50%" height="80%" />
+                    </div>
+                    }
 
                   {pdf && <div className="uploadedImage">
                     <object data={URL.createObjectURL(pdf)} width="30%" height="75%"></object>
@@ -252,10 +262,10 @@ function LiveChat() {
                   </div>}
 
                   {/* {message?.img && <img src={message?.img} alt="img" height="100px" width="100px" />} */}
-                </div> :
+                </div></> :
                 <div
                   className="scroll-right"
-                  style={{ background: "beige", height: "68%", width:"100%"}}
+                  style={{ background: "beige", height: "68%", width: "100%" }}
                 >
                   <ul >
                     {messages?.map((message) => {
@@ -284,7 +294,7 @@ function LiveChat() {
                     })}
                   </ul>
                 </div>}
-              <FileContext.Provider value={{ outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStatus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl,fileUrl, setFileUrl}}>
+              <FileContext.Provider value={{ outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStatus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl }}>
                 <SendMessage />
                 {/* <UserProfile activeUser={activeUser}/> */}
               </FileContext.Provider>
@@ -294,9 +304,9 @@ function LiveChat() {
         {showGroupInfoEditForm && <div className="d-block">
           {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
           <Header title="Group Info"
-              goBack={() => setShowGroupInfoEditForm(false)}
-            />
-            <UserProfile activeUser={recieverDetails} setEditProfile={setShowGroupInfoEditForm} isGroup={true}/>
+            goBack={() => setShowGroupInfoEditForm(false)}
+          />
+          <UserProfile activeUser={recieverDetails} setEditProfile={setShowGroupInfoEditForm} isGroup={true} />
         </div>}
         {showMemberEditFormOnTheRight && (
           <div className="selectParticipants-right">

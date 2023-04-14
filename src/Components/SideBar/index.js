@@ -73,9 +73,6 @@ function SideBar() {
     console.log("selectedParticipants: ", selectedParticipants);
   }, [activeUser]);
 
-  useEffect(() => {
-    console.log("recieverDetails: effect", recieverDetails);
-  }, [recieverDetails]);
 
   useEffect(() => {
     const q = query(collection(db, "users"), orderBy("createdAt"));
@@ -175,7 +172,7 @@ function SideBar() {
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  style={{ color: "white", border: "none" }}
+                  style={{ color: "#f8f9fa00", border: "none" }}
                 >
                   {threeDotsHamburger}
                 </button>

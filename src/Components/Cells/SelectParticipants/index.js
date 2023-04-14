@@ -95,7 +95,7 @@ function SelectParticipants(props) {
       groupName: localGroupName,
       avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
-      participants: tempSelectedParticipants,
+      participants: [...tempSelectedParticipants],
       // details: {uid,email,name,avatar,}
     });
     // await get
@@ -108,7 +108,7 @@ function SelectParticipants(props) {
       creatorUid: auth.currentUser.uid,
       //   creator :activeUser,
       createdAt: serverTimestamp(),
-      participants: tempSelectedParticipants,
+      participants: [...tempSelectedParticipants],
       messages
     });
     //create new
@@ -137,7 +137,7 @@ function SelectParticipants(props) {
       creatorUid: auth.currentUser.uid,
       avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
-      participants: tempSelectedParticipants,
+      participants: [...tempSelectedParticipants],
       // details: {uid,email,name,avatar,}
     });
 
@@ -146,7 +146,7 @@ function SelectParticipants(props) {
       creatorUid: auth.currentUser.uid,
       //   creator :activeUser,
       createdAt: serverTimestamp(),
-      participants: tempSelectedParticipants,
+      participants: [...tempSelectedParticipants],
       messages: [{}],
     });
     //create new

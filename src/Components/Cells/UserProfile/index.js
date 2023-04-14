@@ -35,7 +35,7 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
         activeUser?.groupName && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
             uid: activeUser.uid,
             groupName: userName,
-            participants: activeUser?.participants,
+            participants: [...activeUser?.participants],
             avatar: activeUser.avatar, //random array dp generator
             createdAt: activeUser.createdAt,
             creatorUid: activeUser.creatorUid,
@@ -78,19 +78,23 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
                         activeUser?.groupName && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
                             uid: activeUser.uid,
                             groupName: userName,
-                            participants: activeUser?.participants,
+                            participants: [...activeUser?.participants],
                             avatar: url, //random array dp generator
                             createdAt: activeUser.createdAt,
                             creatorUid: activeUser.creatorUid,
                         })
 
-                        activeUser?.name && await updateDoc(doc(db, "users", activeUser?.uid), {
-                            uid: activeUser.uid,
-                            name: userName,
-                            email: activeUser.email,
-                            avatar: url,
-                            createdAt: activeUser.createdAt,
-                        })
+                        if (activeUser?.name) {
+                            await updateDoc(doc(db, "users", activeUser?.uid), {
+                                uid: activeUser.uid,
+                                name: userName,
+                                email: activeUser.email,
+                                avatar: url,
+                                createdAt: activeUser.createdAt,
+                            })
+
+                            
+                        }
                     });
                 }
             );

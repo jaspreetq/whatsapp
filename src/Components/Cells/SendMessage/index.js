@@ -19,15 +19,6 @@ import { RANDOM_TEXT } from "../../../ConstantString";
 import { getTime } from "../../Utillities/getTime";
 import { FileContext } from "../../LiveChat";
 
-// import { storage } from "./firebase";
-
-// // <img src={activeUser?.photoURL}/>
-// console.log(
-//   "messageLocal,actualDbId,existingContact : ",
-//   messageLocal,
-//   actualDbId
-//   // existingContact
-// );
 function SendMessage() {
   // State to store uploaded file
   const [file, setFile] = useState("");
@@ -178,31 +169,6 @@ function SendMessage() {
 
   const handleSend = async () => {
     handleUpload();
-    // const messageLocal = message;
-    // setMessage("");
-    // if (messageLocal?.trim() === "" && !img && !pdf) {
-    //   alert("Enter valid message");
-    //   return;
-    // }
-    // console.log("activeUser,pdfURL,imgURL :", activeUser, pdfURL, imgURL || "");
-    // setOutputMessage(messageLocal);
-    // if (actualDbId) {
-    //   await updateDoc(doc(db, "chats", actualDbId), {
-    //     messages: arrayUnion({
-    //       uid: activeUser?.uid,
-    //       name: activeUser?.name,
-    //       avatar: activeUser?.avatar,
-    //       createdAt: new Date().toUTCString(),
-    //       pdf: pdfURL || "",
-    //       fileName: (pdfName ? pdfName : imgName) || "",
-    //       img: imgURL || "",
-    //       time: getTime(),
-    //       text: message || "",
-    //     }),
-    //   });
-    // }
-
-    //chats,
   };
 
   return (
@@ -368,3 +334,42 @@ export default SendMessage;
 //     }),
 //   });
 // });
+
+
+// const messageLocal = message;
+    // setMessage("");
+    // if (messageLocal?.trim() === "" && !img && !pdf) {
+    //   alert("Enter valid message");
+    //   return;
+    // }
+    // console.log("activeUser,pdfURL,imgURL :", activeUser, pdfURL, imgURL || "");
+    // setOutputMessage(messageLocal);
+    // if (actualDbId) {
+    //   await updateDoc(doc(db, "chats", actualDbId), {
+    //     messages: arrayUnion({
+    //       uid: activeUser?.uid,
+    //       name: activeUser?.name,
+    //       avatar: activeUser?.avatar,
+    //       createdAt: new Date().toUTCString(),
+    //       pdf: pdfURL || "",
+    //       fileName: (pdfName ? pdfName : imgName) || "",
+    //       img: imgURL || "",
+    //       time: getTime(),
+    //       text: message || "",
+    //     }),
+    //   });
+    // }
+
+    //chats,
+
+
+
+// import { storage } from "./firebase";
+
+// // <img src={activeUser?.photoURL}/>
+// console.log(
+//   "messageLocal,actualDbId,existingContact : ",
+//   messageLocal,
+//   actualDbId
+//   // existingContact
+// );
