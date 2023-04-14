@@ -39,8 +39,6 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
             avatar: activeUser.avatar, //random array dp generator
             createdAt: activeUser.createdAt,
             creatorUid: activeUser.creatorUid,
-            lastMessage: "",
-            lastMessageDate: ""
         })
 
         activeUser?.name && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
@@ -49,8 +47,6 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
             email: activeUser.email,
             avatar: activeUser.avatar, //random array dp generator
             createdAt: activeUser.createdAt,
-            lastMessage: "",
-            lastMessageDate: ""
         })
     }
 
@@ -86,8 +82,6 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
                             avatar: url, //random array dp generator
                             createdAt: activeUser.createdAt,
                             creatorUid: activeUser.creatorUid,
-                            lastMessage: "",
-                            lastMessageDate: ""
                         })
 
                         activeUser?.name && await updateDoc(doc(db, "users", activeUser?.uid), {
@@ -96,8 +90,6 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
                             email: activeUser.email,
                             avatar: url,
                             createdAt: activeUser.createdAt,
-                            lastMessage: "",
-                            lastMessageDate: ""
                         })
                     });
                 }
