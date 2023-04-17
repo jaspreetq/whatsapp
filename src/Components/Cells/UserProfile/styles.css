@@ -1,7 +1,12 @@
+.userProfile{
+  height: 100vh;
+  width: 100vw;
+  background: red;
+}
 .profilePicture {
   border-radius: 50%;
   padding: 0;
-  width: 50%;
+  /* width: 50%; */
 }
 .large {
   width: 100px;

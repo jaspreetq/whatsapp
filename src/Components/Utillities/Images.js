@@ -2,6 +2,9 @@ import dp1 from "../../Assets/dp1.png";
 import sendIcon from "../../Assets/icons8-send-64.png";
 import groupDefaultDp from "../../Assets/people.png";
 import background from "../../Assets/background.png";
+import websignin from "../../Assets/websignin.jpg";
+import whatsappSide from "../../Assets/whatsappSide.png";
+import WhatsApplogo from "../../Assets/WhatsApplogo.jpg";
 export const IMAGES = {
   DP1: dp1,
   default:
@@ -9,4 +12,7 @@ export const IMAGES = {
   SEND_ICON: sendIcon,
   GROUP_DEFAULT_DP: groupDefaultDp,
   BACKGROUND_CHAT :background,
+  SIGNIN_BACKGROUND:websignin,
+  SIDE_IMG:whatsappSide,
+  WHATSAPP_LOGO:WhatsApplogo
 };

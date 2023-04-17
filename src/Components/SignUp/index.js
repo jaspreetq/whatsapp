@@ -6,6 +6,7 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
+
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { messageContext } from "../../App";
@@ -13,6 +14,8 @@ import { auth, db } from "../../firebase";
 import { NAME_ERROR_STRING } from "../ConstantStrings";
 import { errorDisplay } from "../Utillities/errorDisplay";
 import { IMAGES } from "../Utillities/Images";
+import { threeDotsHamburger } from "../Utillities/icons";
+import "./styles.css";
 
 function SignUp() {
   const [name, setName] = useState("");
@@ -71,8 +74,12 @@ function SignUp() {
     }
   };
   return (
-    <div>
+    <div className="Signup">
+      <div className="form">
+    <div className="registerHeader"><h2>Whatsapp-Web</h2></div>
+      {/* <h2>Whatsapp-Web</h2> */}
       <h3>Please Register...</h3>
+      {/* <label>Username:</label> */}
       <input
         className="textInput"
         id="userName"
@@ -85,6 +92,7 @@ function SignUp() {
         required
         // onKeyDown={handleEnter}
       />
+      {/* <label>Email:</label> */}
       <input
         className="textInput"
         id="userEmail"
@@ -96,6 +104,7 @@ function SignUp() {
         placeholder="Enter email..."
         // onKeyDown={handleEnter}
       />
+      {/* <label>Password:</label> */}
       <input
         className="textInput"
         id="userPassword"
@@ -109,9 +118,11 @@ function SignUp() {
       />
       <br />
       <br />
-      <button onClick={signUpEmailPassword}>Sign Up</button>
-      <button onClick={() => navigate("/SignIn")}>Existing User, SignIn</button>
+      <button className="registration" onClick={signUpEmailPassword}>Sign Up</button>
+      <button className="registration" onClick={() => navigate("/SignIn")}>Existing User, SignIn</button>
       <p style={{ color: "red" }}>{errorMessage}</p>
+      </div>
+      <div className="rightSideImage">{threeDotsHamburger}</div>
     </div>
   );
 }

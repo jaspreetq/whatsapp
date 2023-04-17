@@ -246,7 +246,6 @@ function LiveChat() {
                 {recieverDetails?.participants?.length && (
                   <p
                     className="text-primary blockquote-footer overflow-hidden"
-                    style={{}}
                   >
                     {recieverDetails?.groupName &&
                       users
@@ -314,7 +313,7 @@ function LiveChat() {
               ) : (
                 <div
                   className="scroll-right"
-                  style={{ background: "beige", height: "68%", width: "100%" }}
+                  style={{ background: "#e4ddd5", height: "68%", width: "100%" }}
                 >
                   <ul>
                     {messages?.map((message) => {
@@ -332,19 +331,19 @@ function LiveChat() {
                             {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
                             {recieverDetails?.groupName && (
                               <span>
-                                {recieverDetails?.groupName && (
+                                {recieverDetails?.groupName && (cssStr==="-reciever") && (
                                   <img
                                     style={{ display: "inline" }}
                                     className="avatar"
                                     src={message?.avatar}
                                   />
                                 )}
-                                <p
+                                {cssStr==="-reciever" && <p
                                   className="ml-75 text-info blockquote-footer"
                                   style={{ display: "inline" }}
                                 >
                                   {recieverDetails?.groupName && message.name}
-                                </p>
+                                </p>}
                               </span>
                             )}
                             <p>{message.text}</p>

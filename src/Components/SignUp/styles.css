@@ -1,0 +1,9 @@
+.Signup{
+    display: flex;
+    height: 100vh;
+}
+.rightSideImage{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}

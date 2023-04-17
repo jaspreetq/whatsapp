@@ -113,8 +113,8 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
   };
 
   return (
-    <div className="h-100 w-100">
-      <div className="d-flex justify-content-center h-50">
+    <div className="userProfile">
+      <div className="d-flex justify-content-center">
         <label htmlFor="profilePicture">
           {img ? (
             <img

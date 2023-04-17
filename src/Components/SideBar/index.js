@@ -230,7 +230,7 @@ function SideBar() {
                     onClick={() => receiverSelected(user)}
                   >
                     <img className="avatar" src={user?.avatar} />
-                    {user?.groupName || user?.name}
+                    {"  "}{user?.groupName || user?.name}
                   </div>
                 );
               })}
