@@ -3,7 +3,14 @@ import { rightArrow } from "../../Utillities/icons";
 import { messageContext } from "../../../App";
 import { auth, db } from "../../../firebase";
 import { getTime } from "../../Utillities/getTime";
-import { doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { IMAGES } from "../../Utillities/Images";
 import { GrpParticipantContext } from "../../../Context/GrpParticipantContextDefination";
 
@@ -20,7 +27,7 @@ function SelectParticipants(props) {
     groupName,
     setGroupName,
   } = props;
-  console.log(selectedParticipants, "groupName selectedParticipants")
+  console.log(selectedParticipants, "groupName selectedParticipants");
   const {
     actualDbGroupId,
     setActualDbGroupId,
@@ -28,48 +35,39 @@ function SelectParticipants(props) {
     setActualDbId,
     activeUser,
     recieverDetails,
-    setRecieverDetails,messages,
-    setMessages
+    setRecieverDetails,
+    messages,
+    setMessages,
   } = useContext(messageContext);
-  
-  const grp = users?.find(
-    (user) => user.uid == actualDbId
-  );
-  const [localGroupName, setLocalGroupName] = useState(grp?.groupName)
+
+  const grp = users?.find((user) => user.uid == actualDbId);
+  const [localGroupName, setLocalGroupName] = useState(grp?.groupName);
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
-  
-  
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(db, "chats", actualDbId),
-      (doc) => {
-        // doc?.exists() && setMessages(doc.data()?.messages);
-        setMessages(doc.data()?.messages);
-        console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
-        console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
-        //setWelcomeChatPage(true);
-      }
-    );
+    const unsubscribe = onSnapshot(doc(db, "chats", actualDbId), (doc) => {
+      // doc?.exists() && setMessages(doc.data()?.messages);
+      setMessages(doc.data()?.messages);
+      console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+      console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+      //setWelcomeChatPage(true);
+    });
     console.log("recieverDetails ", recieverDetails);
     return () => unsubscribe();
   }, []);
-
 
   useEffect(() => {
     if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
       setIsNewGroupBtnClicked(true);
       setSelectedParticipants([{}]);
-      setShowGroupAddComp(false)
+      setShowGroupAddComp(false);
     }
-  }, [recieverDetails?.uid])
-  
+  }, [recieverDetails?.uid]);
 
-  const currentUser0 = users?.find(
-    (user) => user.uid == auth.currentUser.uid
-    );
+  const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid);
 
   const createNewGroupId = () => {
     return `${auth.currentUser.uid}${getTime()}${users?.length}`;
@@ -79,7 +77,7 @@ function SelectParticipants(props) {
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
-    const gid = recieverDetails?.uid;//grp
+    const gid = recieverDetails?.uid; //grp
 
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const currentUser0 = users?.find(
@@ -109,7 +107,7 @@ function SelectParticipants(props) {
       //   creator :activeUser,
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
-      messages
+      messages,
     });
     //create new
     // setActualDbGroupId(gid);
@@ -205,7 +203,10 @@ function SelectParticipants(props) {
                         );
                     }}
                   />
-                  {user?.name}
+                  <span>
+                    {" "}
+                    <img className="avatar" src={user?.avatar} /> {user?.name}
+                  </span>
                 </label>
               )}
             </div>
@@ -220,8 +221,8 @@ function SelectParticipants(props) {
             !localGroupName
               ? setErrorName("Please enter group name.")
               : isNewGroup
-                ? createChatGroup()
-                : updateChatGroup();
+              ? createChatGroup()
+              : updateChatGroup();
           }}
         >
           {rightArrow}

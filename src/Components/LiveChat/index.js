@@ -47,7 +47,7 @@ function LiveChat() {
   const [fileUrl, setFileUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState();
 
-  const [showGroupInfoEditForm, setShowGroupInfoEditForm] = useState(false)
+  const [showGroupInfoEditForm, setShowGroupInfoEditForm] = useState(false);
   const {
     setErrorMessage,
     recieverDetails,
@@ -63,7 +63,7 @@ function LiveChat() {
     setUsers,
   } = useContext(messageContext);
   let dbId;
-  const isAdmin = () => actualDbId?.includes(auth.currentUser.uid)
+  const isAdmin = () => actualDbId?.includes(auth.currentUser.uid);
   const [showMemberEditFormOnTheRight, setShowMemberEditFormOnTheRight] =
     useState(false);
   const [selectedParticipantsChat, setSelectedParticipantsChat] = useState(
@@ -76,9 +76,8 @@ function LiveChat() {
   const param = useParams();
   let groupNameTemp = recieverDetails?.groupName;
 
-  const presentUser = (users?.find(user => user.uid === auth.currentUser.uid));
+  const presentUser = users?.find((user) => user.uid === auth.currentUser.uid);
   setErrorMessage("");
-
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -88,9 +87,18 @@ function LiveChat() {
         if (doc?.exists()) {
           const { avatar, name, groupName, participants } = doc.data();
           if (name)
-            setRecieverDetails({ ...recieverDetails, ["avatar"]: avatar, ["name"]: name })
+            setRecieverDetails({
+              ...recieverDetails,
+              ["avatar"]: avatar,
+              ["name"]: name,
+            });
           else
-            setRecieverDetails({ ...recieverDetails, ["avatar"]: avatar, ["groupName"]: groupName, ["participants"]: participants })
+            setRecieverDetails({
+              ...recieverDetails,
+              ["avatar"]: avatar,
+              ["groupName"]: groupName,
+              ["participants"]: participants,
+            });
         }
 
         // console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
@@ -100,7 +108,16 @@ function LiveChat() {
     );
     console.log("recieverDetails ", recieverDetails);
     return () => unsubscribe();
-  }, [recieverDetails?.name, recieverDetails?.groupName, recieverDetails?.avatar, recieverDetails?.participants]);
+  }, [
+    recieverDetails?.name,
+    recieverDetails?.groupName,
+    recieverDetails?.avatar,
+    recieverDetails?.participants,
+  ]);
+
+  useEffect(() => {
+    setFileStatus(false);
+  }, [recieverDetails?.uid]);
 
   useEffect(() => {
     // console.log("actualDbId: effect,reciever", );
@@ -170,7 +187,8 @@ function LiveChat() {
     return () => unsubscribe();
   }, [actualDbId]);
 
-  const checkIfPresentUserIsAdmin = () => presentUser?.uid?.includes(auth.currentUser.uid);
+  const checkIfPresentUserIsAdmin = () =>
+    presentUser?.uid?.includes(auth.currentUser.uid);
 
   return (
     //RecieveChat
@@ -212,62 +230,93 @@ function LiveChat() {
                   </button>
                 </>} */}
 
-                {"  "}{console.log("users:<><><<>", users)}
+                {"  "}
+                {console.log("users:<><><<>", users)}
                 <div style={{ width: "95%" }}>
-                  <p>{(users?.find(user => user.uid === actualDbId))?.groupName || recieverDetails?.name}</p>
+                  <p>
+                    {users?.find((user) => user.uid === actualDbId)
+                      ?.groupName || recieverDetails?.name}
+                  </p>
                 </div>
-                {console.log("presentUser? : ", actualDbId?.length > (auth.currentUser.uid).length)}
+                {console.log(
+                  "presentUser? : ",
+                  actualDbId?.length > auth.currentUser.uid.length
+                )}
 
-                {recieverDetails?.participants?.length && <p className="text-primary blockquote-footer overflow-hidden" style={{}}>
-                  {recieverDetails?.groupName &&
-                    (users?.find(user => user.uid === actualDbId))?.participants?.map(
-                      (member) => {
-                        if (member?.uid !== member?.creator)
-                          return `${member.name},`
-                      }//(users?.find(user=>user.uid === actualDbId))
-                    )}
-                </p>}
-                {recieverDetails?.groupName && isAdmin() && actualDbId?.length > (auth.currentUser.uid).length && <>
-                  <button
-                    style={{ border: "none" }}
-                    onClick={() => {
-                      //MODAL SELECTPARTS
-                      if (recieverDetails?.groupName)
-                        setShowMemberEditFormOnTheRight(true);
-                      console.log("dfs");
-                    }}
+                {recieverDetails?.participants?.length && (
+                  <p
+                    className="text-primary blockquote-footer overflow-hidden"
+                    style={{}}
                   >
-                    {edit}
-                  </button>
-                </>}
+                    {recieverDetails?.groupName &&
+                      users
+                        ?.find((user) => user.uid === actualDbId)
+                        ?.participants?.map(
+                          (member) => {
+                            if (member?.uid !== member?.creator)
+                              return `${member.name},`;
+                          } //(users?.find(user=>user.uid === actualDbId))
+                        )}
+                  </p>
+                )}
+                {recieverDetails?.groupName &&
+                  isAdmin() &&
+                  actualDbId?.length > auth.currentUser.uid.length && (
+                    <>
+                      <button
+                        style={{ border: "none" }}
+                        onClick={() => {
+                          //MODAL SELECTPARTS
+                          if (recieverDetails?.groupName)
+                            setShowMemberEditFormOnTheRight(true);
+                          console.log("dfs");
+                        }}
+                      >
+                        {edit}
+                      </button>
+                    </>
+                  )}
                 {/* <button>+</button> */}
               </nav>
 
-              {fileStatus?
+              {fileStatus ? (
                 <>
-                  <Header
-                    title=""
-                    goBack={() => setFileStatus(false)}
-                  />
+                  <Header title="" goBack={() => setFileStatus(false)} />
                   <div style={{ background: "#bfc7cc00", height: "68%" }}>
-                    {img && <div className="uploadedImage" >
-                      <label className="center" style={{ display: "block" }}>{imgName}</label>
-                      <img className="uploadImg" src={URL.createObjectURL(img)} width="50%" height="80%" />
-                    </div>
-                    }
+                    {img && (
+                      <div className="uploadedImage">
+                        <label className="center" style={{ display: "block" }}>
+                          {imgName}
+                        </label>
+                        <img
+                          className="uploadImg"
+                          src={URL.createObjectURL(img)}
+                          width="50%"
+                          height="80%"
+                        />
+                      </div>
+                    )}
 
-                  {pdf && <div className="uploadedImage">
-                    <object data={URL.createObjectURL(pdf)} width="30%" height="75%"></object>
-                    <label>{pdfName}</label>
-                  </div>}
+                    {pdf && (
+                      <div className="uploadedImage">
+                        <object
+                          data={URL.createObjectURL(pdf)}
+                          width="30%"
+                          height="75%"
+                        ></object>
+                        <label>{pdfName}</label>
+                      </div>
+                    )}
 
-                  {/* {message?.img && <img src={message?.img} alt="img" height="100px" width="100px" />} */}
-                </div></> :
+                    {/* {message?.img && <img src={message?.img} alt="img" height="100px" width="100px" />} */}
+                  </div>
+                </>
+              ) : (
                 <div
                   className="scroll-right"
                   style={{ background: "beige", height: "68%", width: "100%" }}
                 >
-                  <ul >
+                  <ul>
                     {messages?.map((message) => {
                       console.log("message:::", message);
                       const cssStr =
@@ -278,36 +327,101 @@ function LiveChat() {
                       if (!(message.text || message.img || message.pdf))
                         return null;
                       return (
-                        <div className={`container${cssStr}`}>
-                          {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
-                          {recieverDetails?.groupName && <p className="text-info blockquote-footer">
-                            {recieverDetails?.groupName && message.name}
-                          </p>}
-                          <p>{message.text}</p>
-                          {console.log(message?.img, "message?.img::::::")}
-                          {message?.img && <a target="blank" href={message?.img} download><img src={message?.img} alt="img" height="100px" width="100px" /></a>}
-                          {message?.pdf && console.log(message.pdf?.name)}
-                          {message?.pdf && <a target="blank" href={message?.pdf} download>{filePdf}{`\n${message?.fileName}`}</a>}
-                          <span className="time-right">{message?.time}</span>
-                        </div>
+                        <>
+                          <div className={`container${cssStr}`}>
+                            {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
+                            {recieverDetails?.groupName && (
+                              <span>
+                                {recieverDetails?.groupName && (
+                                  <img
+                                    style={{ display: "inline" }}
+                                    className="avatar"
+                                    src={message?.avatar}
+                                  />
+                                )}
+                                <p
+                                  className="ml-75 text-info blockquote-footer"
+                                  style={{ display: "inline" }}
+                                >
+                                  {recieverDetails?.groupName && message.name}
+                                </p>
+                              </span>
+                            )}
+                            <p>{message.text}</p>
+                            {console.log(message?.img, "message?.img::::::")}
+                            {message?.img && (
+                              <a target="blank" href={message?.img} download>
+                                <img
+                                  src={message?.img}
+                                  alt="img"
+                                  height="100px"
+                                  width="100px"
+                                />
+                              </a>
+                            )}
+                            {message?.pdf && console.log(message.pdf?.name)}
+                            {message?.pdf && (
+                              <a target="blank" href={message?.pdf} download>
+                                {filePdf}
+                                {`\n${message?.fileName}`}
+                              </a>
+                            )}
+                            <span className="time-right">{message?.time}</span>
+                          </div>
+                        </>
                       );
                     })}
                   </ul>
-                </div>}
-              <FileContext.Provider value={{ outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStatus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl }}>
+                </div>
+              )}
+              <FileContext.Provider
+                value={{
+                  outputMessage,
+                  setOutputMessage,
+                  text,
+                  setText,
+                  img,
+                  setImg,
+                  imgName,
+                  setImgName,
+                  pdf,
+                  setPdf,
+                  pdfName,
+                  setPdfName,
+                  loading,
+                  setLoading,
+                  fileStatus,
+                  setFileStatus,
+                  invalid,
+                  setInvalid,
+                  imgUrl,
+                  setImgUrl,
+                  pdfUrl,
+                  setPdfUrl,
+                  fileUrl,
+                  setFileUrl,
+                }}
+              >
                 <SendMessage />
                 {/* <UserProfile activeUser={activeUser}/> */}
               </FileContext.Provider>
             </>
           )}
         </div>
-        {showGroupInfoEditForm && <div className="d-block">
-          {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
-          <Header title="Group Info"
-            goBack={() => setShowGroupInfoEditForm(false)}
-          />
-          <UserProfile activeUser={recieverDetails} setEditProfile={setShowGroupInfoEditForm} isGroup={true} />
-        </div>}
+        {showGroupInfoEditForm && (
+          <div className="d-block">
+            {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
+            <Header
+              title="Group Info"
+              goBack={() => setShowGroupInfoEditForm(false)}
+            />
+            <UserProfile
+              activeUser={recieverDetails}
+              setEditProfile={setShowGroupInfoEditForm}
+              isGroup={true}
+            />
+          </div>
+        )}
         {showMemberEditFormOnTheRight && (
           <div className="selectParticipants-right">
             <Header

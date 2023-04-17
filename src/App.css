@@ -30,11 +30,11 @@
   padding: 6px 16px;
 }
 
-.dropdown-toggle::after{
+.dropdown-toggle::after {
   display: hidden;
 }
 
-.dropdown-toggle{
+.dropdown-toggle {
   display: hidden;
 }
 
@@ -42,7 +42,7 @@
 button {
   background-color: #fafbfc;
   border: 1px solid rgba(27, 31, 35, 0.15);
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
   box-sizing: border-box;

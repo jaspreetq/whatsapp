@@ -1,156 +1,178 @@
-import { doc, updateDoc } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import React, { useContext, useState } from 'react'
+import { doc, updateDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import React, { useContext, useState } from "react";
 import { auth, db, storage } from "../../../firebase";
-import { FileContext } from '../../LiveChat';
-import { rightArrow } from '../../Utillities/icons';
-import { IMAGES } from '../../Utillities/Images'
+import { FileContext } from "../../LiveChat";
+import { rightArrow } from "../../Utillities/icons";
+import { IMAGES } from "../../Utillities/Images";
 
-
-//active user - 2meanings 
+//active user - 2meanings
 function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
-    const [userName, setUserName] = useState(activeUser?.name || activeUser?.groupName)
-    const [img, setImg] = useState("")
-    const [imgName, setImgName] = useState("")
-    const [fileStatus, setFileStatus] = useState(false)
-    const [imgUrl, setImgUrl] = useState("")
-    let imgURL;
-    function handleDpChange(e) {
-        // setFileStatus(true)
-        setImg(null)
+  const [userName, setUserName] = useState(
+    activeUser?.name || activeUser?.groupName
+  );
+  const [img, setImg] = useState("");
+  const [imgName, setImgName] = useState("");
+  const [fileStatus, setFileStatus] = useState(false);
+  const [imgUrl, setImgUrl] = useState("");
+  let imgURL;
+  function handleDpChange(e) {
+    // setFileStatus(true)
+    setImg(null);
 
-        setImg(e.target.files[0]);
-        setImgName(e.target.files[0].name);
-        setFileStatus(true);
+    setImg(e.target.files[0]);
+    setImgName(e.target.files[0].name);
+    setFileStatus(true);
 
-        e.target.value = null;
-        // setFile(event.target.files[0]);
+    e.target.value = null;
+    // setFile(event.target.files[0]);
 
-        // handleUpload()
-        //MODAL --> HANDLE UPLOAD
-    }
+    // handleUpload()
+    //MODAL --> HANDLE UPLOAD
+  }
 
-    // const handleEnter = (e) => e.key === "Enter" && handleSend();
-    const handleNameChange = async () => {
-        activeUser?.groupName && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
-            uid: activeUser.uid,
-            groupName: userName,
-            participants: [...activeUser?.participants],
-            avatar: activeUser.avatar, //random array dp generator
-            createdAt: activeUser.createdAt,
-            creatorUid: activeUser.creatorUid,
-        })
+  // const handleEnter = (e) => e.key === "Enter" && handleSend();
+  const handleNameChange = async () => {
+    activeUser?.groupName &&
+      userName?.trim() &&
+      (await updateDoc(doc(db, "users", activeUser?.uid), {
+        uid: activeUser.uid,
+        groupName: userName,
+        participants: [...activeUser?.participants],
+        avatar: activeUser.avatar, //random array dp generator
+        createdAt: activeUser.createdAt,
+        creatorUid: activeUser.creatorUid,
+      }));
 
-        activeUser?.name && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
-            uid: activeUser.uid,
-            name: userName,
-            email: activeUser.email,
-            avatar: activeUser.avatar, //random array dp generator
-            createdAt: activeUser.createdAt,
-        })
-    }
+    activeUser?.name &&
+      userName?.trim() &&
+      (await updateDoc(doc(db, "users", activeUser?.uid), {
+        uid: activeUser.uid,
+        name: userName,
+        email: activeUser.email,
+        avatar: activeUser.avatar, //random array dp generator
+        createdAt: activeUser.createdAt,
+      }));
+  };
 
-    const handleUpload = async () => {
-        setFileStatus(false)
+  const handleUpload = async () => {
+    setFileStatus(false);
 
-        if (img) {
-            console.log("imgimgin", img)
-            const localFileNewURL = `/profiles/${img.name}${auth.currentUser.uid}`;
-            const storageRef = ref(storage, localFileNewURL);
-            const uploadTask = uploadBytesResumable(storageRef, img);
+    if (img) {
+      console.log("imgimgin", img);
+      const localFileNewURL = `/profiles/${img.name}${auth.currentUser.uid}`;
+      const storageRef = ref(storage, localFileNewURL);
+      const uploadTask = uploadBytesResumable(storageRef, img);
 
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    const percent = Math.round(
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                    );
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const percent = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
 
-                    // update progress
-                    // setPercent(percent);
-                },
-                (err) => console.log(err),
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-                        setImgUrl(url);
-                        imgURL = url;
-                        console.log(url, imgURL, "url ::");
-                        activeUser?.groupName && userName?.trim() && await updateDoc(doc(db, "users", activeUser?.uid), {
-                            uid: activeUser.uid,
-                            groupName: userName,
-                            participants: [...activeUser?.participants],
-                            avatar: url, //random array dp generator
-                            createdAt: activeUser.createdAt,
-                            creatorUid: activeUser.creatorUid,
-                        })
+          // update progress
+          // setPercent(percent);
+        },
+        (err) => console.log(err),
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            setImgUrl(url);
+            imgURL = url;
+            console.log(url, imgURL, "url ::");
+            activeUser?.groupName &&
+              userName?.trim() &&
+              (await updateDoc(doc(db, "users", activeUser?.uid), {
+                uid: activeUser.uid,
+                groupName: userName,
+                participants: [...activeUser?.participants],
+                avatar: url, //random array dp generator
+                createdAt: activeUser.createdAt,
+                creatorUid: activeUser.creatorUid,
+              }));
 
-                        if (activeUser?.name) {
-                            await updateDoc(doc(db, "users", activeUser?.uid), {
-                                uid: activeUser.uid,
-                                name: userName,
-                                email: activeUser.email,
-                                avatar: url,
-                                createdAt: activeUser.createdAt,
-                            })
-
-                            
-                        }
-                    });
-                }
-            );
+            if (activeUser?.name) {
+              await updateDoc(doc(db, "users", activeUser?.uid), {
+                uid: activeUser.uid,
+                name: userName,
+                email: activeUser.email,
+                avatar: url,
+                createdAt: activeUser.createdAt,
+              });
+            }
+          });
         }
+      );
+    }
 
-        setImg(null);
-        setImgUrl("")
-        // setUserName("");
-        // progress can be paused and resumed. It also exposes progress updates.
-        // Receives the storage reference and the file to upload.
-    };
+    setImg(null);
+    setImgUrl("");
+    // setUserName("");
+    // progress can be paused and resumed. It also exposes progress updates.
+    // Receives the storage reference and the file to upload.
+  };
 
-    return (
-        <div className='h-100 w-100'>
-            <div>
-
-                <label htmlFor="profilePicture">
-                    {img ?
-                        <img className="avatar" src={URL.createObjectURL(img)} width="500px" height="500px" />
-                        : <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" />}
-                    {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
-                </label>
-                <input
-                    id="profilePicture"
-                    style={{ display: "contents" }}
-                    type="file"
-                    onChange={handleDpChange}
-                    accept="image/*"
-                />
-            </div>
-            <>
-                <div>
-                    <input
-                        id="newName"
-                        className='textInput'
-                        value={userName}
-                        onChange={(e) => {
-                            setUserName(e.target.value);
-                        }}
-                        type="text"
-                        placeholder="Name..."
-                    // onKeyDown={(e) => handleEnter(e)}
-                    />
-
-                </div>
-                <button onClick={() => {
-                    ((activeUser?.name !== userName) || (activeUser?.groupName !== userName)) && handleNameChange()
-                    activeUser?.avatar !== img && handleUpload()
-                    // handleUpload()
-                    setEditProfile(false)
-                }}>
-                    {rightArrow}
-                </button>
-            </>
+  return (
+    <div className="h-100 w-100">
+      <div className="d-flex justify-content-center h-50">
+        <label htmlFor="profilePicture">
+          {img ? (
+            <img
+              className="avatar"
+              src={URL.createObjectURL(img)}
+              height="150px"
+              width="150px"
+            />
+          ) : (
+            <img
+              className="avatar large"
+              src={activeUser?.avatar || IMAGES.default}
+              alt="Avatar"
+              height="150px"
+              width="150px"
+            />
+          )}
+          {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
+        </label>
+        <input
+          id="profilePicture"
+          style={{ display: "contents" }}
+          type="file"
+          onChange={handleDpChange}
+          accept="image/*"
+        />
+      </div>
+      <>
+        <div className="d-flex justify-content-center">
+          <input
+            id="newName"
+            className="textInput"
+            value={userName}
+            onChange={(e) => {
+              setUserName(e.target.value);
+            }}
+            type="text"
+            placeholder="Name..."
+            // onKeyDown={(e) => handleEnter(e)}
+          />
         </div>
-    )
+        <div className="d-flex justify-content-center">
+          <button
+            onClick={() => {
+              (activeUser?.name !== userName ||
+                activeUser?.groupName !== userName) &&
+                handleNameChange();
+              activeUser?.avatar !== img && handleUpload();
+              // handleUpload()
+              setEditProfile(false);
+            }}
+          >
+            {rightArrow}
+          </button>
+        </div>
+      </>
+    </div>
+  );
 }
 
-export default UserProfile
+export default UserProfile;

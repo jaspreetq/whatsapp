@@ -20,7 +20,7 @@
 }
 
 .selected {
-  background: #9ea5a9
+  background: #9ea5a9;
 }
 .scroll-left {
   flex: 1;
@@ -34,11 +34,8 @@
   display: none;
 }
 
-.dropdown-toggle{
-  display: none;
-} */
 /* .container {
-    display: flex;
+  display: flex;
     overflow: hidden;
     max-height: 100%;
   }
@@ -47,6 +44,10 @@
     flex: 1;
   } */
 
-  .avatar:hover{
-    background-color: grey;
-  }
+.avatar:hover {
+  background-color: grey;
+}
+
+.dropdown-toggle {
+  padding-right: 0;
+}

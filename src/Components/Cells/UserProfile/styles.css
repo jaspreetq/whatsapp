@@ -1,6 +1,13 @@
-.profilePicture{
-    border-radius: 50%;
-    padding: 0;
-    width: 50%;
-    
+.profilePicture {
+  border-radius: 50%;
+  padding: 0;
+  width: 50%;
+}
+.large {
+  width: 100px;
+  height: 100px;
+}
+
+.large:hover {
+  background-color: grey;
 }
