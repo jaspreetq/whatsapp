@@ -128,8 +128,8 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
               className="avatar large"
               src={activeUser?.avatar || IMAGES.default}
               alt="Avatar"
-              height="150px"
-              width="150px"
+              height="40vh"
+              width="30vw"
             />
           )}
           {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
