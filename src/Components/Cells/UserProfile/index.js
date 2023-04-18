@@ -5,6 +5,7 @@ import { auth, db, storage } from "../../../firebase";
 import { FileContext } from "../../LiveChat";
 import { rightArrow } from "../../Utillities/icons";
 import { IMAGES } from "../../Utillities/Images";
+import { messageContext } from "../../../App";
 
 //active user - 2meanings
 function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
@@ -16,6 +17,8 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
   const [fileStatus, setFileStatus] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   let imgURL;
+  // const {welcomeChatPage,
+  //   setWelcomeChatPage} = useContext(messageContext);
   function handleDpChange(e) {
     // setFileStatus(true)
     setImg(null);

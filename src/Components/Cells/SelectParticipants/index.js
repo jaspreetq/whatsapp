@@ -38,27 +38,33 @@ function SelectParticipants(props) {
     setRecieverDetails,
     messages,
     setMessages,
+    welcomeChatPage,
+    setWelcomeChatPage,
   } = useContext(messageContext);
 
   const grp = users?.find((user) => user.uid == actualDbId);
+  const getUserFromUid = (uid)=> users?.find((user) => user.uid === uid);
   const [localGroupName, setLocalGroupName] = useState(grp?.groupName);
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, "chats", actualDbId), (doc) => {
-      // doc?.exists() && setMessages(doc.data()?.messages);
-      setMessages(doc.data()?.messages);
-      console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
-      console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
-      //setWelcomeChatPage(true);
-    });
-    console.log("recieverDetails ", recieverDetails);
-    return () => unsubscribe();
-  }, []);
-
+  // useEffect(()=>{
+  //   const q = query(collection(db, "users"), orderBy("createdAt"));
+  //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+  //     QuerySnapshot.forEach((doc) => {
+  //       // console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
+  //     });
+  //   });
+  //   console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
+  //   return () => unsubscribe;
+  // },[])
+  useEffect(()=>{
+    setRecieverDetails(users?.at(-1));
+    setActualDbId(users?.at(-1)?.uid);
+    setWelcomeChatPage(true)
+  },[users])
   useEffect(() => {
     if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
       setIsNewGroupBtnClicked(true);
@@ -115,7 +121,7 @@ function SelectParticipants(props) {
     setIsNewGroupBtnClicked(true);
     setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
-    // setRecieverDetails(?.participants)
+    // setRecieverDetails()
   };
   // const [recentGroupName,setRecentGroupName]
   //   const userCheckboxChange = (e, checkedUser) => {};
@@ -153,6 +159,9 @@ function SelectParticipants(props) {
     setIsNewGroupBtnClicked(true);
     setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
+    // setRecieverDetails(getUserFromUid(gid))
+    console.log("after create new grp : receiverdetails",recieverDetails);
+    // setWelcomeChatPage(true)
   };
 
   return (

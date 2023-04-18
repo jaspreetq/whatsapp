@@ -78,6 +78,7 @@
 
 .time-right {
   float: right;
+  /* position: relative; */
   color: #aaa;
 }
 

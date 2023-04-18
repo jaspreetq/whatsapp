@@ -7,3 +7,11 @@
     flex-direction: column;
     width: 50%;
 }
+
+.centered{
+    margin-left: 32%;
+}
+
+.enlarged{
+    width: 48%;
+}

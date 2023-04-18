@@ -27,7 +27,9 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [actualDbGroupId, setActualDbGroupId] = useState("");
   const [users, setUsers] = useState([]);
-  
+  const [loading,setLoading] = useState(false)
+  const defaultRec = ()=> users?.find((user) => user.uid !== auth.currentUser?.uid);
+
   useEffect(() => {
     const clear = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -43,7 +45,6 @@ function App() {
         // ...
       }
     });
-
     return () => clear();
   }, []);
   return (
@@ -73,17 +74,19 @@ function App() {
         setActualDbGroupId,
         users,
         setUsers,
+        loading,
+        setLoading
       }}
     >
       <div className="App">
         <BrowserRouter>
           <Routes>
             <Route path="/SignUp" element={<SignUp />} />
-            <Route path="/" element={<Welcome />} />
+            <Route path="/" element={<SignUp />} />
             <Route path="/SignIn" element={<SignIn />} />
             <Route
               path="/LiveChat/:uid"
-              element={user ? <LiveChat /> : <Welcome />}
+              element={user ? <LiveChat /> : <SignUp />}
             />
           </Routes>
         </BrowserRouter>

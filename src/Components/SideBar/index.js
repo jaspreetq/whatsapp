@@ -52,7 +52,7 @@ function SideBar() {
   const navigate = useNavigate();
   //SIGN-OUT
   const auth = getAuth();
-
+  const defaultRec = ()=> users?.find((user) => user.uid !== auth.currentUser?.uid);
   const signOut = () => {
     auth.signOut();
     setWelcomeChatPage(true);
@@ -75,6 +75,7 @@ function SideBar() {
 
 
   useEffect(() => {
+    // setRecieverDetails(defaultRec());
     const q = query(collection(db, "users"), orderBy("createdAt"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
@@ -145,8 +146,8 @@ function SideBar() {
               <img className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={()=>setEditProfile(true)}/>
               {"  "}
               <div className="d-flex justify-content-start w-100">
-                <div style={{ width: "99%", "margin-top": "6px" }}>
-                  {getCurrentUser()?.name}
+                <div style={{ width: "99%", "margin-top": "6px","margin-left": "7px" }}>
+                  {"  "}{getCurrentUser()?.name}
                 </div>
                 {/* 
                 <button
@@ -222,7 +223,7 @@ function SideBar() {
                 );
                 if (user?.groupName && !isCurrentUserAMemberOfThisGroup) return;
                 const cssUser =
-                  recieverDetails.uid === user.uid ? " selected" : ""; //||selectedGroup.uid === user.uid
+                  recieverDetails?.uid === user.uid ? " selected" : ""; //||selectedGroup.uid === user.uid
                 return (
                   <div
                     className={`user${cssUser}`}

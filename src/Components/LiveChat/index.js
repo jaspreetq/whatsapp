@@ -79,48 +79,53 @@ function LiveChat() {
   const presentUser = users?.find((user) => user.uid === auth.currentUser.uid);
   
 
-  // useEffect(() => {
-  //   const unsubscribe = onSnapshot(
-  //     doc(db, "users", recieverDetails?.uid || actualDbId || RANDOM_TEXT),
-  //     (doc) => {
-  //       // doc?.exists() && setMessages(doc.data()?.messages);
-  //       if (doc?.exists()) {
-  //         const { avatar, name, groupName, participants } = doc.data();
-  //         if (name)
-  //           setRecieverDetails({
-  //             ...recieverDetails,
-  //             ["avatar"]: avatar,
-  //             ["name"]: name,
-  //           });
-  //         else
-  //           setRecieverDetails({
-  //             ...recieverDetails,
-  //             ["avatar"]: avatar,
-  //             ["groupName"]: groupName,
-  //             ["participants"]: participants,
-  //           });
-  //       }
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(db, "users", recieverDetails?.uid || actualDbId || RANDOM_TEXT),
+      (doc) => {
+        // doc?.exists() && setMessages(doc.data()?.messages);
+        if (doc?.exists()) {
+          const { avatar, name, groupName, participants } = doc.data();
+          if (name)
+            setRecieverDetails({
+              ...recieverDetails,
+              ["avatar"]: avatar,
+              ["name"]: name,
+            });
+          else
+            setRecieverDetails({
+              ...recieverDetails,
+              ["avatar"]: avatar,
+              ["groupName"]: groupName,
+              ["participants"]: participants,
+            });
+        }
 
-  //       // console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
-  //       // console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
-  //       //setWelcomeChatPage(true);
-  //     }
-  //   );
-  //   console.log("recieverDetails ", recieverDetails);
-  //   return () => unsubscribe();
-  // }, [
-  //   recieverDetails?.name,
-  //   recieverDetails?.groupName,
-  //   recieverDetails?.avatar,
-  //   recieverDetails?.participants,
-  // ]);
-
+        // console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+        // console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+        //setWelcomeChatPage(true);
+      }
+    );
+    console.log("recieverDetails outside changed visible? ", recieverDetails);
+    return () => unsubscribe();
+  }, [users
+    // recieverDetails?.name,
+    // recieverDetails?.groupName,
+    // recieverDetails?.avatar,
+    // recieverDetails?.participants,
+  ]);
+  console.log("recieverDetails changed visible? ", recieverDetails);
   // useEffect(() => {
   // }, [recieverDetails?.uid]);
   
+  // useEffect(()=>{
+
+  // },[])
   useEffect(() => {
     // console.log("actualDbId: effect,reciever", );
     setFileStatus(false);
+    setShowGroupInfoEditForm(false);
+
     if (recieverDetails?.groupName) {
       setActualDbId(recieverDetails?.uid);
       setGroupName(recieverDetails?.name);
@@ -129,9 +134,9 @@ function LiveChat() {
       // setShowMemberEditFormOnTheRight()
     } else {
       dbId =
-        recieverDetails.uid > activeUser?.uid
-          ? recieverDetails.uid + activeUser?.uid
-          : activeUser?.uid + recieverDetails.uid;
+        recieverDetails?.uid > activeUser?.uid
+          ? recieverDetails?.uid + activeUser?.uid
+          : activeUser?.uid + recieverDetails?.uid;
       setActualDbId(dbId);
     }
   }, [recieverDetails?.uid]);
@@ -150,8 +155,8 @@ function LiveChat() {
           uid: actualDbId,
           senderUid: activeUser?.uid,
           senderName: activeUser?.name,
-          recieverUid: recieverDetails.uid,
-          recieverName: recieverDetails.name,
+          recieverUid: recieverDetails?.uid,
+          recieverName: recieverDetails?.name,
           senderDetails: activeUser,
           recieverDetails,
           createdAt: serverTimestamp(),
@@ -187,6 +192,12 @@ function LiveChat() {
     console.log("recieverDetails ", recieverDetails);
     return () => unsubscribe();
   }, [actualDbId]);
+
+  const defaultRec = ()=> users?.find((user) => user.uid !== auth.currentUser?.uid);
+
+  const getCurrentUser = () => users?.find((user) => {
+    return user.uid == auth.currentUser.uid;
+  })
 
   const checkIfPresentUserIsAdmin = () =>
     presentUser?.uid?.includes(auth.currentUser.uid);
@@ -253,8 +264,9 @@ function LiveChat() {
                         ?.find((user) => user.uid === actualDbId)
                         ?.participants?.map(
                           (member) => {
+                            if(member?.uid === auth.currentUser.uid)return `${getCurrentUser()?.name}, `
                             if (member?.uid !== member?.creator)
-                              return `${member.name},`;
+                              return `${member.name}, `;
                           } //(users?.find(user=>user.uid === actualDbId))
                         )}
                   </p>
@@ -356,6 +368,7 @@ function LiveChat() {
                                   alt="img"
                                   height="100px"
                                   width="100px"
+                                  // onClick={()=>set}
                                 />
                               </a>
                             )}
@@ -410,6 +423,9 @@ function LiveChat() {
         </div>
         {showGroupInfoEditForm && (
           <div className="d-block">
+          {/* <div className="lds-ellipsis" style={{"font-size":"5rem"}}>
+          <div>.</div><div>.</div><div>.</div><div>.</div>
+          </div> */}
             {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
             <Header
               title="Group Info"

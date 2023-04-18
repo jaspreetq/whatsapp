@@ -35,10 +35,12 @@ function SignIn() {
     setWelcomeChatPage,
     activeUser,
     setActiveUser,
+    loading,setLoading
   } = useContext(messageContext);
 
   useEffect(() => {
     setErrorMessage("");
+    return setLoading(false)
   }, []);
 
   // connectAuthEmulator(auth, "http://localhost:9899");
@@ -102,6 +104,7 @@ function SignIn() {
 
   return (
     <>
+    {/* {loading ? :} */}
       <div className="signIn">
       <div className="registerHeader"><h2>Whatsapp-Web</h2></div>
         <div className="form">
