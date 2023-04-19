@@ -43,6 +43,7 @@
   margin: 10px 0;
   max-width: 50%;
   word-wrap: break-word;
+  width: fit-content;
 }
 
 .container-sender {
@@ -54,8 +55,13 @@
   margin-right: 0;
   margin-left: 50%;
   max-width: 48%;
+  width: fit-content;
   /* min-width: none;
    */
+   
+   /* margin-left:30%;
+   float: right; */
+
   word-wrap: break-word;
 }
 
@@ -118,4 +124,11 @@
   height: 100%;
   padding: 5%;
     padding-left: 30%;
+}
+
+.defaultChat{
+  background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/WhatsApplogo.jpg");
+  /* /home/chicmic/Documents/whatsapp/public/whatsappSide.png  */
+			background-repeat: no-repeat;
+			background-size: cover;
 }

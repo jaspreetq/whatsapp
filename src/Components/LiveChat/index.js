@@ -71,7 +71,7 @@ function LiveChat() {
   );
   const [isEditGrpBtnClicked, setIsEditGrpBtnClicked] = useState(false);
   const [groupName, setGroupName] = useState("");
-
+  const refHook = useRef();
   // const [groupName,setGroupName] = useState(recieverDetails?.groupName);
   const param = useParams();
   let groupNameTemp = recieverDetails?.groupName;
@@ -121,6 +121,10 @@ function LiveChat() {
   // useEffect(()=>{
 
   // },[])
+  useEffect(() => {
+    refHook.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   useEffect(() => {
     // console.log("actualDbId: effect,reciever", );
     setFileStatus(false);
@@ -215,9 +219,9 @@ function LiveChat() {
         <SideBar />
         <div style={{width:"80%"}}>
           {welcomeChatPage ? (
-            <div className="align-middle w-100 h-50">
+            <div className="defaultChat align-middle w-100 h-100">
               {" "}
-              Select a contact to chat
+              <div style={{"font-size":"23px", "padding-left":"10px", "background": "#f8f9fae0"}}><br/>Select a contact to chat</div>
             </div>
           ) : (
             <>
@@ -340,8 +344,8 @@ function LiveChat() {
                       if (!(message.text || message.img || message.pdf))
                         return null;
                       return (
-                        <>
-                          <div className={`container${cssStr}`}>
+                        <div className="w-100">
+                          <div ref={refHook} className={`container${cssStr}`}>
                             {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
                             {recieverDetails?.groupName && (
                               <span>
@@ -382,7 +386,7 @@ function LiveChat() {
                             )}
                             <span className="time-right">{message?.time}</span>
                           </div>
-                        </>
+                        </div>
                       );
                     })}
                   </ul>
@@ -422,7 +426,7 @@ function LiveChat() {
             </>
           )}
         </div>
-        {showGroupInfoEditForm && (
+        {showGroupInfoEditForm && recieverDetails?.groupName && (
           <div className="d-block">
           {/* <div className="lds-ellipsis" style={{"font-size":"5rem"}}>
           <div>.</div><div>.</div><div>.</div><div>.</div>
@@ -432,6 +436,7 @@ function LiveChat() {
               title="Group Info"
               goBack={() => setShowGroupInfoEditForm(false)}
             />
+            <br/><br/>
             <UserProfile
               activeUser={recieverDetails}
               setEditProfile={setShowGroupInfoEditForm}

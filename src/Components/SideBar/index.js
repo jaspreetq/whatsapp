@@ -133,7 +133,7 @@ function SideBar() {
               setIsNewGroupBtnClicked={setIsNewGroupBtnClicked}
               showGroupAddComp={showGroupAddComp}
               setShowGroupAddComp={setShowGroupAddComp}
-              groupName={groupName}
+              groupName={""}
               setGroupName={setGroupName}
             />
           </>

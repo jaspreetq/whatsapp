@@ -44,12 +44,15 @@ function SelectParticipants(props) {
 
   const grp = users?.find((user) => user.uid == actualDbId);
   const getUserFromUid = (uid)=> users?.find((user) => user.uid === uid);
-  const [localGroupName, setLocalGroupName] = useState(grp?.groupName);
+  const [localGroupName, setLocalGroupName] = useState(getUserFromUid(recieverDetails?.uid)?.groupName);
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
+  useEffect(()=>{
+    setLocalGroupName(getUserFromUid(recieverDetails?.uid)?.groupName)
+  },[])
   // useEffect(()=>{
   //   const q = query(collection(db, "users"), orderBy("createdAt"));
   //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
@@ -161,13 +164,14 @@ function SelectParticipants(props) {
     setIsNewGroupBtnClicked(true);
     setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
+    // setGroupName("")
     // setRecieverDetails(getUserFromUid(gid))
     console.log("after create new grp : receiverdetails",recieverDetails);
     // setWelcomeChatPage(true)
   };
 
   return (
-    <div>
+    <div className="padded" style={{padding: "15px"}}>
       <div>
         <input
           className="textInput"

@@ -55,7 +55,10 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
         email: activeUser.email,
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
-      }));
+      })
+      
+      );
+      
   };
 
   const handleUpload = async () => {
@@ -131,10 +134,11 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
               className="avatar large"
               src={activeUser?.avatar || IMAGES.default}
               alt="Avatar"
-              height="40vh"
-              width="30vw"
+              height="100px"
+              width="100px"
             />
           )}
+          {/* https://api.backlinko.com/app/uploads/2021/03/whatsapp-user-statistics.webp */}
           {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
         </label>
         <input
