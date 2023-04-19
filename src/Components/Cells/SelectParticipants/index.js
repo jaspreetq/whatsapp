@@ -60,11 +60,13 @@ function SelectParticipants(props) {
   //   console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
   //   return () => unsubscribe;
   // },[])
-  useEffect(()=>{
-    setRecieverDetails(users?.at(-1));
-    setActualDbId(users?.at(-1)?.uid);
-    setWelcomeChatPage(true)
-  },[users])
+
+  // useEffect(()=>{
+  //   // setRecieverDetails(users?.at(-1));
+  //   // setActualDbId(users?.at(-1)?.uid);
+  //   setWelcomeChatPage(true)
+  // },[users?.length])
+
   useEffect(() => {
     if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
       setIsNewGroupBtnClicked(true);
@@ -117,7 +119,7 @@ function SelectParticipants(props) {
     });
     //create new
     // setActualDbGroupId(gid);
-    // setActualDbId(gid);
+    setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
     setSelectedParticipants([{}]);
     setShowGroupAddComp(false);

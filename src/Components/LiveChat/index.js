@@ -205,6 +205,7 @@ function LiveChat() {
   return (
     //RecieveChat
     <div className="liveChat">
+    <div className="registerHeader seeThrough"></div>
       {/* {showMemberEditFormOnTheRight && <CustomModal { children, show, setEditedGroupName = ()=>{}, string, handleEditGroupName, editedGroupName, handleGroupNameEdit, setShow, channelName, title, selectedList, setSelectedList, addChannel, addUser=()=>{}, handleSelect=()=>{}, showHead, showFoot }) >
       </CustomModal>} */}
       {/* <SignOut /> */}
@@ -212,7 +213,7 @@ function LiveChat() {
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar">
         <SideBar />
-        <div className="w-100 pt-3 ">
+        <div style={{width:"80%"}}>
           {welcomeChatPage ? (
             <div className="align-middle w-100 h-50">
               {" "}

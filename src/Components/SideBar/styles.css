@@ -1,11 +1,9 @@
 .sideBar {
-  margin: 0;
-  padding: 0;
-  max-width: 24%;
-  height: 100%;
-  /* align; */
-  margin-left: 0;
+  padding-right: 0;
+  border: 1px solid grey;
+  height: 100vh;
 }
+
 .avatar {
   vertical-align: middle;
   width: 50px;

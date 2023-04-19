@@ -114,13 +114,16 @@ function SideBar() {
 
   return (
     <>
-      <div class="col-5 p-3 h-100">
+      <div class="w-25 sidebar border-right border-top border-left border-secondary">
         {showGroupAddComp ? (
           <>
             <Header
               title="Create New group"
-              goBack={() => setShowGroupAddComp(false)}
+              goBack={() => {
+                setGroupName("")
+                setShowGroupAddComp(false)}}
             />
+            
             <SelectParticipants
               users={users}
               selectedParticipants={selectedParticipants}
@@ -210,7 +213,7 @@ function SideBar() {
           placeholder="Search"
           aria-label="Search"
         /> */}
-            <div className="scroll-left">
+            <div className="scroll-left sidebar">
               {users?.map((user) => {
                 if (user.uid == auth.currentUser.uid) return;
                 const isCurrentUserAMemberOfThisGroup =

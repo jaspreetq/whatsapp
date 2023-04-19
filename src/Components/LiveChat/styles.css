@@ -1,12 +1,22 @@
 .liveChat {
   /* margin: 0;
   width: 95%;
-  padding: 0; */
+  padding: 0; 
+  #f0f2f5
+  */
   /* background-image: url("background.png"); */
-}
 
+}
+.seeThrough{
+  z-index: -1;
+  height: 120px;
+}
+.bg-light{
+  background: #f0f2f5;
+}
 .sidebar {
   height: 100vh;
+  background: #fff;
 }
 .container {
   display: flex;
@@ -79,12 +89,12 @@
 .time-right {
   float: right;
   /* position: relative; */
-  color: #aaa;
-}
+  color: black;
+} 
 
 .time-left {
   float: left;
-  color: #999;
+  color: black;
 }
 
 .wrapper {

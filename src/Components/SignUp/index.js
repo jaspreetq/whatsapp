@@ -122,6 +122,7 @@ function SignUp() {
         // onKeyDown={handleEnter}
         />
         <br />
+        <p style={{ color: "red" }}>{errorMessage}</p>
         <br />
         <button className="registration enlarged" onClick={(e) => {
           setLoading(true)
@@ -132,7 +133,6 @@ function SignUp() {
           setLoading(true);
           return navigate("/SignIn");
         }}>Existing User, SignIn</button>
-        <p style={{ color: "red" }}>{errorMessage}</p>
       </div>
       <div className="rightSideImage"></div>
     </div>

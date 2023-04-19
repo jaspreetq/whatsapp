@@ -24,6 +24,7 @@ function SendMessage() {
   const [file, setFile] = useState("");
   // progress
   const [percent, setPercent] = useState(0);
+  const [fileSizeError,setFileSizeError] = useState("")
   const { outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
   let imgURL, pdfURL;
   const date = new Date();
@@ -44,6 +45,11 @@ function SendMessage() {
   // }, [img]);
 
   function handleFileChange(e) {
+    if(e.target.files[0]?.size > 16777216)
+    {
+      setFileSizeError("Too large to upload ,Limit the file size to 16MB");
+      return;
+    }
     document.getElementsByClassName(" react-input-emoji--input")?.[0].focus();
     // setFileStatus(true)
     setImg(null)
@@ -204,7 +210,7 @@ function SendMessage() {
             style={{ display: "contents" }}
             type="file"
             onChange={handleFileChange}
-            accept="image/*,application/pdf"
+            accept="image/*,application/pdf,video/mp4,video/x-m4v,video/*,.mp3,audio/*"
           />
           {/* style={{"border-style": "none","padding":0 }} */}
         </div>
