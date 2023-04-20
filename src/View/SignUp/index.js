@@ -9,13 +9,13 @@ import {
 
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { messageContext } from "../../App";
+
 import { auth, db } from "../../firebase";
-import { NAME_ERROR_STRING } from "../ConstantStrings";
-import { errorDisplay } from "../Utillities/errorDisplay";
-import { IMAGES } from "../Utillities/Images";
-import { threeDotsHamburger } from "../Utillities/icons";
+import { NAME_ERROR_STRING } from "../../Components/ConstantStrings";
+import { errorDisplay } from "../../Components/Utillities/errorDisplay";
+import { IMAGES } from "../../Components/Utillities/Images";
 import "./styles.css";
+import { messageContext } from "../../App";
 
 function SignUp() {
   const [name, setName] = useState("");
@@ -88,7 +88,7 @@ function SignUp() {
         <input
           className="textInput"
           id="userName"
-          value={name}
+          value={name}  
           onChange={(e) => {
             setName(e.target.value);
           }}

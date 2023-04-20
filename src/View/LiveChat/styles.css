@@ -21,12 +21,12 @@
 .container {
   display: flex;
   overflow: hidden;
-  max-height: 100%;
+  max-height: 100vh;
 }
 .scroll-right {
   flex: 1;
   overflow-y: scroll;
-  max-height: 100%;
+  max-height: 100vh;
 }
 
 .left-box,

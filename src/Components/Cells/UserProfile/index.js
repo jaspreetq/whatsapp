@@ -2,7 +2,6 @@ import { doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useContext, useState } from "react";
 import { auth, db, storage } from "../../../firebase";
-import { FileContext } from "../../LiveChat";
 import { rightArrow } from "../../Utillities/icons";
 import { IMAGES } from "../../Utillities/Images";
 import { messageContext } from "../../../App";

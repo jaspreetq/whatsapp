@@ -17,7 +17,7 @@ import InputEmoji from "react-input-emoji";
 import "./styles.css";
 import { RANDOM_TEXT } from "../../../ConstantString";
 import { getTime } from "../../Utillities/getTime";
-import { FileContext } from "../../LiveChat";
+import { FileContext } from "../../../View/LiveChat";
 
 function SendMessage() {
   // State to store uploaded file
@@ -97,7 +97,7 @@ function SendMessage() {
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
             imgURL = url;
-            console.log(url, imgURL, "url ::");
+            console.log(url, imgURL, "url ::",actualDbId);
             await updateDoc(doc(db, "chats", actualDbId), {
               messages: arrayUnion({
                 uid: activeUser?.uid,
@@ -148,6 +148,7 @@ function SendMessage() {
       );
     }
     else{
+      console.log("arrunin",actualDbId,activeUser,recieverDetails,message );
        message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
         messages: arrayUnion({
           uid: activeUser?.uid,

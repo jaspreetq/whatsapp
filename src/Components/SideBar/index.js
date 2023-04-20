@@ -64,7 +64,7 @@ function SideBar() {
   };
 
   useEffect(() => {
-    isNewGroupBtnClicked && setShowGroupAddComp(false);
+    isNewGroupBtnClicked && setShowGroupAddComp(false)
   }, [isNewGroupBtnClicked]);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ function SideBar() {
 
   useEffect(() => {
     // setRecieverDetails(defaultRec());
-    const q = query(collection(db, "users"), orderBy("createdAt"));
+    const q = query(collection(db, "users"), orderBy("createdAt","desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
       console.log("<>snapshot<>", QuerySnapshot);
@@ -114,7 +114,7 @@ function SideBar() {
 
   return (
     <>
-      <div class="w-25 sidebar border-right border-top border-left border-secondary">
+      <div class="w-25 sidebar shadow">
         {showGroupAddComp ? (
           <>
             <Header
@@ -146,7 +146,7 @@ function SideBar() {
           <>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
             {/* getCurrentUser */}
-              <img className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={()=>setEditProfile(true)}/>
+              <img className="avatar editHover" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={()=>setEditProfile(true)}/>
               {"  "}
               <div className="d-flex justify-content-start w-100">
                 <div style={{ width: "99%", "margin-top": "6px","margin-left": "7px" }}>
@@ -185,11 +185,11 @@ function SideBar() {
                   <a
                     class="dropdown-item"
                     onClick={() => {
-                      const initialSelected =
-                        users[0].uid === auth.currentUser.uid
-                          ? users[1]
-                          : users[0];
-                      setRecieverDetails(initialSelected);
+                      // const initialSelected =
+                      //   users[0].uid === auth.currentUser.uid
+                      //     ? users[1]
+                      //     : users[0];
+                      // setRecieverDetails(initialSelected);
                       setShowGroupAddComp(true);
                     }}
                     href="#"

@@ -12,8 +12,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { IMAGES } from "../../Utillities/Images";
-import { GrpParticipantContext } from "../../../Context/GrpParticipantContextDefination";
 import { getUserFromUid } from "../../Utillities/getUserFromUid";
+import "./styles.css";
 
 function SelectParticipants(props) {
   const {
@@ -165,7 +165,7 @@ function SelectParticipants(props) {
     setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
     // setGroupName("")
-    // setRecieverDetails(getUserFromUid(gid))
+    // setRecieverDetails(getUserFromUid(gid,users))
     console.log("after create new grp : receiverdetails",recieverDetails);
     // setWelcomeChatPage(true)
   };
@@ -184,7 +184,7 @@ function SelectParticipants(props) {
           placeholder="Enter group name..."
         />
       </div>
-      <div>
+      <div className="">
         <br />
         <h6 className="text-primary">
           {isNewGroup

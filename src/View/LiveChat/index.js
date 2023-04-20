@@ -17,21 +17,18 @@ import {
   setDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import SendMessage from "../Cells/SendMessage";
-import SignOut from "../Atoms/SignOut";
+import { getUserFromUid } from "../../Components/Utillities/getUserFromUid";
+import UserProfile from "../../Components/Cells/UserProfile";
+import Header from "../../Components/Atoms/Header";
+import SelectParticipants from "../../Components/Cells/SelectParticipants";
+import { edit,filePdf } from "../../Components/Utillities/icons";
+import SideBar from "../../Components/SideBar";
 import { messageContext } from "../../App";
-import { getAuth, updateCurrentUser } from "firebase/auth";
-import SideBar from "../SideBar";
 import { useParams } from "react-router-dom";
-import { IMAGES } from "../Utillities/Images";
 import { RANDOM_TEXT } from "../../ConstantString";
-import { edit, filePdf, threeDotsHamburger } from "../Utillities/icons";
-import SelectParticipants from "../Cells/SelectParticipants";
-import CustomModal from "../CustomComponents/CustomModal";
-import Header from "../Atoms/Header";
-import { GrpParticipantContext } from "../../Context/GrpParticipantContextDefination";
-import UserProfile from "../Cells/UserProfile";
-import { getUserFromUid } from "../Utillities/getUserFromUid";
+import SendMessage from "../../Components/Cells/SendMessage";
+import { IMAGES } from "../../Components/Utillities/Images";
+
 export const FileContext = createContext();
 
 function LiveChat() {
@@ -86,12 +83,13 @@ function LiveChat() {
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         if (doc?.exists()) {
-          const { avatar, name, groupName, participants } = doc.data();
+          const { avatar, name,uid, groupName, participants } = doc.data();
           if (name)
             setRecieverDetails({
               ...recieverDetails,
               ["avatar"]: avatar,
               ["name"]: name,
+              ["uid"]: uid
             });
           else
             setRecieverDetails({
@@ -99,6 +97,7 @@ function LiveChat() {
               ["avatar"]: avatar,
               ["groupName"]: groupName,
               ["participants"]: participants,
+              ["uid"]: uid
             });
         }
 
@@ -130,13 +129,14 @@ function LiveChat() {
     // console.log("actualDbId: effect,reciever", );
     setFileStatus(false);
     setShowGroupInfoEditForm(false);
-
+    console.log("recieverDetails: in livechat",recieverDetails)
     if (recieverDetails?.groupName) {
       setActualDbId(recieverDetails?.uid);
       setGroupName(recieverDetails?.name);
       groupNameTemp = recieverDetails?.groupName;
       setSelectedParticipantsChat([...recieverDetails?.participants]);
       // setShowMemberEditFormOnTheRight()
+      setWelcomeChatPage(false)
     } else {
       dbId =
         recieverDetails?.uid > activeUser?.uid
@@ -226,10 +226,10 @@ function LiveChat() {
             </div>
           ) : (
             <>
-              <nav className="navbar navbar-expand-lg navbar-light bg-light">
+              <nav className="navbar navbar-expand-lg navbar-light bg-light border-left">
                 <img
                   className="avatar"
-                  src={getUserFromUid(recieverDetails?.uid,users)?.avatar}
+                  src={getUserFromUid(recieverDetails?.uid,users)?.avatar||IMAGES.default}
                   alt="Avatar"
                   onClick={() => setShowGroupInfoEditForm(true)}
                 />

@@ -12,13 +12,11 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { messageContext } from "../../App";
-import { errorDisplay } from "../Utillities/errorDisplay";
-// import { signUpEmailPassword } from "../Utillities/signUpEmailPassword";
 import { useNavigate } from "react-router-dom";
-import { IMAGES } from "../Utillities/Images";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { whatsapp } from "../Utillities/icons";
 import "./styles.css"
+import { errorDisplay } from "../../Components/Utillities/errorDisplay";
+import { whatsapp } from "../../Components/Utillities/icons";
 function SignIn() {
   const navigate = useNavigate();
   // const [userDetailsObj, setUserDetailsObj] = useState({});
@@ -150,3 +148,8 @@ function SignIn() {
   );
 }
 export default SignIn;
+
+// import { errorDisplay } from "../Utillities/errorDisplay";
+// // import { signUpEmailPassword } from "../Utillities/signUpEmailPassword";
+// import { IMAGES } from "../Utillities/Images";
+// import { whatsapp } from "../Utillities/icons";
