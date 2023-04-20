@@ -31,6 +31,7 @@ import CustomModal from "../CustomComponents/CustomModal";
 import Header from "../Atoms/Header";
 import { GrpParticipantContext } from "../../Context/GrpParticipantContextDefination";
 import UserProfile from "../Cells/UserProfile";
+import { getUserFromUid } from "../Utillities/getUserFromUid";
 export const FileContext = createContext();
 
 function LiveChat() {
@@ -228,7 +229,7 @@ function LiveChat() {
               <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <img
                   className="avatar"
-                  src={recieverDetails?.avatar}
+                  src={getUserFromUid(recieverDetails?.uid,users)?.avatar}
                   alt="Avatar"
                   onClick={() => setShowGroupInfoEditForm(true)}
                 />
@@ -270,8 +271,7 @@ function LiveChat() {
                         ?.participants?.map(
                           (member) => {
                             if(member?.uid === auth.currentUser.uid)return `${getCurrentUser()?.name}, `
-                            if (member?.uid !== member?.creator)
-                              return `${member.name}, `;
+                            return `${getUserFromUid(member?.uid,users)?.name}, `;
                           } //(users?.find(user=>user.uid === actualDbId))
                         )}
                   </p>
@@ -353,14 +353,14 @@ function LiveChat() {
                                   <img
                                     style={{ display: "inline" }}
                                     className="avatar"
-                                    src={message?.avatar}
+                                    src={getUserFromUid(message?.uid,users)?.avatar}
                                   />
                                 )}
                                 {cssStr==="-reciever" && <p
                                   className="ml-75 text-info blockquote-footer"
                                   style={{ display: "inline" }}
                                 >
-                                  {recieverDetails?.groupName && message.name}
+                                  {recieverDetails?.groupName && getUserFromUid(message?.uid,users)?.name}
                                 </p>}
                               </span>
                             )}

@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { IMAGES } from "../../Utillities/Images";
 import { GrpParticipantContext } from "../../../Context/GrpParticipantContextDefination";
+import { getUserFromUid } from "../../Utillities/getUserFromUid";
 
 function SelectParticipants(props) {
   const {
@@ -43,15 +44,14 @@ function SelectParticipants(props) {
   } = useContext(messageContext);
 
   const grp = users?.find((user) => user.uid == actualDbId);
-  const getUserFromUid = (uid)=> users?.find((user) => user.uid === uid);
-  const [localGroupName, setLocalGroupName] = useState(getUserFromUid(recieverDetails?.uid)?.groupName);
+  const [localGroupName, setLocalGroupName] = useState(getUserFromUid(recieverDetails?.uid,users)?.groupName);
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
   useEffect(()=>{
-    setLocalGroupName(getUserFromUid(recieverDetails?.uid)?.groupName)
+    setLocalGroupName(getUserFromUid(recieverDetails?.uid,users)?.groupName)
   },[])
   // useEffect(()=>{
   //   const q = query(collection(db, "users"), orderBy("createdAt"));

@@ -43,7 +43,7 @@
   margin: 10px 0;
   max-width: 50%;
   word-wrap: break-word;
-  width: fit-content;
+  /* width: fit-content; */
 }
 
 .container-sender {
@@ -55,7 +55,7 @@
   margin-right: 0;
   margin-left: 50%;
   max-width: 48%;
-  width: fit-content;
+  /* width: fit-content; */
   /* min-width: none;
    */
    
