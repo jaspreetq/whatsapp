@@ -114,7 +114,7 @@ function SideBar() {
 
   return (
     <>
-      <div class="w-25 sidebar shadow">
+      <div class="w-25 shadow sidebar">
         {showGroupAddComp ? (
           <>
             <Header
@@ -213,7 +213,7 @@ function SideBar() {
           placeholder="Search"
           aria-label="Search"
         /> */}
-            <div className="scroll-left sidebar">
+            <div className="scroll-left shadow sidebar">
               {users?.map((user) => {
                 if (user.uid == auth.currentUser.uid) return;
                 const isCurrentUserAMemberOfThisGroup =

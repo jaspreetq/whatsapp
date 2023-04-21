@@ -345,7 +345,7 @@ function LiveChat() {
                         return null;
                       return (
                         <div className="w-100">
-                          <div ref={refHook} className={`container${cssStr}`}>
+                          <div ref={refHook} className={`container${cssStr} shadow`}>
                             {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
                             {recieverDetails?.groupName && (
                               <span>
@@ -386,6 +386,7 @@ function LiveChat() {
                             )}
                             <span className="time-right">{message?.time}</span>
                           </div>
+                          {/* <span className=`time${}`>{message?.time}</span> */}
                         </div>
                       );
                     })}
