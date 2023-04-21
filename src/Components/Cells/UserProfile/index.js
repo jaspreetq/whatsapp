@@ -5,7 +5,7 @@ import { auth, db, storage } from "../../../firebase";
 import { rightArrow } from "../../Utillities/icons";
 import { IMAGES } from "../../Utillities/Images";
 import { messageContext } from "../../../App";
-
+import "./styles.css"
 //active user - 2meanings
 function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
   const [userName, setUserName] = useState(
@@ -123,18 +123,14 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
         <label htmlFor="profilePicture">
           {img ? (
             <img
-              className="avatar"
+              className="large"
               src={URL.createObjectURL(img)}
-              height="150px"
-              width="150px"
             />
           ) : (
             <img
-              className="avatar large"
+              className="large"
               src={activeUser?.avatar || IMAGES.default}
               alt="Avatar"
-              height="100px"
-              width="100px"
             />
           )}
           {/* https://api.backlinko.com/app/uploads/2021/03/whatsapp-user-statistics.webp */}
@@ -163,7 +159,7 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
           />
         </div>
         <div className="d-flex justify-content-center">
-          <button
+          <button className="arrow"
             onClick={() => {
               (activeUser?.name !== userName ||
                 activeUser?.groupName !== userName) &&

@@ -17,6 +17,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import "./styles.css"
 import { errorDisplay } from "../../Components/Utillities/errorDisplay";
 import { whatsapp } from "../../Components/Utillities/icons";
+import { LINK } from "../../ConstantString";
 function SignIn() {
   const navigate = useNavigate();
   // const [userDetailsObj, setUserDetailsObj] = useState({});
@@ -63,6 +64,13 @@ function SignIn() {
         loginEmail,
         loginPassword
       );
+
+      // const actionCodeSettings = {
+      //   url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
+      //   handleCodeInApp: true
+      // };
+      // await sendEmailVerification(auth.currentUser, actionCodeSettings)
+      // setDisplayError("Messages.sentVerification")
 
       console.log("userCredential signin ", userCredential);
       setErrorMessage("");
@@ -135,9 +143,11 @@ function SignIn() {
           <br /><br />
           <p style={{ color: "red" }}>{errorMessage}</p>
           {/* <button onClick={googleSignIn}>Sign In G</button> */}
+          <div className="">
           <button className="registration" onClick={handleSignIn}>Sign In</button>
           {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
           <button className="registration" onClick={() => navigate("/SignUp")}>New User, SignUp</button>
+          </div>
         </div>
         <div className="icon">
           {/* <p className="whatsapp_label"></p> */}

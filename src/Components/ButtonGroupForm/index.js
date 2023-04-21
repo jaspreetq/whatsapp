@@ -3,8 +3,8 @@ import { rightArrow } from "../Utillities/icons";
 
 function ButtonGroupForm(isNewGroupBtnClicked, setIsNewGroupBtnClicked) {
   return (
-    <div>
-      <button
+    <div style={{"padding-left":"50%"}}>
+      <button className="arrow"
         onClick={() => {
           if (isNewGroupBtnClicked) {
             console.log("isNewGroupBtnClicked ", isNewGroupBtnClicked);

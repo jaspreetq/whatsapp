@@ -16,6 +16,7 @@ import { errorDisplay } from "../../Components/Utillities/errorDisplay";
 import { IMAGES } from "../../Components/Utillities/Images";
 import "./styles.css";
 import { messageContext } from "../../App";
+// import { LINK } from "../../ConstantString";
 
 function SignUp() {
   const [name, setName] = useState("");
@@ -58,6 +59,14 @@ function SignUp() {
         signupEmail,
         signupPassword
       );
+
+      // const actionCodeSettings = {
+      //   url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
+      //   handleCodeInApp: true
+      // };
+      // await sendEmailVerification(auth.currentUser, actionCodeSettings)
+      // setLoading(Messages.sentVerification)
+
       console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
       await setDoc(doc(db, "users", uid), {
@@ -142,7 +151,7 @@ function SignUp() {
               return navigate("/SignIn");
             }}
           >
-            Existing User, SignIn
+            Existing User: SignIn
           </button>
         </div>
       </div>

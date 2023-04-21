@@ -19,7 +19,7 @@ export const rightArrow = (
     xmlns="http://www.w3.org/2000/svg"
     width="20"
     height="30"
-    fill="green"
+    fill="black"
     class="bi bi-arrow-right"
     viewBox="0 0 16 16"
   >

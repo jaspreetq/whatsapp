@@ -1,18 +1,25 @@
 .userProfile{
-  height: 100px;
-  width: 100px;
-  background: red;
+  height: 100%;
+  width: 100%;
 }
-.profilePicture {
-  border-radius: 50%;
-  padding: 0;
-  /* width: 50%; */
-}
+
 .large {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin:2%;
 }
 
 .large:hover {
-  background-color: grey;
+  background: grey;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.arrow{
+  background-color: #5db5a1e3;
+  border-radius: 40%;
+}
+#newName{
+  margin:5px
 }

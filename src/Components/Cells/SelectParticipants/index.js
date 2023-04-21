@@ -52,6 +52,7 @@ function SelectParticipants(props) {
 
   useEffect(()=>{
     setLocalGroupName(getUserFromUid(recieverDetails?.uid,users)?.groupName)
+    console.log("selectedParticipants ",selectedParticipants)
   },[])
   // useEffect(()=>{
   //   const q = query(collection(db, "users"), orderBy("createdAt"));
@@ -73,7 +74,7 @@ function SelectParticipants(props) {
   useEffect(() => {
     if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
       setIsNewGroupBtnClicked(true);
-      setSelectedParticipants([{}]);
+      // setSelectedParticipants([{}]);
       setShowGroupAddComp(false);
     }
   }, [recieverDetails?.uid]);
@@ -124,7 +125,7 @@ function SelectParticipants(props) {
     // setActualDbGroupId(gid);
     setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
-    setSelectedParticipants([{}]);
+    // setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
     // setRecieverDetails()
   };
@@ -162,7 +163,7 @@ function SelectParticipants(props) {
     // setActualDbGroupId(gid);
     setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
-    setSelectedParticipants([{}]);
+    // setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
     // setGroupName("")
     // setRecieverDetails(getUserFromUid(gid,users))
@@ -232,6 +233,7 @@ function SelectParticipants(props) {
       <div>
         {/* (selectedParticipants?.length < 1)?setGroupEmptyError("Select a member") */}
         <button
+        className="arrow"
           onClick={() => {
             !localGroupName
               ? setErrorName("Please enter group name.")
