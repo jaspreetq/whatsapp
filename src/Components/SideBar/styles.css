@@ -3,9 +3,8 @@
   /* border: 1px solid grey; */
   height: 100vh;
 }
-.shadow{
-  
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+.shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .avatar {
   vertical-align: middle;
@@ -19,7 +18,6 @@
   margin-left: 0;
   padding: 2%;
 }
-
 
 .selected {
   background: #d5d7dce8;
@@ -55,8 +53,8 @@
   padding-right: 0;
 }
 
-.editHover:hover{
-  background-image:url("/home/chicmic/Documents/whatsapp/src/Assets/editImgHover.png");
+.editHover:hover {
+  background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/editImgHover.png");
   background-repeat: no-repeat;
-	background-size: contain;
+  background-size: contain;
 }

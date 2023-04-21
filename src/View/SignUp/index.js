@@ -27,7 +27,8 @@ function SignUp() {
     setEmail,
     password,
     setPassword,
-    loading, setLoading
+    loading,
+    setLoading,
   } = useContext(messageContext);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ function SignUp() {
     setEmail("");
     setPassword("");
     setErrorMessage("");
-    setLoading(false)
+    setLoading(false);
   }, []);
 
   // useEffect(()=>{
@@ -77,25 +78,24 @@ function SignUp() {
   };
   return (
     <div className="Signup">
-
       <div className="form centered">
-        <div className="registerHeader"><h2>Whatsapp-Web</h2></div>
-
+        <div className="registerHeader">
+          <h2>Whatsapp-Web</h2>
+        </div>
         {/* <h2>Whatsapp-Web</h2> */}
         <h3 style={{ "margin-left": "28%" }}>Please Register....</h3>
         {/* <label>Username:</label> */}
-
         <input
           className="textInput"
           id="userName"
-          value={name}  
+          value={name}
           onChange={(e) => {
             setName(e.target.value);
           }}
           type="text"
           placeholder="Enter Name..."
           required
-        // onKeyDown={handleEnter}
+          // onKeyDown={handleEnter}
         />
         {/* <label>Email:</label> */}
         <input
@@ -107,7 +107,7 @@ function SignUp() {
           }}
           type="text"
           placeholder="Enter email..."
-        // onKeyDown={handleEnter}
+          // onKeyDown={handleEnter}
         />
         {/* <label>Password:</label> */}
         <input
@@ -119,20 +119,32 @@ function SignUp() {
           }}
           type="password"
           placeholder="Enter Password..."
-        // onKeyDown={handleEnter}
+          // onKeyDown={handleEnter}
         />
         <br />
         <p style={{ color: "red" }}>{errorMessage}</p>
         <br />
-        <button className="registration enlarged" onClick={(e) => {
-          setLoading(true)
-          signUpEmailPassword(e)
-        }}>Sign Up</button>
+        <div className="centered-btn">
+          <button
+            className="registration enlarged"
+            onClick={(e) => {
+              setLoading(true);
+              signUpEmailPassword(e);
+            }}
+          >
+            Sign Up
+          </button>
 
-        <button className="registration enlarged" onClick={() => {
-          setLoading(true);
-          return navigate("/SignIn");
-        }}>Existing User, SignIn</button>
+          <button
+            className="registration enlarged"
+            onClick={() => {
+              setLoading(true);
+              return navigate("/SignIn");
+            }}
+          >
+            Existing User, SignIn
+          </button>
+        </div>
       </div>
       <div className="rightSideImage"></div>
     </div>

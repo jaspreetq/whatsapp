@@ -1,17 +1,22 @@
-.Signup{
-    display: flex;
-    height: 100vh;
+.Signup {
+  display: flex;
+  height: 100vh;
 }
-.rightSideImage{
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-}
-
-.centered{
-    margin-left: 32%;
+.rightSideImage {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
 }
 
-.enlarged{
-    width: 48%;
+.centered {
+  margin-left: 32%;
+}
+.centered-btn {
+  /* display: grid;
+  place-items: center; */
+  text-align: center;
+}
+
+.enlarged {
+  margin-top: 5px;
 }

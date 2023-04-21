@@ -1,34 +1,32 @@
-.signIn{
-    display: flex;
-    height: 100vh;
+.signIn {
+  display: flex;
+  height: 100vh;
+}
+.form {
+  margin-top: 20vh;
+}
 
+.whatsapp_logo {
+  margin-top: 20vh;
+  margin-left: 110%;
 }
-.form{
-    margin-top: 20vh;
+.icon {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10%;
 }
-
-.whatsapp_logo{
-    margin-top: 20vh;
-    margin-left: 110%;
-  
+.whatsapp_label {
+  margin-left: -62%;
+  width: 100%;
+  margin-top: 2%;
+  font-size: 30px;
 }
-.icon{
-    display: flex;
-    flex-direction: column;
-    margin-left: 10%;
-}
-.whatsapp_label{
-    margin-left: -62%;
-    width: 100%;
-    margin-top: 2%;
-    font-size:30px
-}
-.registration{
-    width: 48%;
-    height: 10%;
-    margin-right: 10px;
-    background-color: #008069;
-    color: white;
+.registration {
+  width: 170px;
+  height: 45px;
+  margin-right: 10px;
+  background-color: #008069;
+  color: white;
 }
 /* 
 width: 12vw;

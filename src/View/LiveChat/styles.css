@@ -5,13 +5,12 @@
   #f0f2f5
   */
   /* background-image: url("background.png"); */
-
 }
-.seeThrough{
+.seeThrough {
   z-index: -1;
   height: 120px;
 }
-.bg-light{
+.bg-light {
   background: #f0f2f5;
 }
 .sidebar {
@@ -58,8 +57,8 @@
   /* width: fit-content; */
   /* min-width: none;
    */
-   
-   /* margin-left:30%;
+
+  /* margin-left:30%;
    float: right; */
 
   word-wrap: break-word;
@@ -96,7 +95,7 @@
   float: right;
   /* position: relative; */
   color: black;
-} 
+}
 
 .time-left {
   float: left;
@@ -120,15 +119,15 @@
   margin: 1%;
 }
 
-.uploadedImage{
+.uploadedImage {
   height: 100%;
   padding: 5%;
-    padding-left: 30%;
+  padding-left: 30%;
 }
 
-.defaultChat{
+.defaultChat {
   background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/WhatsApplogo.jpg");
   /* /home/chicmic/Documents/whatsapp/public/whatsappSide.png  */
-			background-repeat: no-repeat;
-			background-size: cover;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
