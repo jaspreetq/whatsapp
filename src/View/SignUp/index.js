@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -11,15 +11,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { auth, db } from "../../firebase";
-import { NAME_ERROR_STRING } from "../../Components/ConstantStrings";
+import { NAME_ERROR_STRING, SENT_VERIFICATION_LINK } from "../../Components/ConstantStrings";
 import { errorDisplay } from "../../Components/Utillities/errorDisplay";
 import { IMAGES } from "../../Components/Utillities/Images";
 import "./styles.css";
 import { messageContext } from "../../App";
+import { LINK } from "../../ConstantString";
 // import { LINK } from "../../ConstantString";
 
 function SignUp() {
   const [name, setName] = useState("");
+  const [verificationMessage,setVerificationMessage] = useState("");
   const navigate = useNavigate();
   const {
     errorMessage,
@@ -60,14 +62,14 @@ function SignUp() {
         signupPassword
       );
 
-      // const actionCodeSettings = {
-      //   url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
-      //   handleCodeInApp: true
-      // };
-      // await sendEmailVerification(auth.currentUser, actionCodeSettings)
-      // setLoading(Messages.sentVerification)
-
-      console.log("userCredential signup", userCredential);
+      const actionCodeSettings = {
+        url: "http://localhost:3000/login",
+        handleCodeInApp: true
+      };
+      await sendEmailVerification(userCredential.user, actionCodeSettings)
+      setVerificationMessage(SENT_VERIFICATION_LINK)
+ 
+      // console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
       await setDoc(doc(db, "users", uid), {
         uid,
@@ -153,6 +155,8 @@ function SignUp() {
           >
             Existing User: SignIn
           </button>
+        <p className="text-danger">{verificationMessage}</p>
+
         </div>
       </div>
       <div className="rightSideImage"></div>

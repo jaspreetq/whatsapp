@@ -10,6 +10,7 @@ import {
   signInWithPopup,
   signInWithRedirect,
   onAuthStateChanged,
+  sendEmailVerification,
 } from "firebase/auth";
 import { messageContext } from "../../App";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +19,9 @@ import "./styles.css"
 import { errorDisplay } from "../../Components/Utillities/errorDisplay";
 import { whatsapp } from "../../Components/Utillities/icons";
 import { LINK } from "../../ConstantString";
+import { SENT_VERIFICATION_LINK } from "../../Components/ConstantStrings";
 function SignIn() {
+  const [verificationMessage,setVerificationMessage] = useState("");
   const navigate = useNavigate();
   // const [userDetailsObj, setUserDetailsObj] = useState({});
   const auth = getAuth();
@@ -65,18 +68,24 @@ function SignIn() {
         loginPassword
       );
 
-      // const actionCodeSettings = {
-      //   url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
-      //   handleCodeInApp: true
-      // };
+      const actionCodeSettings = {
+        url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
+        handleCodeInApp: true
+      };
       // await sendEmailVerification(auth.currentUser, actionCodeSettings)
       // setDisplayError("Messages.sentVerification")
+
+      await sendEmailVerification(auth.currentUser, actionCodeSettings)
+      setVerificationMessage(SENT_VERIFICATION_LINK)
+
+      console.log("userCredential signup", userCredential);
+      const { uid } = auth.currentUser;
 
       console.log("userCredential signin ", userCredential);
       setErrorMessage("");
       navigate(`/LiveChat/${auth.currentUser.uid}`);
     } catch (error) {
-      console.log(error, " in signin error");
+      console.log(error, "in signin error");
       // showLoginError(error);
       errorDisplay(error, email, setErrorMessage);
     }
