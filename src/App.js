@@ -1,4 +1,4 @@
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import "./App.css";
 import { createContext, useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import SignUp from "./View/SignUp";
 import { onAuthStateChanged } from "firebase/auth";
 import LiveChat from "./View/LiveChat";
 import SignIn from "./View/SignIn";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 
 export const messageContext = createContext();
 

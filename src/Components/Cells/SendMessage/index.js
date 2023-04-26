@@ -143,6 +143,16 @@ function SendMessage() {
                 text: message || "",
               }),
             });
+
+            // //users time update
+            // await updateDoc(doc(db, "users", actualDbId), {
+            //   uid: activeUser.uid,
+            //   name: activeUser?.name,
+            //   email: activeUser.email,
+            //   avatar: activeUser?.avatar,
+            //   createdAt: activeUser.createdAt,
+            // });
+
           });
         }
       );

@@ -3,6 +3,9 @@ import {
   addDoc,
   collection,
   doc,
+  onSnapshot,
+  orderBy,
+  query,
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
@@ -32,6 +35,8 @@ function SignUp() {
     setPassword,
     loading,
     setLoading,
+    users,
+    setUsers
   } = useContext(messageContext);
 
   useEffect(() => {
@@ -51,6 +56,7 @@ function SignUp() {
   const signUpEmailPassword = async () => {
     const signupEmail = email;
     const signupPassword = password;
+    const userList = [];
     try {
       console.log("name<><><>", name);
       if (name == "") throw new Error(NAME_ERROR_STRING);
@@ -62,12 +68,12 @@ function SignUp() {
         signupPassword
       );
 
-      const actionCodeSettings = {
-        url: "http://localhost:3000/login",
-        handleCodeInApp: true
-      };
-      await sendEmailVerification(userCredential.user, actionCodeSettings)
-      setVerificationMessage(SENT_VERIFICATION_LINK)
+      // const actionCodeSettings = {
+      //   url: "http://localhost:3000/login",
+      //   handleCodeInApp: true
+      // };
+      // await sendEmailVerification(userCredential.user, actionCodeSettings)
+      // setVerificationMessage(SENT_VERIFICATION_LINK)
  
       // console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
@@ -79,6 +85,37 @@ function SignUp() {
         createdAt: serverTimestamp(),
         // details: {uid,email,name,avatar,}
       });
+
+      console.log(users," inside signup users");
+      const q = query(collection(db, "users"), orderBy("createdAt","desc"));
+    // const secondQuery = query(collection(db, "chats"), orderBy("createdAt","desc"));
+    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+      console.log("<>snapshot<>", QuerySnapshot);
+
+      QuerySnapshot.forEach((doc) => {
+        userList.push({ ...doc.data() });
+        console.log("messages<>: ", userList);
+      });
+      
+    });
+    console.log("messages<>: iiiiiiiii", userList);
+      // await setDoc(doc(db, `usersChatMetaData/${user?.uid}/users`, user.uid), {        
+      userList?.map(async (user)=>{
+        console.log(user.uid," dfas meta")
+        (user?.uid !== uid) &&
+        await setDoc(doc(db, `usersChatMetaData/${uid}/users`, user.uid), {    
+          uid:user.uid,
+          name:user.name || user.groupName,
+          email:user.email,
+          avatar:user.avatar, //random array dp generator
+          createdAt:user.createdAt,
+          lastChatedAt:serverTimestamp(),
+          lastChat:""
+          // details: {uid,email,name,avatar,}
+        });
+
+      })
+
       console.log("name ", name, errorMessage);
       navigate(`/LiveChat/${auth.currentUser.uid}`);
     } catch (error) {

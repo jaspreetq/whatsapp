@@ -76,7 +76,8 @@ function SideBar() {
 
   useEffect(() => {
     // setRecieverDetails(defaultRec());
-    const q = query(collection(db, "users"), orderBy("createdAt","desc"));
+    const q = query(collection(db, `usersChatMetaData/${auth.currentUser.uid}/users`), orderBy("createdAt","desc"));
+    // const secondQuery = query(collection(db, "chats"), orderBy("createdAt","desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
       console.log("<>snapshot<>", QuerySnapshot);

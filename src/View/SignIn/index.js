@@ -21,7 +21,7 @@ import { whatsapp } from "../../Components/Utillities/icons";
 import { LINK } from "../../ConstantString";
 import { SENT_VERIFICATION_LINK } from "../../Components/ConstantStrings";
 function SignIn() {
-  const [verificationMessage,setVerificationMessage] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState("");
   const navigate = useNavigate();
   // const [userDetailsObj, setUserDetailsObj] = useState({});
   const auth = getAuth();
@@ -37,7 +37,7 @@ function SignIn() {
     setWelcomeChatPage,
     activeUser,
     setActiveUser,
-    loading,setLoading
+    loading, setLoading
   } = useContext(messageContext);
 
   useEffect(() => {
@@ -47,6 +47,7 @@ function SignIn() {
 
   // connectAuthEmulator(auth, "http://localhost:9899");
   const handleSignIn = () => {
+    setLoading(true);
     // e.preventDefault();
     setWelcomeChatPage(true);
     loginEmailPassword();
@@ -68,15 +69,15 @@ function SignIn() {
         loginPassword
       );
 
-      const actionCodeSettings = {
-        url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
-        handleCodeInApp: true
-      };
+      // const actionCodeSettings = {
+      //   url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
+      //   handleCodeInApp: true
+      // };
       // await sendEmailVerification(auth.currentUser, actionCodeSettings)
       // setDisplayError("Messages.sentVerification")
 
-      await sendEmailVerification(auth.currentUser, actionCodeSettings)
-      setVerificationMessage(SENT_VERIFICATION_LINK)
+      // await sendEmailVerification(auth.currentUser, actionCodeSettings)
+      // setVerificationMessage(SENT_VERIFICATION_LINK)
 
       console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
@@ -119,50 +120,55 @@ function SignIn() {
 
   return (
     <>
-    {/* {loading ? :} */}
+      {/* {loading ? :} */}
+        {loading ? <div className="lds-ellipsis" style={{ "font-size": "15rem", "margin":"auto","height":"100vh","width":"100vw" }}>
+          <div>.</div><div>.</div><div>.</div><div>.</div>
+        </div> :
       <div className="signIn">
-      <div className="registerHeader"><h2>Whatsapp-Web</h2></div>
-        <div className="form">
-          <h3>Please SignIn...</h3>
-          
-          <input
-            className="textInput"
-            id="userEmail"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            type="text"
-            placeholder="Enter email..."
-          // onKeyDown={handleEnter}
-          />
+        <div className="registerHeader"><h2>Whatsapp-Web</h2></div>
+          <div className="form">
+            <h3>Please SignIn...</h3>
 
-          <input
-            className="textInput"
-            id="userPassword"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type="password"
-            placeholder="Enter Password..."
-          // onKeyDown={handleEnter}
-          />
+            <input
+              className="textInput"
+              id="userEmail"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              type="text"
+              placeholder="Enter email..."
+            // onKeyDown={handleEnter}
+            />
 
-          <br /><br />
-          <p style={{ color: "red" }}>{errorMessage}</p>
-          {/* <button onClick={googleSignIn}>Sign In G</button> */}
-          <div className="">
-          <button className="registration" onClick={handleSignIn}>Sign In</button>
-          {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
-          <button className="registration" onClick={() => navigate("/SignUp")}>New User, SignUp</button>
+            <input
+              className="textInput"
+              id="userPassword"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              type="password"
+              placeholder="Enter Password..."
+            // onKeyDown={handleEnter}
+            />
+
+            <br /><br />
+            <p style={{ color: "red" }}>{errorMessage}</p>
+            {/* <button onClick={googleSignIn}>Sign In G</button> */}
+            <div className="">
+              <button className="registration" onClick={handleSignIn}>Sign In</button>
+              {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
+              <button className="registration" onClick={() => navigate("/SignUp")}>New User, SignUp</button>
+            </div>
           </div>
-        </div>
+        
         <div className="icon">
           {/* <p className="whatsapp_label"></p> */}
           <label className="whatsapp_logo">{whatsapp}</label>
         </div>
       </div>
+    }
     </>
   );
 }
