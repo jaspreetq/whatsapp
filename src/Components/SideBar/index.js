@@ -76,14 +76,13 @@ function SideBar() {
 
   useEffect(() => {
     // setRecieverDetails(defaultRec());
-    const q = query(collection(db, `usersChatMetaData/${auth.currentUser.uid}/users`), orderBy("createdAt","desc"));
+    const q = query(collection(db, `usersChatMetaData/${auth.currentUser.uid}/users`), orderBy("lastChatedAt","desc"));
     // const secondQuery = query(collection(db, "chats"), orderBy("createdAt","desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
       console.log("<>snapshot<>", QuerySnapshot);
 
       QuerySnapshot.forEach((doc) => {
-        console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
         users.push({ ...doc.data() });
         console.log("messages<>: ", users);
       });
@@ -94,6 +93,7 @@ function SideBar() {
   }, []);
 
   const receiverSelected = async (user) => {
+
     setRecieverDetails(user);
     setChatDisplay(true);
     console.log("recieverDetails:", recieverDetails, "user: ", actualDbId, " ");
@@ -110,7 +110,8 @@ function SideBar() {
   };
 
   const getCurrentUser = () => users?.find((user) => {
-    return user.uid == auth.currentUser.uid;
+    console.log(users,user.name,"user ju")
+    return user.uid === auth.currentUser.uid;
   })
 
   return (
@@ -146,6 +147,7 @@ function SideBar() {
           </>:
           <>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            {console.log(getCurrentUser()?.name,"nav user")}
             {/* getCurrentUser */}
               <img className="avatar editHover" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={()=>setEditProfile(true)}/>
               {"  "}

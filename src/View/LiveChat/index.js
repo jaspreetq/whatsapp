@@ -151,20 +151,28 @@ function LiveChat() {
     // console.log("dbId new",dbId)
 
     if (actualDbId?.length > 35) {
+      const {uid} = auth.currentUser;
       const setDocAsync = async () => {
         const docRef = await getDoc(doc(db, "chats", actualDbId));
-        console.log("doesn't exist", actualDbId, docRef.exists());
+        console.log("doesn't exist heeeeeeeeeeeeeere", actualDbId,recieverDetails?.uid, docRef.exists());
         if (docRef.exists() || !actualDbId) return null;
-        console.log("doesn't exist");
-        await setDoc(doc(db, "chats", actualDbId), {
-          uid: actualDbId,
+        
+        console.log("doesn't exist<><><><><><><><><><><><><><",users,
+        auth.currentUser.uid,uid,
+        activeUser?.name,
+        recieverDetails?.uid,
+        recieverDetails?.name,activeUser);
+
+        await setDoc(doc(db, "chats", actualDbId||recieverDetails?.uid), {
+          uid: recieverDetails?.uid,
           senderUid: activeUser?.uid,
-          senderName: activeUser?.name,
+          senderName: getUserFromUid(uid,users)?.name,
           recieverUid: recieverDetails?.uid,
           recieverName: recieverDetails?.name,
-          senderDetails: activeUser,
+          senderDetails: getUserFromUid(uid,users),
           recieverDetails,
           createdAt: serverTimestamp(),
+          latestChatTime:new Date("August 19, 1975 23:15:30 GMT+11:00"),
           messages: [],
         });
       };

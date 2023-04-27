@@ -159,7 +159,7 @@ function SendMessage() {
     }
     else{
       console.log("arrunin",actualDbId,activeUser,recieverDetails,message );
-       message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
+       message?.trim() && await updateDoc(doc(db, "chats", actualDbId||recieverDetails.uid), {
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,

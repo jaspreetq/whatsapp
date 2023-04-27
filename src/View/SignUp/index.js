@@ -24,7 +24,7 @@ import { LINK } from "../../ConstantString";
 
 function SignUp() {
   const [name, setName] = useState("");
-  const [verificationMessage,setVerificationMessage] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState("");
   const navigate = useNavigate();
   const {
     errorMessage,
@@ -45,7 +45,25 @@ function SignUp() {
     setPassword("");
     setErrorMessage("");
     setLoading(false);
+    console.log(users, " inside signup users");
+
+    // userList.splice(0,userList.length);
+
+    const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+    // const secondQuery = query(collection(db, "chats"), orderBy("createdAt","desc"));
+    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+      console.log("<>snapshot<>", QuerySnapshot, QuerySnapshot?.docs?.length);
+      const userList = [];
+      QuerySnapshot?.forEach((doc) => {
+        userList.push({ ...doc.data() });
+        console.log("mount snap: ", doc.data(), userList);
+      });
+      setUsers(userList);
+    });
+    return () => unsubscribe();
   }, []);
+
+  console.log(users, "users<><>");
 
   // useEffect(()=>{
   //     if(name == "") {
@@ -56,9 +74,7 @@ function SignUp() {
   const signUpEmailPassword = async () => {
     const signupEmail = email;
     const signupPassword = password;
-    const userList = [];
     try {
-      console.log("name<><><>", name);
       if (name == "") throw new Error(NAME_ERROR_STRING);
 
       console.log(" Sign up in  ", email, password);
@@ -74,7 +90,7 @@ function SignUp() {
       // };
       // await sendEmailVerification(userCredential.user, actionCodeSettings)
       // setVerificationMessage(SENT_VERIFICATION_LINK)
- 
+
       // console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
       await setDoc(doc(db, "users", uid), {
@@ -83,37 +99,24 @@ function SignUp() {
         email,
         avatar: IMAGES.default, //random array dp generator
         createdAt: serverTimestamp(),
+        lastChatedAt: serverTimestamp(),
+        lastChat: ""
         // details: {uid,email,name,avatar,}
       });
 
-      console.log(users," inside signup users");
-      const q = query(collection(db, "users"), orderBy("createdAt","desc"));
-    // const secondQuery = query(collection(db, "chats"), orderBy("createdAt","desc"));
-    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
-      console.log("<>snapshot<>", QuerySnapshot);
-
-      QuerySnapshot.forEach((doc) => {
-        userList.push({ ...doc.data() });
-        console.log("messages<>: ", userList);
-      });
-      
-    });
-    console.log("messages<>: iiiiiiiii", userList);
       // await setDoc(doc(db, `usersChatMetaData/${user?.uid}/users`, user.uid), {        
-      userList?.map(async (user)=>{
-        console.log(user.uid," dfas meta")
-        (user?.uid !== uid) &&
-        await setDoc(doc(db, `usersChatMetaData/${uid}/users`, user.uid), {    
-          uid:user.uid,
-          name:user.name || user.groupName,
-          email:user.email,
-          avatar:user.avatar, //random array dp generator
-          createdAt:user.createdAt,
-          lastChatedAt:serverTimestamp(),
-          lastChat:""
+      console.log("before doc creation", users);
+      users?.map(async (user) => {
+        await setDoc(doc(db, `usersChatMetaData/${uid}/users`, user?.uid), {
+          uid: user.uid,
+          name: user.name || user.groupName,
+          email: user.email,
+          avatar: user.avatar, //random array dp generator
+          createdAt: user.createdAt,
+          lastChatedAt: serverTimestamp(),
+          lastChat: ""
           // details: {uid,email,name,avatar,}
         });
-
       })
 
       console.log("name ", name, errorMessage);
@@ -126,6 +129,7 @@ function SignUp() {
   };
   return (
     <div className="Signup">
+      {console.log("render")}
       <div className="form centered">
         <div className="registerHeader">
           <h2>Whatsapp-Web</h2>
@@ -143,7 +147,7 @@ function SignUp() {
           type="text"
           placeholder="Enter Name..."
           required
-          // onKeyDown={handleEnter}
+        // onKeyDown={handleEnter}
         />
         {/* <label>Email:</label> */}
         <input
@@ -155,7 +159,7 @@ function SignUp() {
           }}
           type="text"
           placeholder="Enter email..."
-          // onKeyDown={handleEnter}
+        // onKeyDown={handleEnter}
         />
         {/* <label>Password:</label> */}
         <input
@@ -167,7 +171,7 @@ function SignUp() {
           }}
           type="password"
           placeholder="Enter Password..."
-          // onKeyDown={handleEnter}
+        // onKeyDown={handleEnter}
         />
         <br />
         <p style={{ color: "red" }}>{errorMessage}</p>
@@ -192,7 +196,7 @@ function SignUp() {
           >
             Existing User: SignIn
           </button>
-        <p className="text-danger">{verificationMessage}</p>
+          <p className="text-danger">{verificationMessage}</p>
 
         </div>
       </div>

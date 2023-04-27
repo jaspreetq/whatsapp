@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+// import "./App.css"
 import {
   connectAuthEmulator,
   createUserWithEmailAndPassword,
@@ -90,6 +91,7 @@ function SignIn() {
       // showLoginError(error);
       errorDisplay(error, email, setErrorMessage);
     }
+    setLoading(false);
   };
 
   const googleSignIn = () => {
@@ -121,7 +123,7 @@ function SignIn() {
   return (
     <>
       {/* {loading ? :} */}
-        {loading ? <div className="lds-ellipsis" style={{ "font-size": "15rem", "margin":"auto","height":"100vh","width":"100vw" }}>
+        {loading ? <div className="lds-ellipsis" style={{"font-size": "7rem", "margin-left":"50vw","height":"100vh","width":"100vw" }}>
           <div>.</div><div>.</div><div>.</div><div>.</div>
         </div> :
       <div className="signIn">
