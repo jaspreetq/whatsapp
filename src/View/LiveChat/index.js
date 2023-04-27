@@ -166,6 +166,7 @@ function LiveChat() {
           recieverDetails,
           createdAt: serverTimestamp(),
           messages: [],
+          lastChatedAt:serverTimestamp(),
         });
       };
 

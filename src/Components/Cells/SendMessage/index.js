@@ -32,7 +32,7 @@ function SendMessage() {
     message,
     setMessage,
     email,
-    activeUser,
+    activeUser, 
     setActiveUser,
     recieverDetails,
     setRecieverDetails,
@@ -99,6 +99,7 @@ function SendMessage() {
             imgURL = url;
             console.log(url, imgURL, "url ::",actualDbId);
             await updateDoc(doc(db, "chats", actualDbId), {
+              lastChatedAt:serverTimestamp(),
               messages: arrayUnion({
                 uid: activeUser?.uid,
                 name: activeUser?.name,
@@ -130,7 +131,9 @@ function SendMessage() {
             setFileUrl(url);
             console.log("urlurl", url);
             pdfURL = url;
+            
             await updateDoc(doc(db, "chats", actualDbId), {
+              lastChatedAt:serverTimestamp(),
               messages: arrayUnion({
                 uid: activeUser?.uid,
                 name: activeUser?.name,
@@ -150,6 +153,7 @@ function SendMessage() {
     else{
       console.log("arrunin",actualDbId,activeUser,recieverDetails,message );
        message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
+        lastChatedAt:serverTimestamp(),
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,

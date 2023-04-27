@@ -41,6 +41,8 @@ function SideBar() {
     setActualDbId,
     users,
     setUsers,
+    chats,
+    setChats
   } = useContext(messageContext);
   let senderUserID;
   // const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid)
@@ -89,8 +91,28 @@ function SideBar() {
       setUsers(users);
     });
     console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
-    return () => unsubscribe;
+    return () => unsubscribe();
   }, []);
+
+
+
+  useEffect(() => {
+    // setRecieverDetails(defaultRec());
+    const q = query(collection(db, "chats"), orderBy("lastChatedAt","desc"));
+    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+      let chats = [];
+      console.log("<>snapshot<>", QuerySnapshot);
+
+      QuerySnapshot.forEach((doc) => {
+        chats.push({ ...doc.data() });
+        console.log("messages<>: ", chats);
+      });
+      setChats(chats);
+    });
+    console.log("actualDbId in useEffectMount(sidebar) :", chats);
+    return () => unsubscribe();
+  }, []);
+
 
   const receiverSelected = async (user) => {
     setRecieverDetails(user);
@@ -114,6 +136,7 @@ function SideBar() {
 
   return (
     <>
+    {console.log("actualDbId in useEffectMount(sidebar) :", chats)}
       <div class="w-25 shadow sidebar">
         {showGroupAddComp ? (
           <>
@@ -122,7 +145,7 @@ function SideBar() {
               goBack={() => {
                 setGroupName("")
                 setShowGroupAddComp(false)}}
-            />
+            />  
             
             <SelectParticipants
               users={users}

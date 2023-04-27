@@ -27,6 +27,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [actualDbGroupId, setActualDbGroupId] = useState("");
   const [users, setUsers] = useState([]);
+  const [chats, setChats] = useState([]);
   const [loading,setLoading] = useState(false)
   const defaultRec = ()=> users?.find((user) => user.uid !== auth.currentUser?.uid);
 
@@ -75,7 +76,9 @@ function App() {
         users,
         setUsers,
         loading,
-        setLoading
+        setLoading,
+        chats,
+        setChats
       }}
     >
       <div className="App">
