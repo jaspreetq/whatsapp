@@ -68,17 +68,17 @@ function SignIn() {
         loginPassword
       );
 
-      const actionCodeSettings = {
-        url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
-        handleCodeInApp: true
-      };
+      // const actionCodeSettings = {
+      //   url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
+      //   handleCodeInApp: true
+      // };
+      // // await sendEmailVerification(auth.currentUser, actionCodeSettings)
+      // // setDisplayError("Messages.sentVerification")
+
       // await sendEmailVerification(auth.currentUser, actionCodeSettings)
-      // setDisplayError("Messages.sentVerification")
+      // setVerificationMessage(SENT_VERIFICATION_LINK)
 
-      await sendEmailVerification(auth.currentUser, actionCodeSettings)
-      setVerificationMessage(SENT_VERIFICATION_LINK)
-
-      console.log("userCredential signup", userCredential);
+      // console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
 
       console.log("userCredential signin ", userCredential);

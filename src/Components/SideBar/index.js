@@ -46,6 +46,8 @@ function SideBar() {
   } = useContext(messageContext);
   let senderUserID;
   // const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid)
+
+  const [sortedUsers,setSortedUsers] = useState([]);
   const [selectedParticipants, setSelectedParticipants] = useState([{}]);
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
   const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
@@ -55,6 +57,7 @@ function SideBar() {
   //SIGN-OUT
   const auth = getAuth();
   const defaultRec = ()=> users?.find((user) => user.uid !== auth.currentUser?.uid);
+  const UID = auth.currentUser.uid;
   const signOut = () => {
     auth.signOut();
     setWelcomeChatPage(true);
@@ -113,7 +116,16 @@ function SideBar() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(()=>{
+    //sort and filter array
+    const filteredChats = chats?.filter(chat => ((chat?.participants?.some(member => member.uid.includes(auth?.currentUser?.uid))) || (chat?.uid.length> 35)));
+    // const filteredUsers = users?.filter(user=>user?.uid.length <= 29 && user?.uid !== UID)
+    const filteredUsers = 
+    setSortedUsers([...filteredChats,...filteredUsers])
+    console.log(filteredChats,"<> filteredUsers")
 
+  },[chats,users])
+  
   const receiverSelected = async (user) => {
     setRecieverDetails(user);
     setChatDisplay(true);
