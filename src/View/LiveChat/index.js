@@ -28,6 +28,7 @@ import { useParams } from "react-router-dom";
 import { RANDOM_TEXT } from "../../ConstantString";
 import SendMessage from "../../Components/Cells/SendMessage";
 import { IMAGES } from "../../Components/Utillities/Images";
+import Loader from "../../Components/Atoms/Loader";
 
 export const FileContext = createContext();
 
@@ -348,6 +349,7 @@ function LiveChat() {
                         <div className="w-100">
                           <div ref={refHook} className={`container${cssStr} shadow`}>
                             {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
+                          {loading && <Loader/>}
                             {recieverDetails?.groupName && (
                               <span>
                                 {recieverDetails?.groupName && (cssStr==="-reciever") && (

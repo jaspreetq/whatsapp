@@ -62,18 +62,22 @@ function SignUp() {
         signupPassword
       );
 
-      const actionCodeSettings = {
-        url: "http://localhost:3000/login",
-        handleCodeInApp: true
-      };
-      await sendEmailVerification(userCredential.user, actionCodeSettings)
-      setVerificationMessage(SENT_VERIFICATION_LINK)
+      // const actionCodeSettings = {
+      //   url: "http://localhost:3000/login",
+      //   handleCodeInApp: true
+      // };
+      // await sendEmailVerification(userCredential.user, actionCodeSettings)
+      // setVerificationMessage(SENT_VERIFICATION_LINK)
  
       // console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
       await setDoc(doc(db, "users", uid), {
         uid,
         name,
+        // groupName:"",
+        // createdAt:"",
+        // creatorUid:"",
+        // participants:null,
         email,
         avatar: IMAGES.default, //random array dp generator
         createdAt: serverTimestamp(),

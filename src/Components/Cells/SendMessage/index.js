@@ -18,6 +18,7 @@ import "./styles.css";
 import { RANDOM_TEXT } from "../../../ConstantString";
 import { getTime } from "../../Utillities/getTime";
 import { FileContext } from "../../../View/LiveChat";
+import Loader from "../../Atoms/Loader";
 
 function SendMessage() {
   // State to store uploaded file
@@ -98,6 +99,7 @@ function SendMessage() {
             setImgUrl(url);
             imgURL = url;
             console.log(url, imgURL, "url ::",actualDbId);
+            setLoading(true)
             await updateDoc(doc(db, "chats", actualDbId), {
               lastChatedAt:serverTimestamp(),
               messages: arrayUnion({
@@ -112,6 +114,7 @@ function SendMessage() {
                 text: message || "",
               }),
             });
+
           });
         }
       );
@@ -131,7 +134,7 @@ function SendMessage() {
             setFileUrl(url);
             console.log("urlurl", url);
             pdfURL = url;
-            
+            setLoading(true)
             await updateDoc(doc(db, "chats", actualDbId), {
               lastChatedAt:serverTimestamp(),
               messages: arrayUnion({
@@ -152,6 +155,7 @@ function SendMessage() {
     }
     else{
       console.log("arrunin",actualDbId,activeUser,recieverDetails,message );
+      setLoading(true)
        message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
         lastChatedAt:serverTimestamp(),
         messages: arrayUnion({
@@ -174,6 +178,7 @@ function SendMessage() {
     setImgUrl("")
     setFileUrl("")
     setMessage("");
+    setLoading(false)
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
   };
@@ -224,9 +229,10 @@ function SendMessage() {
         {/* onClick={handleUpload} */}
         {/* <button style={{"border-style": "none"}} onClick={}>📎</button> */}
         <div>
-          <button className="send-message" onClick={() => handleSend()}>
+          <button className="send-message" onClick={() => {setLoading(true); handleSend()}}>
             Send
           </button>
+          {loading && <Loader/>}
         </div>
       </div>
       {/* <p color="green">{percent}% done</p> */}

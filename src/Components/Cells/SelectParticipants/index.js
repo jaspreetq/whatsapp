@@ -120,7 +120,8 @@ function SelectParticipants(props) {
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       messages,
-      lastChatedAt:serverTimestamp()
+      lastChatedAt:serverTimestamp(),
+      
     });
     //create new
     // setActualDbGroupId(gid);
@@ -159,7 +160,7 @@ function SelectParticipants(props) {
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       messages: [{}],
-      lastChatedAt:serverTimestamp()
+      lastChatedAt:serverTimestamp(),
     });
     //create new
     // setActualDbGroupId(gid);
