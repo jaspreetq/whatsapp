@@ -21,7 +21,7 @@ import { getUserFromUid } from "../../Components/Utillities/getUserFromUid";
 import UserProfile from "../../Components/Cells/UserProfile";
 import Header from "../../Components/Atoms/Header";
 import SelectParticipants from "../../Components/Cells/SelectParticipants";
-import { edit,filePdf } from "../../Components/Utillities/icons";
+import { edit, filePdf } from "../../Components/Utillities/icons";
 import SideBar from "../../Components/SideBar";
 import { messageContext } from "../../App";
 import { useParams } from "react-router-dom";
@@ -60,6 +60,7 @@ function LiveChat() {
     setMessages,
     users,
     setUsers,
+    setSelectedParticipants
   } = useContext(messageContext);
   let dbId;
   const isAdmin = () => actualDbId?.includes(auth.currentUser.uid);
@@ -76,7 +77,7 @@ function LiveChat() {
   let groupNameTemp = recieverDetails?.groupName;
 
   const presentUser = users?.find((user) => user.uid === auth.currentUser.uid);
-  
+
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -84,7 +85,7 @@ function LiveChat() {
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         if (doc?.exists()) {
-          const { avatar, name,uid, groupName, participants } = doc.data();
+          const { avatar, name, uid, groupName, participants } = doc.data();
           if (name)
             setRecieverDetails({
               ...recieverDetails,
@@ -109,28 +110,28 @@ function LiveChat() {
     );
     console.log("recieverDetails outside changed visible? ", recieverDetails);
     return () => unsubscribe();
-  }, [users
+  }, [users]);
     // recieverDetails?.name,
     // recieverDetails?.groupName,
     // recieverDetails?.avatar,
     // recieverDetails?.participants,
-  ]);
+    
   console.log("recieverDetails changed visible? ", recieverDetails);
   // useEffect(() => {
   // }, [recieverDetails?.uid]);
-  
+
   // useEffect(()=>{
 
   // },[])
   useEffect(() => {
     refHook.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
   useEffect(() => {
     // console.log("actualDbId: effect,reciever", );
     setFileStatus(false);
     setShowGroupInfoEditForm(false);
-    console.log("recieverDetails: in livechat",recieverDetails)
+    console.log("recieverDetails: in livechat", recieverDetails)
     if (recieverDetails?.groupName) {
       setActualDbId(recieverDetails?.uid);
       setGroupName(recieverDetails?.name);
@@ -167,7 +168,7 @@ function LiveChat() {
           recieverDetails,
           createdAt: serverTimestamp(),
           messages: [],
-          lastChatedAt:serverTimestamp(),
+          lastChatedAt: serverTimestamp(),
         });
       };
 
@@ -200,7 +201,7 @@ function LiveChat() {
     return () => unsubscribe();
   }, [actualDbId]);
 
-  const defaultRec = ()=> users?.find((user) => user.uid !== auth.currentUser?.uid);
+  const defaultRec = () => users?.find((user) => user.uid !== auth.currentUser?.uid);
 
   const getCurrentUser = () => users?.find((user) => {
     return user.uid == auth.currentUser.uid;
@@ -212,7 +213,7 @@ function LiveChat() {
   return (
     //RecieveChat
     <div className="liveChat">
-    <div className="registerHeader seeThrough"></div>
+      <div className="registerHeader seeThrough"></div>
       {/* {showMemberEditFormOnTheRight && <CustomModal { children, show, setEditedGroupName = ()=>{}, string, handleEditGroupName, editedGroupName, handleGroupNameEdit, setShow, channelName, title, selectedList, setSelectedList, addChannel, addUser=()=>{}, handleSelect=()=>{}, showHead, showFoot }) >
       </CustomModal>} */}
       {/* <SignOut /> */}
@@ -220,18 +221,18 @@ function LiveChat() {
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar">
         <SideBar />
-        <div style={{width:"80%"}}>
+        <div style={{ width: "80%" }}>
           {welcomeChatPage ? (
             <div className="defaultChat align-middle w-100 h-100">
               {" "}
-              <div style={{"font-size":"23px", "padding-left":"10px", "background": "#f8f9fae0"}}><br/>Select a contact to chat</div>
+              <div style={{ "font-size": "23px", "padding-left": "10px", "background": "#f8f9fae0" }}><br />Select a contact to chat</div>
             </div>
           ) : (
             <>
               <nav className="navbar navbar-expand-lg navbar-light bg-light border-left">
                 <img
                   className="avatar"
-                  src={getUserFromUid(recieverDetails?.uid,users)?.avatar||IMAGES.default}
+                  src={getUserFromUid(recieverDetails?.uid, users)?.avatar || IMAGES.default}
                   alt="Avatar"
                   onClick={() => setShowGroupInfoEditForm(true)}
                 />
@@ -272,8 +273,8 @@ function LiveChat() {
                         ?.find((user) => user.uid === actualDbId)
                         ?.participants?.map(
                           (member) => {
-                            if(member?.uid === auth.currentUser.uid)return `${getCurrentUser()?.name}, `
-                            return `${getUserFromUid(member?.uid,users)?.name}, `;
+                            if (member?.uid === auth.currentUser.uid) return `${getCurrentUser()?.name}, `
+                            return `${getUserFromUid(member?.uid, users)?.name}, `;
                           } //(users?.find(user=>user.uid === actualDbId))
                         )}
                   </p>
@@ -336,7 +337,7 @@ function LiveChat() {
                   style={{ background: "#e4ddd5", height: "68%", width: "100%" }}
                 >
                   <ul>
-                    {messages?.map((message) => {
+                    {messages?.map((message, idx) => {
                       console.log("message:::", message);
                       const cssStr =
                         message.uid === auth.currentUser.uid
@@ -349,21 +350,20 @@ function LiveChat() {
                         <div className="w-100">
                           <div ref={refHook} className={`container${cssStr} shadow`}>
                             {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
-                          {loading && <Loader/>}
                             {recieverDetails?.groupName && (
                               <span>
-                                {recieverDetails?.groupName && (cssStr==="-reciever") && (
+                                {recieverDetails?.groupName && (cssStr === "-reciever") && (
                                   <img
                                     style={{ display: "inline" }}
                                     className="avatar"
-                                    src={getUserFromUid(message?.uid,users)?.avatar}
+                                    src={getUserFromUid(message?.uid, users)?.avatar}
                                   />
                                 )}
-                                {cssStr==="-reciever" && <p
+                                {cssStr === "-reciever" && <p
                                   className="ml-75 text-info blockquote-footer"
                                   style={{ display: "inline" }}
                                 >
-                                  {recieverDetails?.groupName && getUserFromUid(message?.uid,users)?.name}
+                                  {recieverDetails?.groupName && getUserFromUid(message?.uid, users)?.name}
                                 </p>}
                               </span>
                             )}
@@ -376,7 +376,7 @@ function LiveChat() {
                                   alt="img"
                                   height="100px"
                                   width="100px"
-                                  // onClick={()=>set}
+                                // onClick={()=>set}
                                 />
                               </a>
                             )}
@@ -390,6 +390,7 @@ function LiveChat() {
                             <span className="time-right">{message?.time}</span>
                           </div>
                           {/* <span className=`time${}`>{message?.time}</span> */}
+                          {loading && messages.length - 1 === idx && <Loader />}
                         </div>
                       );
                     })}
@@ -424,6 +425,7 @@ function LiveChat() {
                   setFileUrl,
                 }}
               >
+                {loading && !fileStatus && <Loader />}
                 <SendMessage />
                 {/* <UserProfile activeUser={activeUser}/> */}
               </FileContext.Provider>
@@ -432,7 +434,7 @@ function LiveChat() {
         </div>
         {showGroupInfoEditForm && recieverDetails?.groupName && (
           <div className="d-block">
-          {/* <div className="lds-ellipsis" style={{"font-size":"5rem"}}>
+            {/* <div className="lds-ellipsis" style={{"font-size":"5rem"}}>
           <div>.</div><div>.</div><div>.</div><div>.</div>
           </div> */}
             {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
@@ -440,7 +442,7 @@ function LiveChat() {
               title="Group Info"
               goBack={() => setShowGroupInfoEditForm(false)}
             />
-            <br/><br/>
+            <br /><br />
             <UserProfile
               activeUser={recieverDetails}
               setEditProfile={setShowGroupInfoEditForm}

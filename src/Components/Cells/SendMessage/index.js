@@ -19,6 +19,7 @@ import { RANDOM_TEXT } from "../../../ConstantString";
 import { getTime } from "../../Utillities/getTime";
 import { FileContext } from "../../../View/LiveChat";
 import Loader from "../../Atoms/Loader";
+import { attachement } from "../../Utillities/icons";
 
 function SendMessage() {
   // State to store uploaded file
@@ -60,10 +61,12 @@ function SendMessage() {
       e.target.files[0].type == "image/png" ||
       e.target.files[0].type == "image/jpeg"
     ) {
+      setLoading(true)
       setImg(e.target.files[0]);
       setImgName(e.target.files[0].name);
       setFileStatus(true);
     } else {
+      setLoading(true)
       setPdf(e.target.files[0]);
       setPdfName(e.target.files[0].name);
       setFileStatus(true);
@@ -114,7 +117,7 @@ function SendMessage() {
                 text: message || "",
               }),
             });
-
+            setLoading(false)
           });
         }
       );
@@ -149,13 +152,14 @@ function SendMessage() {
                 text: message || "",
               }),
             });
+            setLoading(false)
           });
         }
       );
     }
     else{
       console.log("arrunin",actualDbId,activeUser,recieverDetails,message );
-      setLoading(true)
+      
        message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
         lastChatedAt:serverTimestamp(),
         messages: arrayUnion({
@@ -170,6 +174,7 @@ function SendMessage() {
           text: message || "",
         }),   
     })
+
   }
     setText("");
     setImg(null);
@@ -178,7 +183,6 @@ function SendMessage() {
     setImgUrl("")
     setFileUrl("")
     setMessage("");
-    setLoading(false)
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
   };
@@ -204,16 +208,7 @@ function SendMessage() {
         {/* display:contents */}
         <div>
           <label htmlFor="attachement">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="90"
-              fill="#73777a"
-              class="bi bi-paperclip"
-              viewBox="0 0 16 16"
-            >
-              <path d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0V3z" />
-            </svg>
+           {attachement}
           </label>
           <input
             id="attachement"
@@ -229,10 +224,9 @@ function SendMessage() {
         {/* onClick={handleUpload} */}
         {/* <button style={{"border-style": "none"}} onClick={}>📎</button> */}
         <div>
-          <button className="send-message" onClick={() => {setLoading(true); handleSend()}}>
+          <button className="send-message" onClick={() => {handleSend()}}>
             Send
           </button>
-          {loading && <Loader/>}
         </div>
       </div>
       {/* <p color="green">{percent}% done</p> */}
@@ -390,3 +384,32 @@ export default SendMessage;
 //   actualDbId
 //   // existingContact
 // );
+//-----------------------------------------------------------------------------------
+// useEffect(() => {
+//   let id = setTimeout(() => {
+//     //searched records
+//     let filteredArr = records?.filter((record) => {
+//       let arrOfVals = Object.values(record).map((val) =>
+//         val.toString().toLowerCase()
+//       );
+//       let lowerCaseSearch = searchedTerm.toLowerCase();
+//       return arrOfVals?.some((val) => val.includes(lowerCaseSearch));
+//     });
+//     console.log(filteredArr);
+//     setLoading(false);
+//     setFilteredRecords(filteredArr);
+//   }, 500);
+//   console.log(filteredRecords);
+
+//   return () => {
+//     setLoading(true);
+//     clearTimeout(id);
+//   };
+
+//   // setLoading(false);
+// }, [searchedTerm]);
+
+// useEffect(() => {
+//   if (searchedTerm === "") setDisplayRecords(records);
+//   else setDisplayRecords(filteredRecords);
+// }, [filteredRecords]);

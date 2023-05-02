@@ -169,7 +169,7 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
               setEditProfile(false);
             }}
           >
-            {rightArrow}
+            Edit
           </button>
         </div>
       </>

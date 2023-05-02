@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { rightArrow } from "../../Utillities/icons";
 import { messageContext } from "../../../App";
-import { auth, db } from "../../../firebase";
+import { auth, db, storage } from "../../../firebase";
 import { getTime } from "../../Utillities/getTime";
 import {
   doc,
@@ -14,8 +14,21 @@ import {
 import { IMAGES } from "../../Utillities/Images";
 import { getUserFromUid } from "../../Utillities/getUserFromUid";
 import "./styles.css";
+import ProfileImage from "../../Atoms/ProfileImage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 function SelectParticipants(props) {
+  const [img, setImg] = useState("");
+  const [imgName, setImgName] = useState("");
+  const [fileStatus, setFileStatus] = useState(false);
+  const [imgUrl, setImgUrl] = useState("");
+  const propObj = {
+    img, setImg,
+    imgName, setImgName,
+    fileStatus, setFileStatus,
+    imgUrl, setImgUrl
+  }
+  let imgURL;
   const {
     users,
     selectedParticipants,
@@ -43,17 +56,20 @@ function SelectParticipants(props) {
     setWelcomeChatPage,
   } = useContext(messageContext);
 
+  const [userName, setUserName] = useState(
+    recieverDetails?.name || recieverDetails?.groupName
+  );
   const grp = users?.find((user) => user.uid == actualDbId);
-  const [localGroupName, setLocalGroupName] = useState(getUserFromUid(recieverDetails?.uid,users)?.groupName);
+  const [localGroupName, setLocalGroupName] = useState(getUserFromUid(recieverDetails?.uid, users)?.groupName);
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
-  useEffect(()=>{
-    setLocalGroupName(getUserFromUid(recieverDetails?.uid,users)?.groupName)
-    console.log("selectedParticipants ",selectedParticipants)
-  },[])
+  useEffect(() => {
+    setLocalGroupName(getUserFromUid(recieverDetails?.uid, users)?.groupName)
+    // recieverDetails?.participants && setSelectedParticipants([...recieverDetails?.participants]);
+  }, [])
   // useEffect(()=>{
   //   const q = query(collection(db, "users"), orderBy("createdAt"));
   //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
@@ -85,10 +101,66 @@ function SelectParticipants(props) {
     return `${auth.currentUser.uid}${getTime()}${users?.length}`;
   };
 
+  const handleUpload = async () => {
+    setFileStatus(false);
+
+    if (img) {
+      
+      const localFileNewURL = `/profiles/${img.name}${recieverDetails.uid}`;
+      const storageRef = ref(storage, localFileNewURL);
+      const uploadTask = uploadBytesResumable(storageRef, img);
+
+      uploadTask.on(
+       
+    
+       
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            setImgUrl(url);
+            
+            imgURL = url;
+            console.log(url, imgURL, "url ::",recieverDetails?.groupName,userName);
+            recieverDetails?.groupName &&
+              // userName?.trim() &&
+              // (await updateDoc(doc(db, "users", recieverDetails?.uid), {
+              //   uid: recieverDetails.uid,
+              //   groupName: recieverDetails?.groupName && userName,
+              //   // name: recieverDetails?.name && userName,
+              //   participants: [...recieverDetails?.participants],
+              //   avatar: url, //random array dp generator
+              //   createdAt: recieverDetails.createdAt,
+              //   creatorUid: recieverDetails.creatorUid,
+              // }));
+              console.log(recieverDetails?.avatar,"?.avatar")
+            if (recieverDetails?.name) {
+              // await updateDoc(doc(db, "users", recieverDetails?.uid), {
+              //   uid: recieverDetails.uid,
+              //   name: userName,
+              //   email: recieverDetails.email,
+              //   avatar: url,
+              //   createdAt: activeUser.createdAt,
+              // });
+            }
+          });
+        }
+      );
+    }
+    setImg(null);
+    // setImgUrl("");
+    // setUserName("");
+    // progress can be paused and resumed. It also exposes progress updates.
+    // Receives the storage reference and the file to upload.
+  };
   const updateChatGroup = async () => {
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
+    // console.log("imgimgin", recieverDetails);
+    // docRef = await getDoc(doc(db, "users", gid));
+    // console.log(docRef.data(),"docRef.data()")
+    // setRecieverDetails({...docRef.data()})
+    recieverDetails?.avatar !== img && handleUpload();  
+
     const gid = recieverDetails?.uid; //grp
 
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
@@ -97,19 +169,19 @@ function SelectParticipants(props) {
     );
     const tempSelectedParticipants = [...selectedParticipants];
     // tempSelectedParticipants[0] = currentUser0;
-    console.log(tempSelectedParticipants, "tempSelectedParticipants :");
+    console.log(imgURL,imgUrl, "tempSelectedParticipants :");
     console.log("gid", gid);
     await updateDoc(doc(db, "users", gid), {
       uid: gid,
       // creatorUid:
       groupName: localGroupName,
-      avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
+      avatar: imgUrl || recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       // details: {uid,email,name,avatar,}
     });
     // await get
-    const docRef = await getDoc(doc(db, "chats", gid));
+    let docRef = await getDoc(doc(db, "chats", gid));
     console.log("doesn't exist", actualDbId, docRef.exists());
     // if (docRef.exists()) return null;
 
@@ -120,8 +192,8 @@ function SelectParticipants(props) {
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       messages,
-      lastChatedAt:serverTimestamp(),
-      
+      lastChatedAt: serverTimestamp(),
+
     });
     //create new
     // setActualDbGroupId(gid);
@@ -147,7 +219,7 @@ function SelectParticipants(props) {
       uid: gid,
       groupName: localGroupName,
       creatorUid: auth.currentUser.uid,
-      avatar: IMAGES.GROUP_DEFAULT_DP, //random array dp generator
+      avatar: recieverDetails?.avatar|| IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       // details: {uid,email,name,avatar,}
@@ -160,7 +232,7 @@ function SelectParticipants(props) {
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       messages: [{}],
-      lastChatedAt:serverTimestamp(),
+      lastChatedAt: serverTimestamp(),
     });
     //create new
     // setActualDbGroupId(gid);
@@ -170,12 +242,14 @@ function SelectParticipants(props) {
     setShowGroupAddComp(false);
     // setGroupName("")
     // setRecieverDetails(getUserFromUid(gid,users))
-    console.log("after create new grp : receiverdetails",recieverDetails);
+    console.log("after create new grp : receiverdetails", recieverDetails);
     // setWelcomeChatPage(true)
+    recieverDetails?.avatar !== img && handleUpload();
   };
 
   return (
-    <div className="padded" style={{padding: "15px"}}>
+    <div className="padded" style={{ padding: "15px" }}>
+    <ProfileImage activeUser={recieverDetails} propObj={propObj}/>
       <div>
         <input
           className="textInput"
@@ -224,7 +298,7 @@ function SelectParticipants(props) {
                   />
                   <span>
                     {" "}
-                    <img className="avatar" src={user?.avatar} /> {user?.name}
+                    <img className="avatar" key={user?.uid} src={user?.avatar} /> {user?.name}
                   </span>
                 </label>
               )}
@@ -236,16 +310,16 @@ function SelectParticipants(props) {
       <div>
         {/* (selectedParticipants?.length < 1)?setGroupEmptyError("Select a member") */}
         <button
-        className="arrow"
+          className="arrow"
           onClick={() => {
             !localGroupName
               ? setErrorName("Please enter group name.")
               : isNewGroup
-              ? createChatGroup()
-              : updateChatGroup();
+                ? createChatGroup()
+                : updateChatGroup();
           }}
         >
-          {rightArrow}
+          Save Changes
         </button>
       </div>
     </div>

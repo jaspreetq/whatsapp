@@ -126,27 +126,26 @@ function SideBar() {
     const filteredUsers = users?.filter(user => !filteredChats?.some(chat => chat.uid?.includes(user.uid)) && user.uid?.length < 29)//(user?.uid.length < 29 && user?.uid !== UID)
     const filteredChatUIds = filteredChats?.map(chat => chat.uid);
     // const filteredUsers = 
-    const filteredUserUids = filteredUsers.map(user=>user.uid);
-    const ids = [...filteredChatUIds,...filteredUserUids]
-    console.log(ids,"ids<><><>")
+    const filteredUserUids = filteredUsers.map(user => user.uid);
+    const ids = [...filteredChatUIds, ...filteredUserUids]
+    console.log(ids, "ids<><><>")
     // const usersFromIds = ids.map(id => users.find(user => id?.includes(user.uid)))
-    const usersFromIds = ids.map(id =>{
-      if(id === UID) return users?.find(user => user.uid === id);
-      if(id.length > 55)
-      {
+    const usersFromIds = ids.map(id => {
+      if (id === UID) return users?.find(user => user.uid === id);
+      if (id.length > 55) {
         let userIdFromChat;
-        if(id.startsWith(UID)) userIdFromChat = id.substring(UID.length)
-        if(id.endsWith(UID)) userIdFromChat = id.substring(0,UID.length)
+        if (id.startsWith(UID)) userIdFromChat = id.substring(UID.length)
+        if (id.endsWith(UID)) userIdFromChat = id.substring(0, UID.length)
 
-        console.log(userIdFromChat," userIdFromChat ");
+        console.log(userIdFromChat, " userIdFromChat ");
         return users?.find(user => user.uid === userIdFromChat)
       }
-      if(id.length <= 38)
-      return users?.find(user => user.uid === id)
+      if (id.length <= 38)
+        return users?.find(user => user.uid === id)
 
     });
     setSortedUsers([...usersFromIds])//...filteredChats,
-    console.log(usersFromIds, "<> usersFromIds", filteredUsers,sortedUsers)
+    console.log(usersFromIds, "<> usersFromIds", filteredUsers, sortedUsers)
 
   }, [chats, users])
 
@@ -170,7 +169,7 @@ function SideBar() {
     return user.uid == auth.currentUser.uid;
   });
 
-  
+
   console.log(getCurrentUser()?.avatar || IMAGES.default, "<<<<<<<<<<here");
 
   return (
@@ -209,7 +208,7 @@ function SideBar() {
               <>
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                   {/* getCurrentUser */}
-                  <img id="unique" key="unique" className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={() => setEditProfile(true)} />
+                  <img id="unique" key={auth.currentUser.uid} className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={() => setEditProfile(true)} />
                   {"  "}
                   <div className="d-flex justify-content-start w-100">
                     <div style={{ width: "99%", "margin-top": "6px", "margin-left": "7px" }}>
@@ -270,12 +269,13 @@ function SideBar() {
                   </div>
 
                 </nav>
-                {/* <input
-          class="form-control mr-sm-2"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-        /> */}
+                <input
+                  class="form-control mr-sm-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                  // value={searchedTerm}
+                />
                 <div className="scroll-left shadow sidebar">
                   {sortedUsers?.map((user) => {
                     console.log("sortedUsers ", user);
@@ -291,14 +291,14 @@ function SideBar() {
                     if (user?.groupName && !isCurrentUserAMemberOfThisGroup) return;
                     const cssUser =
                       recieverDetails?.uid === user?.uid ? " selected" : ""; //||selectedGroup.uid === user.uid\
-                      console.log("<><><>recoi",sortedUsers.length,sortedUsers)
+                    console.log("<><><>recoi", sortedUsers.length, sortedUsers)
                     return (
                       <div
                         className={`user${cssUser}`}
                         key={user?.uid}
                         onClick={() => receiverSelected(user)}
                       >
-                        <img className="avatar" key={user?.uid} src={user?.avatar} />
+                        <img className="avatar" id={user?.uid} key={user?.uid} src={user?.avatar} />
                         {"  "}{user?.groupName || user?.name}
                       </div>
                     );
