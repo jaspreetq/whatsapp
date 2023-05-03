@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { rightArrow } from "../../Utillities/icons";
 import { messageContext } from "../../../App";
 import { auth, db, storage } from "../../../firebase";
@@ -28,7 +28,8 @@ function SelectParticipants(props) {
     fileStatus, setFileStatus,
     imgUrl, setImgUrl
   }
-  let imgURL;
+  let imgURLGlobal;
+  const imgURL = useRef();
   const {
     users,
     selectedParticipants,
@@ -41,7 +42,7 @@ function SelectParticipants(props) {
     groupName,
     setGroupName,
   } = props;
-  console.log(selectedParticipants, "groupName selectedParticipants");
+  // console.log(selectedParticipants, "groupName selectedParticipants");
   const {
     actualDbGroupId,
     setActualDbGroupId,
@@ -66,10 +67,7 @@ function SelectParticipants(props) {
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
-  useEffect(() => {
-    setLocalGroupName(getUserFromUid(recieverDetails?.uid, users)?.groupName)
-    // recieverDetails?.participants && setSelectedParticipants([...recieverDetails?.participants]);
-  }, [])
+  //
   // useEffect(()=>{
   //   const q = query(collection(db, "users"), orderBy("createdAt"));
   //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
@@ -101,57 +99,8 @@ function SelectParticipants(props) {
     return `${auth.currentUser.uid}${getTime()}${users?.length}`;
   };
 
-  const handleUpload = async () => {
-    setFileStatus(false);
-
-    if (img) {
-      
-      const localFileNewURL = `/profiles/${img.name}${recieverDetails.uid}`;
-      const storageRef = ref(storage, localFileNewURL);
-      const uploadTask = uploadBytesResumable(storageRef, img);
-
-      uploadTask.on(
-       
-    
-       
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            setImgUrl(url);
-            
-            imgURL = url;
-            console.log(url, imgURL, "url ::",recieverDetails?.groupName,userName);
-            recieverDetails?.groupName &&
-              // userName?.trim() &&
-              // (await updateDoc(doc(db, "users", recieverDetails?.uid), {
-              //   uid: recieverDetails.uid,
-              //   groupName: recieverDetails?.groupName && userName,
-              //   // name: recieverDetails?.name && userName,
-              //   participants: [...recieverDetails?.participants],
-              //   avatar: url, //random array dp generator
-              //   createdAt: recieverDetails.createdAt,
-              //   creatorUid: recieverDetails.creatorUid,
-              // }));
-              console.log(recieverDetails?.avatar,"?.avatar")
-            if (recieverDetails?.name) {
-              // await updateDoc(doc(db, "users", recieverDetails?.uid), {
-              //   uid: recieverDetails.uid,
-              //   name: userName,
-              //   email: recieverDetails.email,
-              //   avatar: url,
-              //   createdAt: activeUser.createdAt,
-              // });
-            }
-          });
-        }
-      );
-    }
-    setImg(null);
-    // setImgUrl("");
-    // setUserName("");
-    // progress can be paused and resumed. It also exposes progress updates.
-    // Receives the storage reference and the file to upload.
-  };
   const updateChatGroup = async () => {
+    console.log(imgURL,"ref inside chatgrop")
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
@@ -159,7 +108,7 @@ function SelectParticipants(props) {
     // docRef = await getDoc(doc(db, "users", gid));
     // console.log(docRef.data(),"docRef.data()")
     // setRecieverDetails({...docRef.data()})
-    recieverDetails?.avatar !== img && handleUpload();  
+    // recieverDetails?.avatar !== img && handleUpload();  
 
     const gid = recieverDetails?.uid; //grp
 
@@ -169,20 +118,20 @@ function SelectParticipants(props) {
     );
     const tempSelectedParticipants = [...selectedParticipants];
     // tempSelectedParticipants[0] = currentUser0;
-    console.log(imgURL,imgUrl, "tempSelectedParticipants :");
-    console.log("gid", gid);
+    // console.log(imgURL.current, "tempSelectedParticipants :");
+    // console.log("gid", gid);
     await updateDoc(doc(db, "users", gid), {
       uid: gid,
       // creatorUid:
       groupName: localGroupName,
-      avatar: imgUrl || recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
+      avatar: imgURL.current || recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       // details: {uid,email,name,avatar,}
     });
     // await get
     let docRef = await getDoc(doc(db, "chats", gid));
-    console.log("doesn't exist", actualDbId, docRef.exists());
+    // console.log("doesn't exist", actualDbId, docRef.exists());
     // if (docRef.exists()) return null;
 
     await updateDoc(doc(db, "chats", gid), {
@@ -195,6 +144,7 @@ function SelectParticipants(props) {
       lastChatedAt: serverTimestamp(),
 
     });
+    // console.log(recieverDetails, "tempSelectedParticipants :");
     //create new
     // setActualDbGroupId(gid);
     setActualDbId(gid);
@@ -203,23 +153,79 @@ function SelectParticipants(props) {
     setShowGroupAddComp(false);
     // setRecieverDetails()
   };
+
+  const handleUpload = async () => {
+    console.log(img,"ref inside upload func")
+    setFileStatus(false);
+    
+    if (img) {
+      
+      const localFileNewURL = `/profiles/${img.name}${recieverDetails.uid}`;
+      const storageRef = ref(storage, localFileNewURL);
+      const uploadTask = uploadBytesResumable(storageRef, img);
+
+      uploadTask.then(
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            setImgUrl(url);
+            imgURLGlobal = url;
+            // const obj = {a: 23}
+            setRecieverDetails((rec)=>{
+              return {...rec,["avatar"]:url}
+            })
+            console.log(url, "url :: 12", userName);
+            imgURL.current = url;
+            // recieverDetails?.groupName &&
+              // userName?.trim() &&
+              // (await updateDoc(doc(db, "users", recieverDetails?.uid), {
+              //   uid: recieverDetails.uid,
+              //   groupName: recieverDetails?.groupName && userName,
+              //   // name: recieverDetails?.name && userName,
+              //   participants: [...recieverDetails?.participants],
+              //   avatar: url, //random array dp generator
+              //   createdAt: recieverDetails.createdAt,
+              //   creatorUid: recieverDetails.creatorUid,
+              // }));
+              // console.log(recieverDetails?.avatar, "?.avatar")
+            if (recieverDetails?.name) {
+              // await updateDoc(doc(db, "users", recieverDetails?.uid), {
+              //   uid: recieverDetails.uid,
+              //   name: userName,
+              //   email: recieverDetails.email,
+              //   avatar: url,
+              //   createdAt: activeUser.createdAt,
+              // });
+            }
+            isNewGroup ? createChatGroup(): updateChatGroup();
+          });
+        }
+      );
+    }
+    setImg(null);
+    !img && isNewGroup ? createChatGroup(): updateChatGroup();
+    // setImgUrl("");
+    // setUserName("");
+    // progress can be paused and resumed. It also exposes progress updates.
+    // Receives the storage reference and the file to upload.
+  };
   // const [recentGroupName,setRecentGroupName]
   //   const userCheckboxChange = (e, checkedUser) => {};
   const createChatGroup = async () => {
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
+    
     const gid = createNewGroupId();
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const tempSelectedParticipants = [...selectedParticipants];
     tempSelectedParticipants[0] = currentUser0;
-    console.log(tempSelectedParticipants, "tempSelectedParticipants :");
-    console.log("gid", gid);
+    // console.log(recieverDetails, "tempSelectedParticipants :");
+    // console.log("gid", gid);
     await setDoc(doc(db, "users", gid), {
       uid: gid,
       groupName: localGroupName,
       creatorUid: auth.currentUser.uid,
-      avatar: recieverDetails?.avatar|| IMAGES.GROUP_DEFAULT_DP, //random array dp generator
+      avatar: imgURLGlobal|| recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
       // details: {uid,email,name,avatar,}
@@ -242,14 +248,14 @@ function SelectParticipants(props) {
     setShowGroupAddComp(false);
     // setGroupName("")
     // setRecieverDetails(getUserFromUid(gid,users))
-    console.log("after create new grp : receiverdetails", recieverDetails);
+    // console.log("after create new grp : receiverdetails", recieverDetails);
     // setWelcomeChatPage(true)
-    recieverDetails?.avatar !== img && handleUpload();
+    // recieverDetails?.avatar !== img && handleUpload();
   };
 
   return (
     <div className="padded" style={{ padding: "15px" }}>
-    <ProfileImage activeUser={recieverDetails} propObj={propObj}/>
+      <ProfileImage activeUser={isNewGroup ? {} :recieverDetails} propObj={propObj} />
       <div>
         <input
           className="textInput"
@@ -282,7 +288,7 @@ function SelectParticipants(props) {
                       (participant) => participant.uid === user.uid
                     )}
                     onChange={(e) => {
-                      console.log("IN check change", e.target.checked);
+                      // console.log("IN check change", e.target.checked);
                       if (e.target.checked)
                         setSelectedParticipants(() => [
                           ...selectedParticipants,
@@ -314,9 +320,7 @@ function SelectParticipants(props) {
           onClick={() => {
             !localGroupName
               ? setErrorName("Please enter group name.")
-              : isNewGroup
-                ? createChatGroup()
-                : updateChatGroup();
+              : handleUpload()
           }}
         >
           Save Changes

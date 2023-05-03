@@ -108,7 +108,7 @@ function LiveChat() {
         //setWelcomeChatPage(true);
       }
     );
-    console.log("recieverDetails outside changed visible? ", recieverDetails);
+    // console.log("recieverDetails outside changed visible? ", recieverDetails);
     return () => unsubscribe();
   }, [users]);
     // recieverDetails?.name,
@@ -116,7 +116,7 @@ function LiveChat() {
     // recieverDetails?.avatar,
     // recieverDetails?.participants,
     
-  console.log("recieverDetails changed visible? ", recieverDetails);
+  // console.log("recieverDetails changed visible? ", recieverDetails);
   // useEffect(() => {
   // }, [recieverDetails?.uid]);
 
@@ -131,7 +131,7 @@ function LiveChat() {
     // console.log("actualDbId: effect,reciever", );
     setFileStatus(false);
     setShowGroupInfoEditForm(false);
-    console.log("recieverDetails: in livechat", recieverDetails)
+    // console.log("recieverDetails: in livechat", recieverDetails)
     if (recieverDetails?.groupName) {
       setActualDbId(recieverDetails?.uid);
       setGroupName(recieverDetails?.name);
@@ -149,15 +149,15 @@ function LiveChat() {
   }, [recieverDetails?.uid]);
 
   useEffect(() => {
-    console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
+    // console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
     // console.log("dbId new",dbId)
 
     if (actualDbId?.length > 35) {
       const setDocAsync = async () => {
         const docRef = await getDoc(doc(db, "chats", actualDbId));
-        console.log("doesn't exist", actualDbId, docRef.exists());
+        // console.log("doesn't exist", actualDbId, docRef.exists());
         if (docRef.exists() || !actualDbId) return null;
-        console.log("doesn't exist");
+        // console.log("doesn't exist");
         await setDoc(doc(db, "chats", actualDbId), {
           uid: actualDbId,
           senderUid: activeUser?.uid,
@@ -174,30 +174,30 @@ function LiveChat() {
 
       actualDbId && Object.keys(recieverDetails).length && setDocAsync();
 
-      console.log("actualDbId: effect", actualDbId, recieverDetails);
+      // console.log("actualDbId: effect", actualDbId, recieverDetails);
       const messageList = [];
       Object.keys(recieverDetails).length && setWelcomeChatPage(false);
 
-      console.log(
-        "actualDbId in useEffect(LiveCHat) b4:",
-        recieverDetails,
-        actualDbId
-      );
+      // console.log(
+      //   "actualDbId in useEffect(LiveCHat) b4:",
+      //   recieverDetails,
+      //   actualDbId
+      // );
     }
     Object.keys(recieverDetails)?.length && setWelcomeChatPage(false);
-    console.log(actualDbId, "actualDbId after grp made");
+    // console.log(actualDbId, "actualDbId after grp made");
     const unsubscribe = onSnapshot(
       doc(db, "chats", actualDbId || RANDOM_TEXT),
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         setMessages(doc.data()?.messages);
-        console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
-        console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+        // console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+        // console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
         //setWelcomeChatPage(true);
       }
     );
     setErrorMessage("");
-    console.log("recieverDetails ", recieverDetails);
+    // console.log("recieverDetails ", recieverDetails);
     return () => unsubscribe();
   }, [actualDbId]);
 
@@ -217,7 +217,7 @@ function LiveChat() {
       {/* {showMemberEditFormOnTheRight && <CustomModal { children, show, setEditedGroupName = ()=>{}, string, handleEditGroupName, editedGroupName, handleGroupNameEdit, setShow, channelName, title, selectedList, setSelectedList, addChannel, addUser=()=>{}, handleSelect=()=>{}, showHead, showFoot }) >
       </CustomModal>} */}
       {/* <SignOut /> */}
-      {console.log("recieverDetails in <><><><>", recieverDetails)}
+      {/* {console.log("recieverDetails in <><><><>", recieverDetails)} */}
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar">
         <SideBar />
@@ -234,7 +234,12 @@ function LiveChat() {
                   className="avatar"
                   src={getUserFromUid(recieverDetails?.uid, users)?.avatar || IMAGES.default}
                   alt="Avatar"
-                  onClick={() => setShowGroupInfoEditForm(true)}
+                  key="unique2"
+                  id="unique2"
+                  onClick={() => {
+                    setShowMemberEditFormOnTheRight(false)
+                    setShowGroupInfoEditForm(true)
+                  }}
                 />
 
                 {/* {recieverDetails?.groupName && actualDbId?.length > (auth.currentUser.uid).length && <>
@@ -252,17 +257,17 @@ function LiveChat() {
                 </>} */}
 
                 {"  "}
-                {console.log("users:<><><<>", users)}
+                {/* {console.log("users:<><><<>", users)} */}
                 <div style={{ width: "95%" }}>
                   <p>
                     {users?.find((user) => user.uid === actualDbId)
                       ?.groupName || recieverDetails?.name}
                   </p>
                 </div>
-                {console.log(
+                {/* {console.log(
                   "presentUser? : ",
                   actualDbId?.length > auth.currentUser.uid.length
-                )}
+                )} */}
 
                 {recieverDetails?.participants?.length && (
                   <p
@@ -288,8 +293,11 @@ function LiveChat() {
                         onClick={() => {
                           //MODAL SELECTPARTS
                           if (recieverDetails?.groupName)
-                            setShowMemberEditFormOnTheRight(true);
-                          console.log("dfs");
+                            {
+                              setShowGroupInfoEditForm(false)
+                              setShowMemberEditFormOnTheRight(true);
+                            }
+                          // console.log("dfs");
                         }}
                       >
                         {edit}
@@ -338,12 +346,12 @@ function LiveChat() {
                 >
                   <ul>
                     {messages?.map((message, idx) => {
-                      console.log("message:::", message);
+                      {/* console.log("message:::", message); */}
                       const cssStr =
                         message.uid === auth.currentUser.uid
                           ? "-sender"
                           : "-reciever";
-                      console.log("cssStr: ", cssStr);
+                      {/* console.log("cssStr: ", cssStr); */}
                       if (!(message.text || message.img || message.pdf))
                         return null;
                       return (
@@ -368,7 +376,7 @@ function LiveChat() {
                               </span>
                             )}
                             <p>{message.text}</p>
-                            {console.log(message?.img, "message?.img::::::")}
+                            {/* {console.log(message?.img, "message?.img::::::")} */}
                             {message?.img && (
                               <a target="blank" href={message?.img} download>
                                 <img
@@ -380,7 +388,7 @@ function LiveChat() {
                                 />
                               </a>
                             )}
-                            {message?.pdf && console.log(message.pdf?.name)}
+                            {/* {message?.pdf && console.log(message.pdf?.name)} */}
                             {message?.pdf && (
                               <a target="blank" href={message?.pdf} download>
                                 {filePdf}
@@ -437,7 +445,7 @@ function LiveChat() {
             {/* <div className="lds-ellipsis" style={{"font-size":"5rem"}}>
           <div>.</div><div>.</div><div>.</div><div>.</div>
           </div> */}
-            {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")}
+            {/* {console.log(recieverDetails, "groupName<><><>><<><><><><>><><")} */}
             <Header
               title="Group Info"
               goBack={() => setShowGroupInfoEditForm(false)}

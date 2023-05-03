@@ -9,6 +9,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,17 +43,20 @@ function SideBar() {
     users,
     setUsers,
     chats,
-    setChats
+    setChats,setLoading,loading
   } = useContext(messageContext);
   let senderUserID;
   // const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid)
 
   const [sortedUsers, setSortedUsers] = useState([]);
+  const [displayRecords,setDisplayRecords] = useState([]);
   const [selectedParticipants, setSelectedParticipants] = useState([{}]);
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
   const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
   const [groupName, setGroupName] = useState("");
+  const [searchedTerm,setSearchedTerm] = useState("")
+  const [filteredUsers,setFilteredUsers] = useState([])
   const navigate = useNavigate();
   //SIGN-OUT
   const auth = getAuth();
@@ -73,54 +77,59 @@ function SideBar() {
   }, [isNewGroupBtnClicked]);
 
   useEffect(() => {
-    console.log("activeUser iopi", activeUser?.name);
     setSelectedParticipants(() => [...selectedParticipants]);
-    console.log("selectedParticipants: ", selectedParticipants);
   }, [activeUser]);
 
 
   useEffect(() => {
     // setRecieverDetails(defaultRec());
+    setDisplayRecords(sortedUsers)
     const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
-      console.log("<>snapshot<>", QuerySnapshot);
 
       QuerySnapshot.forEach((doc) => {
-        console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
         users.push({ ...doc.data() });
-        console.log("messages<>: ", users);
       });
       setUsers(users);
     });
-    console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
     return () => unsubscribe();
   }, []);
 
+  useEffect(()=>{
+    setSearchedTerm("")
+    const updateUserLastMssg = async ()=>await updateDoc(doc(db, "users", recieverDetails?.uid), {
+        uid: recieverDetails.uid,
+        name: recieverDetails.name,
+        email: recieverDetails.email,
+        avatar: recieverDetails.avatar, //random array dp generator
+        createdAt: recieverDetails.createdAt,
+        lastChat:message
+      })
 
-
+      recieverDetails?.name && updateUserLastMssg()
+      
+  },[chats])
   useEffect(() => {
     // setRecieverDetails(defaultRec());
     const q = query(collection(db, "chats"), orderBy("lastChatedAt", "desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let chats = [];
-      console.log("<>snapshot<>", QuerySnapshot);
 
       QuerySnapshot.forEach((doc) => {
         chats.push({ ...doc.data() });
-        console.log("messages<>: ", chats);
       });
       setChats(chats);
     });
-    console.log("actualDbId in useEffectMount(sidebar) :", chats);
+
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    console.log(chats, "chat >>..");
+
     //sort and filter array
     const filteredChats = chats?.filter(chat => {
-      console.log(chat, "chat >>..");
+
       return (((chat?.participants?.some(member => member.uid.includes(UID))) || (chat?.uid?.includes(UID)) && (chat?.uid.length > 35)))
     });
     const filteredUsers = users?.filter(user => !filteredChats?.some(chat => chat.uid?.includes(user.uid)) && user.uid?.length < 29)//(user?.uid.length < 29 && user?.uid !== UID)
@@ -128,7 +137,7 @@ function SideBar() {
     // const filteredUsers = 
     const filteredUserUids = filteredUsers.map(user => user.uid);
     const ids = [...filteredChatUIds, ...filteredUserUids]
-    console.log(ids, "ids<><><>")
+
     // const usersFromIds = ids.map(id => users.find(user => id?.includes(user.uid)))
     const usersFromIds = ids.map(id => {
       if (id === UID) return users?.find(user => user.uid === id);
@@ -137,7 +146,7 @@ function SideBar() {
         if (id.startsWith(UID)) userIdFromChat = id.substring(UID.length)
         if (id.endsWith(UID)) userIdFromChat = id.substring(0, UID.length)
 
-        console.log(userIdFromChat, " userIdFromChat ");
+
         return users?.find(user => user.uid === userIdFromChat)
       }
       if (id.length <= 38)
@@ -145,17 +154,17 @@ function SideBar() {
 
     });
     setSortedUsers([...usersFromIds])//...filteredChats,
-    console.log(usersFromIds, "<> usersFromIds", filteredUsers, sortedUsers)
+    setDisplayRecords([...usersFromIds])
 
   }, [chats, users])
 
   const receiverSelected = async (user) => {
     setRecieverDetails(user);
     setChatDisplay(true);
-    console.log("recieverDetails:", recieverDetails, "user: ", actualDbId, " ");
+
     const { uid, name } = user;
     // senderUser = auth.currentUser;
-    console.log("user reciever <><><><>", name);
+
     const senderUid = auth.currentUser.uid,
       recieverUid = uid;
     senderUserID = senderUid;
@@ -169,12 +178,33 @@ function SideBar() {
     return user.uid == auth.currentUser.uid;
   });
 
+  useEffect(() => {
+      //searched records
+      let filteredArr = sortedUsers?.filter((record) => {
+        let lowerCaseSearch = searchedTerm.toLowerCase();
+        const lowerUserName = (record?.name || record?.groupName)?.toLowerCase();
+        return lowerUserName.includes(lowerCaseSearch)
+      });
 
-  console.log(getCurrentUser()?.avatar || IMAGES.default, "<<<<<<<<<<here");
+      console.log(filteredArr);
+      setLoading(false);
+      setFilteredUsers(filteredArr);
+    console.log(filteredUsers);
+  
+    return () => {
+    };
+  
+    // setLoading(false);
+  }, [searchedTerm]);
+  
+  useEffect(() => {
+    if (searchedTerm.trim === "") setDisplayRecords(sortedUsers);
+    else setDisplayRecords(filteredUsers);
+  }, [filteredUsers]);
 
   return (
     <>
-      {console.log("actualDbId in useEffectMount(sidebar) :", chats)}
+
       <div class="w-25 shadow sidebar">
         {showGroupAddComp ? (
           <>
@@ -274,24 +304,23 @@ function SideBar() {
                   type="search"
                   placeholder="Search"
                   aria-label="Search"
-                  // value={searchedTerm}
+                  value={searchedTerm}
+                  onChange={(e)=>setSearchedTerm(e.target.value)}
                 />
                 <div className="scroll-left shadow sidebar">
-                  {sortedUsers?.map((user) => {
-                    console.log("sortedUsers ", user);
+                {displayRecords.length ?
+                  displayRecords?.map((user) => {
+
                     if (user?.uid === auth.currentUser.uid) return;
                     const isCurrentUserAMemberOfThisGroup =
                       user?.participants?.some(
                         (member) => member.uid === auth.currentUser.uid
                       );
-                    console.log(
-                      isCurrentUserAMemberOfThisGroup,
-                      "isCurrentUserAMemberOfThisGroup "
-                    );
+
                     if (user?.groupName && !isCurrentUserAMemberOfThisGroup) return;
                     const cssUser =
                       recieverDetails?.uid === user?.uid ? " selected" : ""; //||selectedGroup.uid === user.uid\
-                    console.log("<><><>recoi", sortedUsers.length, sortedUsers)
+
                     return (
                       <div
                         className={`user${cssUser}`}
@@ -300,9 +329,12 @@ function SideBar() {
                       >
                         <img className="avatar" id={user?.uid} key={user?.uid} src={user?.avatar} />
                         {"  "}{user?.groupName || user?.name}
+                        <p>{user.lastChat}</p>
                       </div>
                     );
-                  })}
+                  }):
+                  <h6>No user or group found</h6>
+                  }
                 </div>
               </>
             }

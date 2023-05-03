@@ -80,7 +80,7 @@ function SendMessage() {
 
   const handleUpload = async () => {
     setFileStatus(false)
-    console.log("pdf<><>><><><",pdf)
+
     if (img) {
       const localFileNewURL = `/files/${img.name}${auth.currentUser.uid}`;
       const storageRef = ref(storage, localFileNewURL);
@@ -101,7 +101,7 @@ function SendMessage() {
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
             imgURL = url;
-            console.log(url, imgURL, "url ::",actualDbId);
+            
             setLoading(true)
             await updateDoc(doc(db, "chats", actualDbId), {
               lastChatedAt:serverTimestamp(),
@@ -125,17 +125,17 @@ function SendMessage() {
       const localFileNewURL = `/files/${pdf.name}${auth.currentUser.uid}`;
       const storageRef = ref(storage, localFileNewURL);
       const uploadTask = uploadBytesResumable(storageRef, pdf);
-      console.log("in pdf::::::::::",pdf,localFileNewURL);
+      
       // setFileUrl(localFileNewURL)
       setPdf(null)
       uploadTask.then(
         () => {
-          console.log("next log");
+      
           // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setPdfUrl(url);
             setFileUrl(url);
-            console.log("urlurl", url);
+      
             pdfURL = url;
             setLoading(true)
             await updateDoc(doc(db, "chats", actualDbId), {
@@ -158,10 +158,11 @@ function SendMessage() {
       );
     }
     else{
-      console.log("arrunin",actualDbId,activeUser,recieverDetails,message );
+      
       
        message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
         lastChatedAt:serverTimestamp(),
+        lastChat:message,
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,
@@ -174,6 +175,42 @@ function SendMessage() {
           text: message || "",
         }),   
     })
+
+    console.log(recieverDetails,message," recieverDetails")
+    recieverDetails?.groupName &&
+      (await updateDoc(doc(db, "users", recieverDetails.uid), {
+        uid: recieverDetails.uid,
+        groupName: recieverDetails?.name,
+        participants: [...recieverDetails?.participants],
+        avatar: recieverDetails.avatar, //random array dp generator
+        createdAt: recieverDetails.createdAt,
+        creatorUid: recieverDetails.creatorUid,
+        lastChat:message
+      }));
+
+      recieverDetails?.name &&
+      (await updateDoc(doc(db, "users", recieverDetails?.uid), {
+        uid: recieverDetails.uid,
+        name: recieverDetails.name,
+        email: recieverDetails.email,
+        avatar: recieverDetails.avatar, //random array dp generator
+        createdAt: recieverDetails.createdAt,
+        lastChat:message
+      })
+      
+      );
+
+      recieverDetails?.name &&
+      (await updateDoc(doc(db, "users", activeUser?.uid), {
+        uid: activeUser.uid,
+        name: activeUser.name,
+        email: activeUser.email,
+        avatar: activeUser.avatar, //random array dp generator
+        createdAt: activeUser.createdAt,
+        lastChat:message
+      })
+      
+      );
 
   }
     setText("");

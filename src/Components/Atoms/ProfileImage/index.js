@@ -38,11 +38,15 @@ function ProfileImage({ activeUser, propObj : {
                     {img ? (
                         <img
                             className="large"
+                            id='large'
+                            key='large'
                             src={URL.createObjectURL(img)}
                         />
                     ) : (
                         <img
                             className="large"
+                            id='large2'
+                            key='large2'
                             src={activeUser?.avatar || IMAGES.default}
                             alt="Avatar"
                         />
