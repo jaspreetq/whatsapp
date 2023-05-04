@@ -162,7 +162,6 @@ function SendMessage() {
       
        message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
         lastChatedAt:serverTimestamp(),
-        lastChat:message,
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,
@@ -180,14 +179,15 @@ function SendMessage() {
     recieverDetails?.groupName &&
       (await updateDoc(doc(db, "users", recieverDetails.uid), {
         uid: recieverDetails.uid,
-        groupName: recieverDetails?.name,
+        groupName: recieverDetails?.groupName,
         participants: [...recieverDetails?.participants],
         avatar: recieverDetails.avatar, //random array dp generator
         createdAt: recieverDetails.createdAt,
         creatorUid: recieverDetails.creatorUid,
-        lastChat:message
+        lastChat:{...(recieverDetails?.lastChat || {}),[recieverDetails?.uid]:message}
       }));
 
+      //1on1
       recieverDetails?.name &&
       (await updateDoc(doc(db, "users", recieverDetails?.uid), {
         uid: recieverDetails.uid,
@@ -195,19 +195,18 @@ function SendMessage() {
         email: recieverDetails.email,
         avatar: recieverDetails.avatar, //random array dp generator
         createdAt: recieverDetails.createdAt,
-        lastChat:message
+        lastChat:{...(recieverDetails?.lastChat || {}),[actualDbId]:message}
       })
       
       );
 
-      recieverDetails?.name &&
       (await updateDoc(doc(db, "users", activeUser?.uid), {
         uid: activeUser.uid,
         name: activeUser.name,
         email: activeUser.email,
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
-        lastChat:message
+        lastChat:{...(activeUser?.lastChat || {}),[actualDbId]:message}
       })
       
       );

@@ -43,20 +43,20 @@ function SideBar() {
     users,
     setUsers,
     chats,
-    setChats,setLoading,loading
+    setChats, setLoading, loading
   } = useContext(messageContext);
   let senderUserID;
   // const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid)
 
   const [sortedUsers, setSortedUsers] = useState([]);
-  const [displayRecords,setDisplayRecords] = useState([]);
+  const [displayRecords, setDisplayRecords] = useState([]);
   const [selectedParticipants, setSelectedParticipants] = useState([{}]);
   const [showGroupAddComp, setShowGroupAddComp] = useState(false);
   const [isNewGroupBtnClicked, setIsNewGroupBtnClicked] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const [searchedTerm,setSearchedTerm] = useState("")
-  const [filteredUsers,setFilteredUsers] = useState([])
+  const [searchedTerm, setSearchedTerm] = useState("")
+  const [filteredUsers, setFilteredUsers] = useState([])
   const navigate = useNavigate();
   //SIGN-OUT
   const auth = getAuth();
@@ -96,20 +96,32 @@ function SideBar() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setSearchedTerm("")
-    const updateUserLastMssg = async ()=>await updateDoc(doc(db, "users", recieverDetails?.uid), {
-        uid: recieverDetails.uid,
-        name: recieverDetails.name,
-        email: recieverDetails.email,
-        avatar: recieverDetails.avatar, //random array dp generator
-        createdAt: recieverDetails.createdAt,
-        lastChat:message
-      })
+    console.log("message",message);
+    // const updateUserLastMssg = async () => await updateDoc(doc(db, "users", recieverDetails?.uid), {
+    //   uid: recieverDetails.uid,
+    //   name: recieverDetails.name,
+    //   email: recieverDetails.email,
+    //   avatar: recieverDetails.avatar, //random array dp generator
+    //   createdAt: recieverDetails.createdAt,
+    //   lastChat: recieverDetails?.lastChat || ""
+    // })
 
-      recieverDetails?.name && updateUserLastMssg()
-      
-  },[chats])
+    // const updateUserLastMssg = async () => 
+    // await updateDoc(doc(db, "users", recieverDetails.uid), {
+    //   uid: recieverDetails.uid,
+    //   groupName: recieverDetails?.name,
+    //   participants: [...recieverDetails?.participants],
+    //   avatar: recieverDetails.avatar, //random array dp generator
+    //   createdAt: recieverDetails.createdAt,
+    //   creatorUid: recieverDetails.creatorUid,
+    //   lastChat:message
+    // });
+    // console.log("updateDoc", recieverDetails)
+    // recieverDetails?.groupName && updateUserLastMssg()
+
+  }, [chats?.messages])
   useEffect(() => {
     // setRecieverDetails(defaultRec());
     const q = query(collection(db, "chats"), orderBy("lastChatedAt", "desc"));
@@ -130,7 +142,7 @@ function SideBar() {
     //sort and filter array
     const filteredChats = chats?.filter(chat => {
 
-      return (((chat?.participants?.some(member => member.uid.includes(UID))) || (chat?.uid?.includes(UID)) && (chat?.uid.length > 35)))
+      return (((chat?.participants?.some(member => member?.uid?.includes(UID))) || (chat?.uid?.includes(UID)) && (chat?.uid.length > 35)))
     });
     const filteredUsers = users?.filter(user => !filteredChats?.some(chat => chat.uid?.includes(user.uid)) && user.uid?.length < 29)//(user?.uid.length < 29 && user?.uid !== UID)
     const filteredChatUIds = filteredChats?.map(chat => chat.uid);
@@ -179,26 +191,24 @@ function SideBar() {
   });
 
   useEffect(() => {
-      //searched records
-      let filteredArr = sortedUsers?.filter((record) => {
-        let lowerCaseSearch = searchedTerm.toLowerCase();
-        const lowerUserName = (record?.name || record?.groupName)?.toLowerCase();
-        return lowerUserName.includes(lowerCaseSearch)
-      });
+    //searched records
+    let filteredArr = sortedUsers?.filter((record) => {
+      let lowerCaseSearch = searchedTerm.toLowerCase();
+      const lowerUserName = (record?.name || record?.groupName)?.toLowerCase();
+      return lowerUserName.includes(lowerCaseSearch)
+    });
 
-      console.log(filteredArr);
-      setLoading(false);
-      setFilteredUsers(filteredArr);
-    console.log(filteredUsers);
-  
+    setLoading(false);
+    setFilteredUsers(filteredArr);
+
     return () => {
     };
-  
+
     // setLoading(false);
   }, [searchedTerm]);
-  
+
   useEffect(() => {
-    if (searchedTerm.trim === "") setDisplayRecords(sortedUsers);
+    if (searchedTerm.trim === "") setDisplayRecords([...sortedUsers]);
     else setDisplayRecords(filteredUsers);
   }, [filteredUsers]);
 
@@ -305,35 +315,39 @@ function SideBar() {
                   placeholder="Search"
                   aria-label="Search"
                   value={searchedTerm}
-                  onChange={(e)=>setSearchedTerm(e.target.value)}
+                  onChange={(e) => setSearchedTerm(e.target.value)}
                 />
                 <div className="scroll-left shadow sidebar">
-                {displayRecords.length ?
-                  displayRecords?.map((user) => {
+                  {/* {console.log(displayRecords, ": displayRecords")} */}
+                  {displayRecords.length ?
+                    (displayRecords||sortedUsers)?.map((user) => {
 
-                    if (user?.uid === auth.currentUser.uid) return;
-                    const isCurrentUserAMemberOfThisGroup =
-                      user?.participants?.some(
-                        (member) => member.uid === auth.currentUser.uid
+                      if (user?.uid === auth.currentUser.uid) return;
+                      const isCurrentUserAMemberOfThisGroup =
+                        user?.participants?.some(
+                          (member) => member.uid === auth.currentUser.uid
+                        );
+
+                      if (user?.groupName && !isCurrentUserAMemberOfThisGroup) return;
+                      const cssUser =
+                        recieverDetails?.uid === user?.uid ? " selected" : ""; //||selectedGroup.uid === user.uid\
+
+                      return (
+                        <div
+                          className={`user${cssUser}`}
+                          key={user?.uid}
+                          onClick={() => receiverSelected(user)}
+                        >
+                          <img className="avatar" id={user?.uid} key={user?.uid} src={user?.avatar} />
+                          {"  "}{user?.groupName || user?.name}
+                          {/* style={{"display": "inline"}} */}
+                          <p>{user?.lastChat?.[user?.uid]
+                          || user?.lastChat?.[(Object.keys(user?.lastChat || {})?.find((chatId)=>chatId.length > 54 && chatId.includes(user?.uid) && chatId.includes(auth.currentUser.uid)))]}</p>
+                          {/* && user?.lastChat?.keys?.includes(user?.uid))  */}
+                        </div>
                       );
-
-                    if (user?.groupName && !isCurrentUserAMemberOfThisGroup) return;
-                    const cssUser =
-                      recieverDetails?.uid === user?.uid ? " selected" : ""; //||selectedGroup.uid === user.uid\
-
-                    return (
-                      <div
-                        className={`user${cssUser}`}
-                        key={user?.uid}
-                        onClick={() => receiverSelected(user)}
-                      >
-                        <img className="avatar" id={user?.uid} key={user?.uid} src={user?.avatar} />
-                        {"  "}{user?.groupName || user?.name}
-                        <p>{user.lastChat}</p>
-                      </div>
-                    );
-                  }):
-                  <h6>No user or group found</h6>
+                    }) :
+                    <h6>No user or group found</h6>
                   }
                 </div>
               </>

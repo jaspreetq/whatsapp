@@ -18,6 +18,7 @@
   cursor: pointer;
   margin-left: 0;
   padding: 2%;
+  size: 5px
 }
 
 .selected {

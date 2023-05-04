@@ -85,7 +85,8 @@ function LiveChat() {
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         if (doc?.exists()) {
-          const { avatar, name, uid, groupName, participants } = doc.data();
+          const { avatar, name="", uid, groupName="", participants } = doc.data();
+          console.log("avatar,",avatar);
           if (name)
             setRecieverDetails({
               ...recieverDetails,
@@ -110,7 +111,7 @@ function LiveChat() {
     );
     // console.log("recieverDetails outside changed visible? ", recieverDetails);
     return () => unsubscribe();
-  }, [users]);
+  }, []);
     // recieverDetails?.name,
     // recieverDetails?.groupName,
     // recieverDetails?.avatar,
