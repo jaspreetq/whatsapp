@@ -176,7 +176,6 @@ function SendMessage() {
         }),   
     })
 
-    console.log(recieverDetails,message," recieverDetails")
     recieverDetails?.groupName &&
       (await updateDoc(doc(db, "users", recieverDetails.uid), {
         uid: recieverDetails.uid,

@@ -4,11 +4,12 @@ import { auth, db, storage } from '../../../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
-function ProfileImage({ activeUser, propObj : {
-    img, setImg,
-    imgName, setImgName,
-    fileStatus, setFileStatus,
-    imgUrl, setImgUrl } }) {
+function ProfileImage({ activeUser, propObj }) {
+    const {
+        img, setImg,
+        imgName, setImgName,
+        fileStatus, setFileStatus,
+        imgUrl, setImgUrl } = propObj;
     const [userName, setUserName] = useState(
         activeUser?.name || activeUser?.groupName || ""
     );

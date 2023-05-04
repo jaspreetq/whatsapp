@@ -29,6 +29,8 @@ function App() {
   const [users, setUsers] = useState([]);
   const [chats, setChats] = useState([]);
   const [loading,setLoading] = useState(false)
+  const [showMemberEditFormOnTheRight, setShowMemberEditFormOnTheRight] =
+    useState(false);
   const defaultRec = ()=> users?.find((user) => user.uid !== auth.currentUser?.uid);
 
   useEffect(() => {
@@ -75,10 +77,7 @@ function App() {
         setActualDbGroupId,
         users,
         setUsers,
-        loading,
-        setLoading,
-        chats,
-        setChats
+        loading,setLoading,chats,setChats,showMemberEditFormOnTheRight, setShowMemberEditFormOnTheRight
       }}
     >
       <div className="App">

@@ -60,12 +60,12 @@ function LiveChat() {
     setMessages,
     users,
     setUsers,
-    setSelectedParticipants
+    setSelectedParticipants,
+    showMemberEditFormOnTheRight, setShowMemberEditFormOnTheRight
   } = useContext(messageContext);
   let dbId;
   const isAdmin = () => actualDbId?.includes(auth.currentUser.uid);
-  const [showMemberEditFormOnTheRight, setShowMemberEditFormOnTheRight] =
-    useState(false);
+  
   const [selectedParticipantsChat, setSelectedParticipantsChat] = useState(
     recieverDetails?.participants
   );
@@ -234,8 +234,8 @@ function LiveChat() {
                   className="avatar"
                   src={getUserFromUid(recieverDetails?.uid, users)?.avatar || IMAGES.default}
                   alt="Avatar"
-                  key="unique2"
-                  id="unique2"
+                  key={recieverDetails?.uid||actualDbId||"uniqueID1"}
+                  id={recieverDetails?.uid||actualDbId||"uniqueID1"}
                   onClick={() => {
                     setShowMemberEditFormOnTheRight(false)
                     setShowGroupInfoEditForm(true)
@@ -317,6 +317,7 @@ function LiveChat() {
                           {imgName}
                         </label>
                         <img
+                          id="uploadImg"
                           className="uploadImg"
                           src={URL.createObjectURL(img)}
                           width="50%"
@@ -380,6 +381,8 @@ function LiveChat() {
                             {message?.img && (
                               <a target="blank" href={message?.img} download>
                                 <img
+                                  key={message.createdAt}
+                                  id={message.createdAt}
                                   src={message?.img}
                                   alt="img"
                                   height="100px"

@@ -42,7 +42,7 @@ function SelectParticipants(props) {
     groupName,
     setGroupName,
   } = props;
-  // console.log(selectedParticipants, "groupName selectedParticipants");
+  
   const {
     actualDbGroupId,
     setActualDbGroupId,
@@ -55,6 +55,7 @@ function SelectParticipants(props) {
     setMessages,
     welcomeChatPage,
     setWelcomeChatPage,
+    showMemberEditFormOnTheRight, setShowMemberEditFormOnTheRight
   } = useContext(messageContext);
 
   const [userName, setUserName] = useState(
@@ -62,29 +63,18 @@ function SelectParticipants(props) {
   );
   const grp = users?.find((user) => user.uid == actualDbId);
   const [localGroupName, setLocalGroupName] = useState(getUserFromUid(recieverDetails?.uid, users)?.groupName);
-  // const { groupName, setGroupName } = useContext(GrpParticipantContext);
-  // console.log(localGroupName," localGroupName")
+  
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
-  //
-  // useEffect(()=>{
-  //   const q = query(collection(db, "users"), orderBy("createdAt"));
-  //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
-  //     QuerySnapshot.forEach((doc) => {
-  //       // console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
-  //     });
-  //   });
-  //   console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
-  //   return () => unsubscribe;
-  // },[])
-
-  // useEffect(()=>{
-  //   // setRecieverDetails(users?.at(-1));
-  //   // setActualDbId(users?.at(-1)?.uid);
-  //   setWelcomeChatPage(true)
-  // },[users?.length])
-
+  useEffect(()=>{
+    if(showGroupAddComp && !showMemberEditFormOnTheRight){
+      setLocalGroupName("");
+      setRecieverDetails({});
+      setSelectedParticipants([])
+    }
+    return ()=>setRecieverDetails(getUserFromUid(actualDbId,users));
+  },[])
   useEffect(() => {
     if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
       setIsNewGroupBtnClicked(true);
@@ -104,22 +94,14 @@ function SelectParticipants(props) {
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
-    // console.log("imgimgin", recieverDetails);
-    // docRef = await getDoc(doc(db, "users", gid));
-    // console.log(docRef.data(),"docRef.data()")
-    // setRecieverDetails({...docRef.data()})
-    // recieverDetails?.avatar !== img && handleUpload();  
 
     const gid = recieverDetails?.uid; //grp
 
-    // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const currentUser0 = users?.find(
       (user) => user.uid == auth.currentUser.uid
     );
     const tempSelectedParticipants = [...selectedParticipants];
-    // tempSelectedParticipants[0] = currentUser0;
-    // console.log(imgURL.current, "tempSelectedParticipants :");
-    // console.log("gid", gid);
+
     await updateDoc(doc(db, "users", gid), {
       uid: gid,
       // creatorUid:
@@ -131,8 +113,6 @@ function SelectParticipants(props) {
     });
     // await get
     let docRef = await getDoc(doc(db, "chats", gid));
-    // console.log("doesn't exist", actualDbId, docRef.exists());
-    // if (docRef.exists()) return null;
 
     await updateDoc(doc(db, "chats", gid), {
       uid: gid,
@@ -144,14 +124,10 @@ function SelectParticipants(props) {
       lastChatedAt: serverTimestamp(),
 
     });
-    // console.log(recieverDetails, "tempSelectedParticipants :");
-    //create new
-    // setActualDbGroupId(gid);
+
     setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
-    // setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
-    // setRecieverDetails()
   };
 
   const handleUpload = async () => {
@@ -175,27 +151,6 @@ function SelectParticipants(props) {
             })
             console.log(url, "url :: 12", userName);
             imgURL.current = url;
-            // recieverDetails?.groupName &&
-              // userName?.trim() &&
-              // (await updateDoc(doc(db, "users", recieverDetails?.uid), {
-              //   uid: recieverDetails.uid,
-              //   groupName: recieverDetails?.groupName && userName,
-              //   // name: recieverDetails?.name && userName,
-              //   participants: [...recieverDetails?.participants],
-              //   avatar: url, //random array dp generator
-              //   createdAt: recieverDetails.createdAt,
-              //   creatorUid: recieverDetails.creatorUid,
-              // }));
-              // console.log(recieverDetails?.avatar, "?.avatar")
-            if (recieverDetails?.name) {
-              // await updateDoc(doc(db, "users", recieverDetails?.uid), {
-              //   uid: recieverDetails.uid,
-              //   name: userName,
-              //   email: recieverDetails.email,
-              //   avatar: url,
-              //   createdAt: activeUser.createdAt,
-              // });
-            }
             isNewGroup ? createChatGroup(): updateChatGroup();
           });
         }
@@ -203,13 +158,11 @@ function SelectParticipants(props) {
     }
     setImg(null);
     !img && isNewGroup ? createChatGroup(): updateChatGroup();
-    // setImgUrl("");
-    // setUserName("");
+    
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
   };
-  // const [recentGroupName,setRecentGroupName]
-  //   const userCheckboxChange = (e, checkedUser) => {};
+ 
   const createChatGroup = async () => {
     //GET DOC
     //TRUE UPDATE
@@ -219,16 +172,15 @@ function SelectParticipants(props) {
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const tempSelectedParticipants = [...selectedParticipants];
     tempSelectedParticipants[0] = currentUser0;
-    // console.log(recieverDetails, "tempSelectedParticipants :");
-    // console.log("gid", gid);
+ 
     await setDoc(doc(db, "users", gid), {
       uid: gid,
       groupName: localGroupName,
       creatorUid: auth.currentUser.uid,
-      avatar: imgURLGlobal|| recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
+      avatar: imgURLGlobal|| recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP,
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
-      // details: {uid,email,name,avatar,}
+ 
     });
 
     await setDoc(doc(db, "chats", gid), {
@@ -244,13 +196,8 @@ function SelectParticipants(props) {
     // setActualDbGroupId(gid);
     setActualDbId(gid);
     setIsNewGroupBtnClicked(true);
-    // setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
-    // setGroupName("")
-    // setRecieverDetails(getUserFromUid(gid,users))
-    // console.log("after create new grp : receiverdetails", recieverDetails);
-    // setWelcomeChatPage(true)
-    // recieverDetails?.avatar !== img && handleUpload();
+
   };
 
   return (
@@ -276,6 +223,7 @@ function SelectParticipants(props) {
             : "Add/Remove group participants"}
         </h6>
         {users?.map((user) => {
+          const avatar1 = user?.avatar;
           return (
             <div key={user.uid}>
               {!user?.groupName && user?.uid !== currentUser0?.uid && (
@@ -302,9 +250,10 @@ function SelectParticipants(props) {
                         );
                     }}
                   />
+                  {/* style={{ backgroundImage :`url(${user?.avatar})`}} */}
                   <span>
                     {" "}
-                    <img className="avatar" key={user?.uid} src={user?.avatar} /> {user?.name}
+                    <img height="50" width="50" className="avatar" id={user?.uid} key={user?.uid} src={user?.avatar} /> {user?.name} 
                   </span>
                 </label>
               )}
@@ -314,7 +263,6 @@ function SelectParticipants(props) {
       </div>
       <p className="text-danger">{errorName}</p>
       <div>
-        {/* (selectedParticipants?.length < 1)?setGroupEmptyError("Select a member") */}
         <button
           className="arrow"
           onClick={() => {

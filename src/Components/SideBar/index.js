@@ -23,6 +23,7 @@ import { rightArrow, threeDotsHamburger } from "../Utillities/icons";
 import EnterNewGroupDetail from "../Cells/EnterNewGroupDetail";
 import { useNavigate } from "react-router-dom";
 import UserProfile from "../Cells/UserProfile";
+import { getUserFromUid } from "../Utillities/getUserFromUid";
 // export const GrpParticipantContext = createContext();
 
 function SideBar() {
@@ -130,7 +131,7 @@ function SideBar() {
     //sort and filter array
     const filteredChats = chats?.filter(chat => {
 
-      return (((chat?.participants?.some(member => member.uid.includes(UID))) || (chat?.uid?.includes(UID)) && (chat?.uid.length > 35)))
+      return (((chat?.participants?.some(member => member?.uid?.includes(UID))) || (chat?.uid?.includes(UID)) && (chat?.uid.length > 35)))
     });
     const filteredUsers = users?.filter(user => !filteredChats?.some(chat => chat.uid?.includes(user.uid)) && user.uid?.length < 29)//(user?.uid.length < 29 && user?.uid !== UID)
     const filteredChatUIds = filteredChats?.map(chat => chat.uid);
@@ -185,11 +186,8 @@ function SideBar() {
         const lowerUserName = (record?.name || record?.groupName)?.toLowerCase();
         return lowerUserName.includes(lowerCaseSearch)
       });
-
-      console.log(filteredArr);
       setLoading(false);
       setFilteredUsers(filteredArr);
-    console.log(filteredUsers);
   
     return () => {
     };
@@ -212,6 +210,7 @@ function SideBar() {
               title="Create New group"
               goBack={() => {
                 setGroupName("")
+                setRecieverDetails(getUserFromUid(actualDbId,users))
                 setShowGroupAddComp(false)
               }}
             />
@@ -238,7 +237,7 @@ function SideBar() {
               <>
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                   {/* getCurrentUser */}
-                  <img id="unique" key={auth.currentUser.uid} className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={() => setEditProfile(true)} />
+                  <img id="unique" key="unique" className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={() => setEditProfile(true)} />
                   {"  "}
                   <div className="d-flex justify-content-start w-100">
                     <div style={{ width: "99%", "margin-top": "6px", "margin-left": "7px" }}>
