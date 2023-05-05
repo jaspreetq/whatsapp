@@ -6,10 +6,12 @@ import { rightArrow } from "../../Utillities/icons";
 import { IMAGES } from "../../Utillities/Images";
 import { messageContext } from "../../../App";
 import "./styles.css"
+import { getUserFromUid } from "../../Utillities/getUserFromUid";
 //active user - 2meanings
-function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
+function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false }) {
+  const {users} = useContext(messageContext);
   const [userName, setUserName] = useState(
-    activeUser?.name || activeUser?.groupName
+    getUserFromUid(activeUser?.uid,users).groupName || activeUser?.name
   );
   const [img, setImg] = useState("");
   const [imgName, setImgName] = useState("");
@@ -40,10 +42,11 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
       (await updateDoc(doc(db, "users", activeUser?.uid), {
         uid: activeUser.uid,
         groupName: userName,
-        participants: [...activeUser?.participants],
+        participants: [...getUserFromUid(activeUser.uid,users)?.participants],
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
         creatorUid: activeUser.creatorUid,
+        unseenMessageCount: activeUser?.unseenMessageCount
       }));
 
     activeUser?.name &&
@@ -54,6 +57,7 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
         email: activeUser.email,
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
+        unseenMessageCount: activeUser?.unseenMessageCount
       })
       
       );
@@ -90,10 +94,11 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
               (await updateDoc(doc(db, "users", activeUser?.uid), {
                 uid: activeUser.uid,
                 groupName: userName,
-                participants: [...activeUser?.participants],
+                participants: [...getUserFromUid(activeUser.uid,users)?.participants],
                 avatar: url, //random array dp generator
                 createdAt: activeUser.createdAt,
                 creatorUid: activeUser.creatorUid,
+                unseenMessageCount: activeUser?.unseenMessageCount
               }));
 
             if (activeUser?.name) {
@@ -103,8 +108,10 @@ function UserProfile({ activeUser, setEditProfile, isGroup = false }) {
                 email: activeUser.email,
                 avatar: url,
                 createdAt: activeUser.createdAt,
+                unseenMessageCount: activeUser?.unseenMessageCount
               });
             }
+            setActiveUser({...activeUser,["avatar"]:url})
           });
         }
       );

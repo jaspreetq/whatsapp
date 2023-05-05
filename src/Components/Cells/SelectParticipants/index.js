@@ -28,6 +28,7 @@ function SelectParticipants(props) {
     fileStatus, setFileStatus,
     imgUrl, setImgUrl
   }
+  const newObj = {};
   let imgURLGlobal;
   const imgURL = useRef();
   const {
@@ -61,7 +62,7 @@ function SelectParticipants(props) {
     recieverDetails?.name || recieverDetails?.groupName
   );
   const grp = users?.find((user) => user.uid == actualDbId);
-  const [localGroupName, setLocalGroupName] = useState(getUserFromUid(recieverDetails?.uid, users)?.groupName);
+  const [localGroupName, setLocalGroupName] = useState(isNewGroup ? "": getUserFromUid(recieverDetails?.uid, users)?.groupName);
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
@@ -77,6 +78,15 @@ function SelectParticipants(props) {
   //   });
   //   console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
   //   return () => unsubscribe;
+  // },[])
+  
+  // useEffect(()=>{
+  //   if(showGroupAddComp && !showMemberEditFormOnTheRight){
+  //     setLocalGroupName("");
+  //     setRecieverDetails({});
+  //     setSelectedParticipants([])
+  //   }
+  //   return ()=>setRecieverDetails(getUserFromUid(actualDbId,users));
   // },[])
 
   // useEffect(()=>{
@@ -127,6 +137,8 @@ function SelectParticipants(props) {
       avatar: imgURL.current || recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
+      unseenMessageCount:recieverDetails?.unseenMessageCount
+      // {...users?.map(user=>user.uid)}
       // details: {uid,email,name,avatar,}
     });
     // await get
@@ -221,6 +233,10 @@ function SelectParticipants(props) {
     tempSelectedParticipants[0] = currentUser0;
     // console.log(recieverDetails, "tempSelectedParticipants :");
     // console.log("gid", gid);
+    const objProxy = {};
+    tempSelectedParticipants?.map(user=>{return objProxy[user.uid] = 0})
+    console.log("obj proxy: ",objProxy,recieverDetails)
+    
     await setDoc(doc(db, "users", gid), {
       uid: gid,
       groupName: localGroupName,
@@ -228,9 +244,10 @@ function SelectParticipants(props) {
       avatar: imgURLGlobal|| recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
+      unseenMessageCount:objProxy
       // details: {uid,email,name,avatar,}
     });
-
+    
     await setDoc(doc(db, "chats", gid), {
       uid: gid,
       creatorUid: auth.currentUser.uid,
@@ -251,6 +268,7 @@ function SelectParticipants(props) {
     // console.log("after create new grp : receiverdetails", recieverDetails);
     // setWelcomeChatPage(true)
     // recieverDetails?.avatar !== img && handleUpload();
+    // newObj = {};
   };
 
   return (
@@ -304,7 +322,7 @@ function SelectParticipants(props) {
                   />
                   <span>
                     {" "}
-                    <img className="avatar" key={user?.uid} src={user?.avatar} /> {user?.name}
+                    <img height="50" width="50" id={user?.uid} className="avatar" key={user?.uid} src={user?.avatar} /> {user?.name}
                   </span>
                 </label>
               )}

@@ -81,6 +81,7 @@ function SignUp() {
         email,
         avatar: IMAGES.default, //random array dp generator
         createdAt: serverTimestamp(),
+        unseenMessageCount:{"123jdksah":0}
         // details: {uid,email,name,avatar,}
       });
       console.log("name ", name, errorMessage);

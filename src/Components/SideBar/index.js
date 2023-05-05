@@ -23,6 +23,8 @@ import { rightArrow, threeDotsHamburger } from "../Utillities/icons";
 import EnterNewGroupDetail from "../Cells/EnterNewGroupDetail";
 import { useNavigate } from "react-router-dom";
 import UserProfile from "../Cells/UserProfile";
+import { getUserFromUid } from "../Utillities/getUserFromUid";
+import getActiveUserId from "../Utillities/getActiveUserId";
 // export const GrpParticipantContext = createContext();
 
 function SideBar() {
@@ -127,7 +129,6 @@ function SideBar() {
     const q = query(collection(db, "chats"), orderBy("lastChatedAt", "desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let chats = [];
-
       QuerySnapshot.forEach((doc) => {
         chats.push({ ...doc.data() });
       });
@@ -222,7 +223,8 @@ function SideBar() {
               title="Create New group"
               goBack={() => {
                 setGroupName("")
-                setShowGroupAddComp(false)
+                setRecieverDetails(getUserFromUid(actualDbId,users))
+                setShowGroupAddComp(false)  
               }}
             />
 
@@ -248,7 +250,7 @@ function SideBar() {
               <>
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                   {/* getCurrentUser */}
-                  <img id="unique" key={auth.currentUser.uid} className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={() => setEditProfile(true)} />
+                  <img height="50" width="50" id={auth.currentUser.uid} key={auth.currentUser.uid} className="avatar" src={getCurrentUser()?.avatar || IMAGES.default} alt="Avatar" onClick={() => setEditProfile(true)} />
                   {"  "}
                   <div className="d-flex justify-content-start w-100">
                     <div style={{ width: "99%", "margin-top": "6px", "margin-left": "7px" }}>
@@ -341,8 +343,9 @@ function SideBar() {
                           <img className="avatar" id={user?.uid} key={user?.uid} src={user?.avatar} />
                           {"  "}{user?.groupName || user?.name}
                           {/* style={{"display": "inline"}} */}
-                          <p>{user?.lastChat?.[user?.uid]
-                          || user?.lastChat?.[(Object.keys(user?.lastChat || {})?.find((chatId)=>chatId.length > 54 && chatId.includes(user?.uid) && chatId.includes(auth.currentUser.uid)))]}</p>
+                          <p>{user?.lastChat?.[user?.uid] || user?.lastChat?.[(Object.keys(user?.lastChat || {})?.find((chatId)=>chatId.length > 54 && chatId.includes(user?.uid) && chatId.includes(auth.currentUser.uid)))]}</p>
+                          {console.log("user.unseenMessageCount ",user.unseenMessageCount[auth.currentUser.uid])}
+                          {user.unseenMessageCount[auth.currentUser.uid]}
                           {/* && user?.lastChat?.keys?.includes(user?.uid))  */}
                         </div>
                       );

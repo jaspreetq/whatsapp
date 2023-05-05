@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IMAGES } from '../../Utillities/Images';
 import { auth, db, storage } from '../../../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -9,6 +9,7 @@ function ProfileImage({ activeUser, propObj : {
     imgName, setImgName,
     fileStatus, setFileStatus,
     imgUrl, setImgUrl } }) {
+
     const [userName, setUserName] = useState(
         activeUser?.name || activeUser?.groupName || ""
     );
@@ -47,7 +48,7 @@ function ProfileImage({ activeUser, propObj : {
                             className="large"
                             id='large2'
                             key='large2'
-                            src={activeUser?.avatar || IMAGES.default}
+                            src={activeUser?.avatar || IMAGES.GROUP_DEFAULT_DP}
                             alt="Avatar"
                         />
                     )}

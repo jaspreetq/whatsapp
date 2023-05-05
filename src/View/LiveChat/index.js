@@ -16,6 +16,7 @@ import {
   doc,
   setDoc,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { getUserFromUid } from "../../Components/Utillities/getUserFromUid";
 import UserProfile from "../../Components/Cells/UserProfile";
@@ -29,6 +30,8 @@ import { RANDOM_TEXT } from "../../ConstantString";
 import SendMessage from "../../Components/Cells/SendMessage";
 import { IMAGES } from "../../Components/Utillities/Images";
 import Loader from "../../Components/Atoms/Loader";
+import getActiveUserId from "../../Components/Utillities/getActiveUserId";
+// import getActiveUser from "../../Components/Utillities/getActiveUserId";
 
 export const FileContext = createContext();
 
@@ -60,7 +63,7 @@ function LiveChat() {
     setMessages,
     users,
     setUsers,
-    setSelectedParticipants
+    setSelectedParticipants,chats
   } = useContext(messageContext);
   let dbId;
   const isAdmin = () => actualDbId?.includes(auth.currentUser.uid);
@@ -85,8 +88,8 @@ function LiveChat() {
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         if (doc?.exists()) {
-          const { avatar, name="", uid, groupName="", participants } = doc.data();
-          console.log("avatar,",avatar);
+          const { avatar, name = "", uid, groupName = "", participants } = doc.data();
+          console.log("avatar,", avatar);
           if (name)
             setRecieverDetails({
               ...recieverDetails,
@@ -112,11 +115,11 @@ function LiveChat() {
     // console.log("recieverDetails outside changed visible? ", recieverDetails);
     return () => unsubscribe();
   }, []);
-    // recieverDetails?.name,
-    // recieverDetails?.groupName,
-    // recieverDetails?.avatar,
-    // recieverDetails?.participants,
-    
+  // recieverDetails?.name,
+  // recieverDetails?.groupName,
+  // recieverDetails?.avatar,
+  // recieverDetails?.participants,
+
   // console.log("recieverDetails changed visible? ", recieverDetails);
   // useEffect(() => {
   // }, [recieverDetails?.uid]);
@@ -128,7 +131,66 @@ function LiveChat() {
     refHook.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(()=>{
+    if (recieverDetails?.groupName && recieverDetails?.unseenMessageCount[getActiveUserId()] > 0) {
+      // const objWithIncrementedCnt = {}
+      
+      // recieverDetails?.groupName && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => 
+      //   {
+      //     if(key === activeUser?.uid)
+      //       return objWithIncrementedCnt[key] = 0;            
+      //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1;
+      //   })
+
+      // recieverDetails?.name && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => {
+      //   if (key.includes(activeUser?.uid) && key.includes(recieverDetails?.uid))
+      //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1
+      // })
+      console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+      const asyncCountUpdate = async ()=>await updateDoc(doc(db, "users", recieverDetails.uid), {
+        uid: recieverDetails.uid,
+        groupName: recieverDetails?.groupName,
+        participants: [...recieverDetails?.participants],
+        avatar: recieverDetails.avatar, //random array dp generator
+        createdAt: recieverDetails.createdAt,
+        creatorUid: recieverDetails.creatorUid,
+        lastChat: recieverDetails.lastChat,
+        unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]:0}}
+      });
+      recieverDetails?.groupName && asyncCountUpdate();        
+      console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+    }
+  },[chats])
   useEffect(() => {
+    if (recieverDetails?.groupName && recieverDetails?.unseenMessageCount[getActiveUserId()] > 0) {
+      // const objWithIncrementedCnt = {}
+      
+      // recieverDetails?.groupName && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => 
+      //   {
+      //     if(key === activeUser?.uid)
+      //       return objWithIncrementedCnt[key] = 0;            
+      //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1;
+      //   })
+
+      // recieverDetails?.name && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => {
+      //   if (key.includes(activeUser?.uid) && key.includes(recieverDetails?.uid))
+      //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1
+      // })
+      console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+      const asyncCountUpdate = async ()=>await updateDoc(doc(db, "users", recieverDetails.uid), {
+        uid: recieverDetails.uid,
+        groupName: recieverDetails?.groupName,
+        participants: [...recieverDetails?.participants],
+        avatar: recieverDetails.avatar, //random array dp generator
+        createdAt: recieverDetails.createdAt,
+        creatorUid: recieverDetails.creatorUid,
+        lastChat: recieverDetails.lastChat,
+        unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]:0}}
+      });
+      recieverDetails?.groupName && asyncCountUpdate();        
+      console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+    }
+
     // console.log("actualDbId: effect,reciever", );
     setFileStatus(false);
     setShowGroupInfoEditForm(false);
@@ -235,8 +297,8 @@ function LiveChat() {
                   className="avatar"
                   src={getUserFromUid(recieverDetails?.uid, users)?.avatar || IMAGES.default}
                   alt="Avatar"
-                  key="unique2"
-                  id="unique2"
+                  key={recieverDetails?.uid || actualDbId || "uniqueID1"}
+                  id={recieverDetails?.uid || actualDbId || "uniqueID1"}
                   onClick={() => {
                     setShowMemberEditFormOnTheRight(false)
                     setShowGroupInfoEditForm(true)
@@ -293,11 +355,10 @@ function LiveChat() {
                         style={{ border: "none" }}
                         onClick={() => {
                           //MODAL SELECTPARTS
-                          if (recieverDetails?.groupName)
-                            {
-                              setShowGroupInfoEditForm(false)
-                              setShowMemberEditFormOnTheRight(true);
-                            }
+                          if (recieverDetails?.groupName) {
+                            setShowGroupInfoEditForm(false)
+                            setShowMemberEditFormOnTheRight(true);
+                          }
                           // console.log("dfs");
                         }}
                       >
@@ -319,6 +380,8 @@ function LiveChat() {
                         </label>
                         <img
                           className="uploadImg"
+                          id="uploadImg"
+                          key="uploadImg"
                           src={URL.createObjectURL(img)}
                           width="50%"
                           height="80%"
@@ -347,12 +410,12 @@ function LiveChat() {
                 >
                   <ul>
                     {messages?.map((message, idx) => {
-                      {/* console.log("message:::", message); */}
+                      {/* console.log("message:::", message); */ }
                       const cssStr =
                         message.uid === auth.currentUser.uid
                           ? "-sender"
                           : "-reciever";
-                      {/* console.log("cssStr: ", cssStr); */}
+                      {/* console.log("cssStr: ", cssStr); */ }
                       if (!(message.text || message.img || message.pdf))
                         return null;
                       return (
@@ -363,6 +426,8 @@ function LiveChat() {
                               <span>
                                 {recieverDetails?.groupName && (cssStr === "-reciever") && (
                                   <img
+                                    key={message.createdAt}
+                                    id={message.createdAt}
                                     style={{ display: "inline" }}
                                     className="avatar"
                                     src={getUserFromUid(message?.uid, users)?.avatar}
@@ -454,6 +519,7 @@ function LiveChat() {
             <br /><br />
             <UserProfile
               activeUser={recieverDetails}
+              setActiveUser={setRecieverDetails}
               setEditProfile={setShowGroupInfoEditForm}
               isGroup={true}
             />

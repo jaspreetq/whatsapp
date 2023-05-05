@@ -20,26 +20,28 @@ import { getTime } from "../../Utillities/getTime";
 import { FileContext } from "../../../View/LiveChat";
 import Loader from "../../Atoms/Loader";
 import { attachement } from "../../Utillities/icons";
+import { getUserFromUid } from "../../Utillities/getUserFromUid";
+import getActiveUserId from "../../Utillities/getActiveUserId";
 
 function SendMessage() {
   // State to store uploaded file
   const [file, setFile] = useState("");
   // progress
   const [percent, setPercent] = useState(0);
-  const [fileSizeError,setFileSizeError] = useState("")
-  const { outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
+  const [fileSizeError, setFileSizeError] = useState("")
+  const { outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl } = useContext(FileContext)
   let imgURL, pdfURL;
   const date = new Date();
   const {
     message,
     setMessage,
     email,
-    activeUser, 
+    activeUser,
     setActiveUser,
     recieverDetails,
     setRecieverDetails,
     actualDbId,
-    setActualDbId,
+    setActualDbId,users,setUsers
   } = useContext(messageContext);
 
   // useEffect(() => {
@@ -47,8 +49,7 @@ function SendMessage() {
   // }, [img]);
 
   function handleFileChange(e) {
-    if(e.target.files[0]?.size > 16777216)
-    {
+    if (e.target.files[0]?.size > 16777216) {
       setFileSizeError("Too large to upload ,Limit the file size to 16MB");
       return;
     }
@@ -56,7 +57,7 @@ function SendMessage() {
     // setFileStatus(true)
     setImg(null)
     setPdf(null)
-    
+
     if (
       e.target.files[0].type == "image/png" ||
       e.target.files[0].type == "image/jpeg"
@@ -101,10 +102,10 @@ function SendMessage() {
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
             imgURL = url;
-            
+
             setLoading(true)
             await updateDoc(doc(db, "chats", actualDbId), {
-              lastChatedAt:serverTimestamp(),
+              lastChatedAt: serverTimestamp(),
               messages: arrayUnion({
                 uid: activeUser?.uid,
                 name: activeUser?.name,
@@ -125,21 +126,21 @@ function SendMessage() {
       const localFileNewURL = `/files/${pdf.name}${auth.currentUser.uid}`;
       const storageRef = ref(storage, localFileNewURL);
       const uploadTask = uploadBytesResumable(storageRef, pdf);
-      
+
       // setFileUrl(localFileNewURL)
       setPdf(null)
       uploadTask.then(
         () => {
-      
+
           // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setPdfUrl(url);
             setFileUrl(url);
-      
+
             pdfURL = url;
             setLoading(true)
             await updateDoc(doc(db, "chats", actualDbId), {
-              lastChatedAt:serverTimestamp(),
+              lastChatedAt: serverTimestamp(),
               messages: arrayUnion({
                 uid: activeUser?.uid,
                 name: activeUser?.name,
@@ -157,11 +158,11 @@ function SendMessage() {
         }
       );
     }
-    else{
-      
-      
-       message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
-        lastChatedAt:serverTimestamp(),
+    else {
+
+
+      message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
+        lastChatedAt: serverTimestamp(),
         messages: arrayUnion({
           uid: activeUser?.uid,
           name: activeUser?.name,
@@ -172,33 +173,66 @@ function SendMessage() {
           img: imgURL || "",
           time: getTime(),
           text: message || "",
-        }),   
-    })
+          // read: 
+        }),
+      })
 
-    console.log(recieverDetails,message," recieverDetails")
-    recieverDetails?.groupName &&
-      (await updateDoc(doc(db, "users", recieverDetails.uid), {
-        uid: recieverDetails.uid,
-        groupName: recieverDetails?.groupName,
-        participants: [...recieverDetails?.participants],
-        avatar: recieverDetails.avatar, //random array dp generator
-        createdAt: recieverDetails.createdAt,
-        creatorUid: recieverDetails.creatorUid,
-        lastChat:{...(recieverDetails?.lastChat || {}),[recieverDetails?.uid]:message}
-      }));
+      const objWithIncrementedCnt = {}
+      
+      recieverDetails?.groupName && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => 
+        {
+          if(key === activeUser?.uid)
+            return objWithIncrementedCnt[key] = 0;            
+          return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1;
+        })
+
+      recieverDetails?.name && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => {
+        console.log(key,"key ");
+        if (key.includes(activeUser?.uid) && key.includes(recieverDetails?.uid))
+          return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1
+      })
+      if (!objWithIncrementedCnt ) {
+        // console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+        const asyncCountUpdate = async ()=>await updateDoc(doc(db, "users", recieverDetails.uid), {
+          uid: recieverDetails.uid,
+          groupName: recieverDetails?.groupName,
+          participants: [...recieverDetails?.participants],
+          avatar: recieverDetails.avatar, //random array dp generator
+          createdAt: recieverDetails.createdAt,
+          creatorUid: recieverDetails.creatorUid,
+          lastChat: recieverDetails.lastChat,
+          unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]:0}}
+        });
+        recieverDetails?.groupName && asyncCountUpdate();        
+        console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+      }
+      console.log(objWithIncrementedCnt, " objWithIncrementedCnt")
+
+      recieverDetails?.groupName &&
+        (await updateDoc(doc(db, "users", recieverDetails.uid), {
+          uid: recieverDetails.uid,
+          groupName: recieverDetails?.groupName,
+          participants: [...recieverDetails?.participants],
+          avatar: recieverDetails.avatar, //random array dp generator
+          createdAt: recieverDetails.createdAt,
+          creatorUid: recieverDetails.creatorUid,
+          lastChat: { ...(recieverDetails?.lastChat || {}), [recieverDetails?.uid]: message },
+          unseenMessageCount: objWithIncrementedCnt
+        }));
 
       //1on1
       recieverDetails?.name &&
-      (await updateDoc(doc(db, "users", recieverDetails?.uid), {
-        uid: recieverDetails.uid,
-        name: recieverDetails.name,
-        email: recieverDetails.email,
-        avatar: recieverDetails.avatar, //random array dp generator
-        createdAt: recieverDetails.createdAt,
-        lastChat:{...(recieverDetails?.lastChat || {}),[actualDbId]:message}
-      })
-      
-      );
+        (await updateDoc(doc(db, "users", recieverDetails?.uid), {
+          uid: recieverDetails.uid,
+          name: recieverDetails.name,
+          email: recieverDetails.email,
+          avatar: recieverDetails.avatar, //random array dp generator
+          createdAt: recieverDetails.createdAt,
+          lastChat: { ...(recieverDetails?.lastChat || {}), [actualDbId]: message },
+          unseenMessageCount: objWithIncrementedCnt
+        })
+
+        );
 
       (await updateDoc(doc(db, "users", activeUser?.uid), {
         uid: activeUser.uid,
@@ -206,12 +240,13 @@ function SendMessage() {
         email: activeUser.email,
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
-        lastChat:{...(activeUser?.lastChat || {}),[actualDbId]:message}
+        lastChat: { ...(activeUser?.lastChat || {}), [actualDbId]: message },
+        unseenMessageCount: objWithIncrementedCnt
       })
-      
+
       );
 
-  }
+    }
     setText("");
     setImg(null);
     setPdf(null);
@@ -244,7 +279,7 @@ function SendMessage() {
         {/* display:contents */}
         <div>
           <label htmlFor="attachement">
-           {attachement}
+            {attachement}
           </label>
           <input
             id="attachement"
@@ -260,7 +295,7 @@ function SendMessage() {
         {/* onClick={handleUpload} */}
         {/* <button style={{"border-style": "none"}} onClick={}>📎</button> */}
         <div>
-          <button className="send-message" onClick={() => {handleSend()}}>
+          <button className="send-message" onClick={() => { handleSend() }}>
             Send
           </button>
         </div>
