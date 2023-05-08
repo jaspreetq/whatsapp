@@ -1,10 +1,10 @@
-import React, { createContext, useContext } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../firebase";
+import React, {createContext, useContext} from "react";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {auth, db} from "../../firebase";
 import dp from "../../Assets/dp1.png";
 // "src/Assets/dp1.svg"
 import "./styles.css";
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import {
   query,
   collection,
@@ -18,19 +18,20 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { getUserFromUid } from "../../Components/Utillities/getUserFromUid";
+import {getUserFromUid} from "../../Components/Utillities/getUserFromUid";
 import UserProfile from "../../Components/Cells/UserProfile";
 import Header from "../../Components/Atoms/Header";
 import SelectParticipants from "../../Components/Cells/SelectParticipants";
-import { edit, filePdf } from "../../Components/Utillities/icons";
+import {edit, filePdf} from "../../Components/Utillities/icons";
 import SideBar from "../../Components/SideBar";
-import { messageContext } from "../../App";
-import { useParams } from "react-router-dom";
-import { RANDOM_TEXT } from "../../ConstantString";
+import {messageContext} from "../../App";
+import {useParams} from "react-router-dom";
+import {RANDOM_TEXT} from "../../ConstantString";
 import SendMessage from "../../Components/Cells/SendMessage";
-import { IMAGES } from "../../Components/Utillities/Images";
+import {IMAGES} from "../../Components/Utillities/Images";
 import Loader from "../../Components/Atoms/Loader";
 import getActiveUserId from "../../Components/Utillities/getActiveUserId";
+import {async} from "react-input-emoji";
 // import getActiveUser from "../../Components/Utillities/getActiveUserId";
 
 export const FileContext = createContext();
@@ -51,6 +52,8 @@ function LiveChat() {
 
   const [showGroupInfoEditForm, setShowGroupInfoEditForm] = useState(false);
   const {
+    unseenCounter,
+    setUnseenCounter,
     setErrorMessage,
     recieverDetails,
     setRecieverDetails,
@@ -63,7 +66,7 @@ function LiveChat() {
     setMessages,
     users,
     setUsers,
-    setSelectedParticipants,chats
+    setSelectedParticipants, chats, lastMessage, setLastMessage, message
   } = useContext(messageContext);
   let dbId;
   const isAdmin = () => actualDbId?.includes(auth.currentUser.uid);
@@ -88,7 +91,7 @@ function LiveChat() {
       (doc) => {
         // doc?.exists() && setMessages(doc.data()?.messages);
         if (doc?.exists()) {
-          const { avatar, name = "", uid, groupName = "", participants } = doc.data();
+          const {avatar, name = "", uid, groupName = "", participants} = doc.data();
           console.log("avatar,", avatar);
           if (name)
             setRecieverDetails({
@@ -128,43 +131,104 @@ function LiveChat() {
 
   // },[])
   useEffect(() => {
-    refHook.current?.scrollIntoView({ behavior: "smooth" });
+    refHook.current?.scrollIntoView({behavior: "smooth"});
   }, [messages, loading]);
 
-  useEffect(()=>{
-    if (recieverDetails?.groupName && recieverDetails?.unseenMessageCount[getActiveUserId()] > 0) {
-      // const objWithIncrementedCnt = {}
-      
-      // recieverDetails?.groupName && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => 
-      //   {
-      //     if(key === activeUser?.uid)
-      //       return objWithIncrementedCnt[key] = 0;            
-      //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1;
-      //   })
+  useEffect(() => {
+    if (recieverDetails?.groupName) {
+      // const thisChat = chats?.find(chat => chat.uid === actualDbId);
+      // const lastText = thisChat.messages?.at(-1)?.text;
+      // setLastMessage(lastText);
+      // let lastChatGrpKey
+      // let lastChatGrpValue
+      // let lastChatGrpKeyStr
+      // let finalLastChatGrpString = "";
 
-      // recieverDetails?.name && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => {
-      //   if (key.includes(activeUser?.uid) && key.includes(recieverDetails?.uid))
-      //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1
-      // })
-      console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
-      const asyncCountUpdate = async ()=>await updateDoc(doc(db, "users", recieverDetails.uid), {
-        uid: recieverDetails.uid,
-        groupName: recieverDetails?.groupName,
-        participants: [...recieverDetails?.participants],
-        avatar: recieverDetails.avatar, //random array dp generator
-        createdAt: recieverDetails.createdAt,
-        creatorUid: recieverDetails.creatorUid,
-        lastChat: recieverDetails.lastChat,
-        unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]:0}}
-      });
-      recieverDetails?.groupName && asyncCountUpdate();        
-      console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+      // const lastChatGrp = getUserFromUid(recieverDetails?.uid, users);
+      // if (lastChatGrp && Object.keys(lastChatGrp).length && recieverDetails.groupName) {
+      //   console.log(lastChatGrp, recieverDetails.uid, "lastChatGrp");
+      //   console.log(Object.keys(lastChatGrp)[0], "lastChat in sidebar", Object.values(lastChatGrp)[0])
+      //   lastChatGrpKey = Object.keys(lastChatGrp)[0];
+      //   lastChatGrpValue = lastText;
+      //   lastChatGrpKeyStr = (lastChatGrpKey === getActiveUserId()) ? "You: " : `${getUserFromUid(lastChatGrpKey, users)?.name}: `
+      //   finalLastChatGrpString = lastChatGrpKeyStr + lastChatGrpValue;
+      // }
+
+      // // console.log(getUserFromUid(activeUser.uid, users).unseenMessageCount, "getUserFromUid(activeUser", lastText);
+      // let unseenMessageCountLocal, lastChatLocal;
+      // const unsubscribe = onSnapshot(doc(db, "users", recieverDetails?.uid || RANDOM_TEXT),
+      //   (doc) => {
+      //     if (doc?.exists()) {
+      //       const {unseenMessageCount, lastChat} = doc.data();
+      //       setUnseenCounter({...unseenMessageCount});
+      //       lastChatLocal = lastChat;
+      //     }
+      //   }
+      // );
+      // let docRef = async () => await getDoc(doc(db, "users", recieverDetails.uid));
+      // const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails.uid), {
+      //   uid: recieverDetails.uid,
+      //   groupName: recieverDetails?.groupName,
+      //   participants: [...recieverDetails?.participants],
+      //   avatar: recieverDetails.avatar, //random array dp generator
+      //   createdAt: recieverDetails.createdAt,
+      //   creatorUid: recieverDetails.creatorUid,
+      //   lastChat: {...(getActiveUserId(recieverDetails.uid, users))?.lastChat},
+      //   unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]: 0}}
+      // });
+      // asyncCountUpdate();
+      // console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
     }
-  },[chats])
+    console.log(getUserFromUid(activeUser?.uid, users)?.unseenMessageCount?.[actualDbId], activeUser, recieverDetails, "in chats useEffect");
+    if (recieverDetails?.name) {
+      // let docRef = async () => await getDoc(doc(db, "users", recieverDetails.uid));
+      // const {lastChat} = docRef.data();
+      // docRef.lastChat
+      const thisChat = chats?.find(chat => chat.uid === actualDbId);
+      const lastText = thisChat.messages?.at(-1)?.text;
+      setLastMessage(lastText);
+      console.log(getUserFromUid(activeUser.uid, users).unseenMessageCount, "getUserFromUid(activeUser", lastText);
+      let unseenMessageCountLocal, lastChatLocal;
+      const unsubscribe = onSnapshot(doc(db, "users", activeUser?.uid || RANDOM_TEXT),
+        (doc) => {
+          // doc?.exists() && setMessages(doc.data()?.messages);
+          if (doc?.exists()) {
+            const {avatar, name = "", uid, unseenMessageCount, lastChat, groupName = "", participants} = doc.data();
+            // setRecieverDetails({
+            //   ...recieverDetails,
+            //   ["unseenMessageCount"]: unseenMessageCount,
+            //   ["lastChat"]: lastChat,
+            // });
+            setUnseenCounter({...unseenMessageCount});
+            lastChatLocal = lastChat;
+          }
+          // console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
+          // console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);
+          //setWelcomeChatPage(true);
+        }
+      );
+      // const updateCntTo0 = async () => (await updateDoc(doc(db, "users", activeUser?.uid), {
+      //   uid: activeUser.uid,
+      //   name: activeUser.name,
+      //   email: activeUser.email,
+      //   avatar: activeUser.avatar, //random array dp generator
+      //   createdAt: activeUser.createdAt,
+      //   lastChat: {...(activeUser?.lastChat || {}), [actualDbId]: lastText},
+      //   unseenMessageCount: {
+      //     ...unseenCounter,
+      //     ...{[actualDbId]: 0},
+      //   },
+      // }));
+
+      // updateCntTo0();
+      console.log("getUserFromUid(activeUser", unseenCounter);
+      return () => unsubscribe()
+    }
+  }, [chats])
   useEffect(() => {
     if (recieverDetails?.groupName && recieverDetails?.unseenMessageCount[getActiveUserId()] > 0) {
       // const objWithIncrementedCnt = {}
-      
+
       // recieverDetails?.groupName && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => 
       //   {
       //     if(key === activeUser?.uid)
@@ -177,7 +241,7 @@ function LiveChat() {
       //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1
       // })
       console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
-      const asyncCountUpdate = async ()=>await updateDoc(doc(db, "users", recieverDetails.uid), {
+      const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails.uid), {
         uid: recieverDetails.uid,
         groupName: recieverDetails?.groupName,
         participants: [...recieverDetails?.participants],
@@ -185,9 +249,9 @@ function LiveChat() {
         createdAt: recieverDetails.createdAt,
         creatorUid: recieverDetails.creatorUid,
         lastChat: recieverDetails.lastChat,
-        unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]:0}}
+        unseenMessageCount: {...getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount, ...{[getActiveUserId()]: 0}}
       });
-      recieverDetails?.groupName && asyncCountUpdate();        
+      recieverDetails?.groupName && asyncCountUpdate();
       console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
     }
 
@@ -214,13 +278,30 @@ function LiveChat() {
   useEffect(() => {
     // console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
     // console.log("dbId new",dbId)
+    console.log(recieverDetails, activeUser, actualDbId, " in useeffect ::")
+    if (actualDbId.length > 0 && recieverDetails?.name && activeUser?.unseenMessageCount[actualDbId] > 0) {
 
+      console.log(users[activeUser.uid]?.lastChat[actualDbId], "active lastChat")
+
+      const updateCntTo0 = async () => (await updateDoc(doc(db, "users", activeUser?.uid), {
+        uid: activeUser.uid,
+        name: activeUser.name,
+        email: activeUser.email,
+        avatar: activeUser.avatar, //random array dp generator
+        createdAt: activeUser.createdAt,
+        lastChat: activeUser?.lastChat,
+        unseenMessageCount: {
+          ...activeUser?.unseenMessageCount,
+          ...{[actualDbId]: 0},
+        },
+      }));
+      updateCntTo0();
+    }
     if (actualDbId?.length > 35) {
       const setDocAsync = async () => {
         const docRef = await getDoc(doc(db, "chats", actualDbId));
         // console.log("doesn't exist", actualDbId, docRef.exists());
         if (docRef.exists() || !actualDbId) return null;
-        // console.log("doesn't exist");
         await setDoc(doc(db, "chats", actualDbId), {
           uid: actualDbId,
           senderUid: activeUser?.uid,
@@ -284,11 +365,11 @@ function LiveChat() {
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar">
         <SideBar />
-        <div style={{ width: "80%" }}>
+        <div style={{width: "80%"}}>
           {welcomeChatPage ? (
             <div className="defaultChat align-middle w-100 h-100">
               {" "}
-              <div style={{ "font-size": "23px", "padding-left": "10px", "background": "#f8f9fae0" }}><br />Select a contact to chat</div>
+              <div style={{"font-size": "23px", "padding-left": "10px", "background": "#f8f9fae0"}}><br />Select a contact to chat</div>
             </div>
           ) : (
             <>
@@ -321,7 +402,7 @@ function LiveChat() {
 
                 {"  "}
                 {/* {console.log("users:<><><<>", users)} */}
-                <div style={{ width: "95%" }}>
+                <div style={{width: "95%"}}>
                   <p>
                     {users?.find((user) => user.uid === actualDbId)
                       ?.groupName || recieverDetails?.name}
@@ -352,7 +433,7 @@ function LiveChat() {
                   actualDbId?.length > auth.currentUser.uid.length && (
                     <>
                       <button
-                        style={{ border: "none" }}
+                        style={{border: "none"}}
                         onClick={() => {
                           //MODAL SELECTPARTS
                           if (recieverDetails?.groupName) {
@@ -372,10 +453,10 @@ function LiveChat() {
               {fileStatus ? (
                 <>
                   <Header title="" goBack={() => setFileStatus(false)} />
-                  <div style={{ background: "#bfc7cc00", height: "68%" }}>
+                  <div style={{background: "#bfc7cc00", height: "68%"}}>
                     {img && (
                       <div className="uploadedImage">
-                        <label className="center" style={{ display: "block" }}>
+                        <label className="center" style={{display: "block"}}>
                           {imgName}
                         </label>
                         <img
@@ -406,16 +487,16 @@ function LiveChat() {
               ) : (
                 <div
                   className="scroll-right"
-                  style={{ background: "#e4ddd5", height: "68%", width: "100%" }}
+                  style={{background: "#e4ddd5", height: "68%", width: "100%"}}
                 >
                   <ul>
                     {messages?.map((message, idx) => {
-                      {/* console.log("message:::", message); */ }
+                      {/* console.log("message:::", message); */}
                       const cssStr =
                         message.uid === auth.currentUser.uid
                           ? "-sender"
                           : "-reciever";
-                      {/* console.log("cssStr: ", cssStr); */ }
+                      {/* console.log("cssStr: ", cssStr); */}
                       if (!(message.text || message.img || message.pdf))
                         return null;
                       return (
@@ -428,14 +509,14 @@ function LiveChat() {
                                   <img
                                     key={message.createdAt}
                                     id={message.createdAt}
-                                    style={{ display: "inline" }}
+                                    style={{display: "inline"}}
                                     className="avatar"
                                     src={getUserFromUid(message?.uid, users)?.avatar}
                                   />
                                 )}
                                 {cssStr === "-reciever" && <p
                                   className="ml-75 text-info blockquote-footer"
-                                  style={{ display: "inline" }}
+                                  style={{display: "inline"}}
                                 >
                                   {recieverDetails?.groupName && getUserFromUid(message?.uid, users)?.name}
                                 </p>}

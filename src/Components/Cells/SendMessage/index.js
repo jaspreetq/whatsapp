@@ -8,19 +8,19 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import React, { useContext, useEffect, useState, useRef } from "react";
-import { messageContext } from "../../../App";
-import { auth, db, storage } from "../../../firebase";
-import { IMAGES } from "../../Utillities/Images";
+import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
+import React, {useContext, useEffect, useState, useRef} from "react";
+import {messageContext} from "../../../App";
+import {auth, db, storage} from "../../../firebase";
+import {IMAGES} from "../../Utillities/Images";
 import InputEmoji from "react-input-emoji";
 import "./styles.css";
-import { RANDOM_TEXT } from "../../../ConstantString";
-import { getTime } from "../../Utillities/getTime";
-import { FileContext } from "../../../View/LiveChat";
+import {RANDOM_TEXT} from "../../../ConstantString";
+import {getTime} from "../../Utillities/getTime";
+import {FileContext} from "../../../View/LiveChat";
 import Loader from "../../Atoms/Loader";
-import { attachement } from "../../Utillities/icons";
-import { getUserFromUid } from "../../Utillities/getUserFromUid";
+import {attachement} from "../../Utillities/icons";
+import {getUserFromUid} from "../../Utillities/getUserFromUid";
 import getActiveUserId from "../../Utillities/getActiveUserId";
 
 function SendMessage() {
@@ -29,7 +29,7 @@ function SendMessage() {
   // progress
   const [percent, setPercent] = useState(0);
   const [fileSizeError, setFileSizeError] = useState("")
-  const { outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl } = useContext(FileContext)
+  const {outputMessage, setOutputMessage, text, setText, img, setImg, imgName, setImgName, pdf, setPdf, pdfName, setPdfName, loading, setLoading, fileStaus, setFileStatus, invalid, setInvalid, imgUrl, setImgUrl, pdfUrl, setPdfUrl, fileUrl, setFileUrl} = useContext(FileContext)
   let imgURL, pdfURL;
   const date = new Date();
   const {
@@ -41,7 +41,7 @@ function SendMessage() {
     recieverDetails,
     setRecieverDetails,
     actualDbId,
-    setActualDbId,users,setUsers
+    setActualDbId, users, setUsers, lastMessage, setLastMessage
   } = useContext(messageContext);
 
   // useEffect(() => {
@@ -77,7 +77,7 @@ function SendMessage() {
   }
 
   const handleEnter = (e) => e.key === "Enter" && handleSend();
-  const { uid, displayName, photoURL } = auth.currentUser;
+  const {uid, displayName, photoURL} = auth.currentUser;
 
   const handleUpload = async () => {
     setFileStatus(false)
@@ -103,7 +103,7 @@ function SendMessage() {
             setImgUrl(url);
             imgURL = url;
 
-            setLoading(true)
+            setLoading(true);
             await updateDoc(doc(db, "chats", actualDbId), {
               lastChatedAt: serverTimestamp(),
               messages: arrayUnion({
@@ -118,7 +118,7 @@ function SendMessage() {
                 text: message || "",
               }),
             });
-            setLoading(false)
+            setLoading(false);
           });
         }
       );
@@ -128,85 +128,110 @@ function SendMessage() {
       const uploadTask = uploadBytesResumable(storageRef, pdf);
 
       // setFileUrl(localFileNewURL)
-      setPdf(null)
-      uploadTask.then(
-        () => {
+      setPdf(null);
+      uploadTask.then(() => {
+        // download url
+        getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+          setPdfUrl(url);
+          setFileUrl(url);
 
-          // download url
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            setPdfUrl(url);
-            setFileUrl(url);
-
-            pdfURL = url;
-            setLoading(true)
-            await updateDoc(doc(db, "chats", actualDbId), {
-              lastChatedAt: serverTimestamp(),
-              messages: arrayUnion({
-                uid: activeUser?.uid,
-                name: activeUser?.name,
-                avatar: activeUser?.avatar,
-                createdAt: new Date().toUTCString(),
-                pdf: url || "",
-                fileName: (pdfName ? pdfName : imgName) || "",
-                // img: imgURL || "",
-                time: getTime(),
-                text: message || "",
-              }),
-            });
-            setLoading(false)
+          pdfURL = url;
+          setLoading(true);
+          await updateDoc(doc(db, "chats", actualDbId), {
+            lastChatedAt: serverTimestamp(),
+            messages: arrayUnion({
+              uid: activeUser?.uid,
+              name: activeUser?.name,
+              avatar: activeUser?.avatar,
+              createdAt: new Date().toUTCString(),
+              pdf: url || "",
+              fileName: (pdfName ? pdfName : imgName) || "",
+              // img: imgURL || "",
+              time: getTime(),
+              text: message || "",
+            }),
           });
-        }
-      );
-    }
-    else {
-
-
-      message?.trim() && await updateDoc(doc(db, "chats", actualDbId), {
-        lastChatedAt: serverTimestamp(),
-        messages: arrayUnion({
-          uid: activeUser?.uid,
-          name: activeUser?.name,
-          avatar: activeUser?.avatar,
-          createdAt: new Date().toUTCString(),
-          pdf: pdfURL || "",
-          fileName: (pdfName ? pdfName : imgName) || "",
-          img: imgURL || "",
-          time: getTime(),
-          text: message || "",
-          // read: 
-        }),
-      })
-
-      const objWithIncrementedCnt = {}
-      
-      recieverDetails?.groupName && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => 
-        {
-          if(key === activeUser?.uid)
-            return objWithIncrementedCnt[key] = 0;            
-          return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1;
-        })
-
-      recieverDetails?.name && Object.keys(recieverDetails?.unseenMessageCount)?.map(key => {
-        console.log(key,"key ");
-        if (key.includes(activeUser?.uid) && key.includes(recieverDetails?.uid))
-          return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1
-      })
-      if (!objWithIncrementedCnt ) {
-        // console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
-        const asyncCountUpdate = async ()=>await updateDoc(doc(db, "users", recieverDetails.uid), {
-          uid: recieverDetails.uid,
-          groupName: recieverDetails?.groupName,
-          participants: [...recieverDetails?.participants],
-          avatar: recieverDetails.avatar, //random array dp generator
-          createdAt: recieverDetails.createdAt,
-          creatorUid: recieverDetails.creatorUid,
-          lastChat: recieverDetails.lastChat,
-          unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]:0}}
+          setLoading(false);
         });
-        recieverDetails?.groupName && asyncCountUpdate();        
-        console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
+      });
+    } else {
+      message?.trim() &&
+        (await updateDoc(doc(db, "chats", actualDbId), {
+          lastChatedAt: serverTimestamp(),
+          messages: arrayUnion({
+            uid: activeUser?.uid,
+            name: activeUser?.name,
+            avatar: activeUser?.avatar,
+            createdAt: new Date().toUTCString(),
+            pdf: pdfURL || "",
+            fileName: (pdfName ? pdfName : imgName) || "",
+            img: imgURL || "",
+            time: getTime(),
+            text: message || "",
+            // read:
+          }),
+        }));
+      const dbId =
+        recieverDetails?.uid > activeUser?.uid
+          ? recieverDetails?.uid + activeUser?.uid
+          : activeUser?.uid + recieverDetails?.uid;
+
+      const recieverWithNewChatCnt = {};
+
+      recieverDetails?.groupName &&
+        Object.keys(recieverDetails?.unseenMessageCount)?.map((key) => {
+          if (key === activeUser?.uid) return (recieverWithNewChatCnt[key] = 0);
+          return (recieverWithNewChatCnt[key] =
+            getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount[key] + 1);
+        });
+
+
+      recieverDetails?.name &&
+        Object.keys(getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount)?.map((key) => {
+          if (key.includes(activeUser?.uid) && key.includes(recieverDetails?.uid)) {
+            recieverWithNewChatCnt[key] = getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount[key] + 1;
+          }
+        });
+
+      if (recieverDetails?.name && !getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount?.[actualDbId]) {
+        const objChatIdMessage = {};
+        // console.log(recieverDetails?.unseenMessageCount, " recieverWithNewChatCnt")
+
+        const asyncCountUpdate = async () =>
+          await updateDoc(doc(db, "users", recieverDetails.uid), {
+            uid: recieverDetails.uid,
+            name: recieverDetails.name,
+            email: recieverDetails.email,
+            avatar: recieverDetails.avatar, //random array dp generator
+            createdAt: recieverDetails.createdAt,
+            lastChat: {
+              ...(recieverDetails?.lastChat || {}),
+              [actualDbId]: message,
+            },
+            unseenMessageCount: {
+              ...getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount,
+              ...{[actualDbId]: 1},
+            },
+          });
+        recieverDetails?.name && asyncCountUpdate();
+        // console.log(" recieverWithNewChatCnt");
+        console.log(recieverWithNewChatCnt, "on 1non1 chat recieverWithNewChatCnt");
+      } else {
+        //1on1
+        recieverDetails?.name &&
+          (await updateDoc(doc(db, "users", recieverDetails?.uid), {
+            uid: recieverDetails.uid,
+            name: recieverDetails.name,
+            email: recieverDetails.email,
+            avatar: recieverDetails.avatar, //random array dp generator
+            createdAt: recieverDetails.createdAt,
+            lastChat: {
+              ...(recieverDetails?.lastChat || {}),
+              [actualDbId]: message,
+            },
+            unseenMessageCount: recieverWithNewChatCnt,
+          }));
       }
-      console.log(objWithIncrementedCnt, " objWithIncrementedCnt")
 
       recieverDetails?.groupName &&
         (await updateDoc(doc(db, "users", recieverDetails.uid), {
@@ -216,43 +241,31 @@ function SendMessage() {
           avatar: recieverDetails.avatar, //random array dp generator
           createdAt: recieverDetails.createdAt,
           creatorUid: recieverDetails.creatorUid,
-          lastChat: { ...(recieverDetails?.lastChat || {}), [recieverDetails?.uid]: message },
-          unseenMessageCount: objWithIncrementedCnt
+          lastChat: {
+            [activeUser?.uid]: message,
+          },
+
+          // ...(recieverDetails?.lastChat || {}),
+          unseenMessageCount: recieverWithNewChatCnt,
         }));
 
-      //1on1
-      recieverDetails?.name &&
-        (await updateDoc(doc(db, "users", recieverDetails?.uid), {
-          uid: recieverDetails.uid,
-          name: recieverDetails.name,
-          email: recieverDetails.email,
-          avatar: recieverDetails.avatar, //random array dp generator
-          createdAt: recieverDetails.createdAt,
-          lastChat: { ...(recieverDetails?.lastChat || {}), [actualDbId]: message },
-          unseenMessageCount: objWithIncrementedCnt
-        })
-
-        );
-
-      (await updateDoc(doc(db, "users", activeUser?.uid), {
+      await updateDoc(doc(db, "users", activeUser?.uid), {
         uid: activeUser.uid,
         name: activeUser.name,
         email: activeUser.email,
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
-        lastChat: { ...(activeUser?.lastChat || {}), [actualDbId]: message },
-        unseenMessageCount: objWithIncrementedCnt
-      })
-
-      );
-
+        lastChat: {...(getUserFromUid(activeUser?.uid, users)?.lastChat || {}), [actualDbId]: message},
+        unseenMessageCount: getUserFromUid(activeUser?.uid, users).unseenMessageCount,
+      });
     }
     setText("");
     setImg(null);
     setPdf(null);
-    setPdfName("")
-    setImgUrl("")
-    setFileUrl("")
+    setPdfName("");
+    setImgUrl("");
+    setFileUrl("");
+    setLastMessage(message);
     setMessage("");
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
@@ -278,12 +291,10 @@ function SendMessage() {
 
         {/* display:contents */}
         <div>
-          <label htmlFor="attachement">
-            {attachement}
-          </label>
+          <label htmlFor="attachement">{attachement}</label>
           <input
             id="attachement"
-            style={{ display: "contents" }}
+            style={{display: "contents"}}
             type="file"
             onChange={handleFileChange}
             accept="image/*,application/pdf,video/mp4,video/x-m4v,video/*,.mp3,audio/*"
@@ -295,7 +306,12 @@ function SendMessage() {
         {/* onClick={handleUpload} */}
         {/* <button style={{"border-style": "none"}} onClick={}>📎</button> */}
         <div>
-          <button className="send-message" onClick={() => { handleSend() }}>
+          <button
+            className="send-message"
+            onClick={() => {
+              handleSend();
+            }}
+          >
             Send
           </button>
         </div>
@@ -417,34 +433,31 @@ export default SendMessage;
 //   });
 // });
 
-
 // const messageLocal = message;
-    // setMessage("");
-    // if (messageLocal?.trim() === "" && !img && !pdf) {
-    //   alert("Enter valid message");
-    //   return;
-    // }
-    // console.log("activeUser,pdfURL,imgURL :", activeUser, pdfURL, imgURL || "");
-    // setOutputMessage(messageLocal);
-    // if (actualDbId) {
-    //   await updateDoc(doc(db, "chats", actualDbId), {
-    //     messages: arrayUnion({
-    //       uid: activeUser?.uid,
-    //       name: activeUser?.name,
-    //       avatar: activeUser?.avatar,
-    //       createdAt: new Date().toUTCString(),
-    //       pdf: pdfURL || "",
-    //       fileName: (pdfName ? pdfName : imgName) || "",
-    //       img: imgURL || "",
-    //       time: getTime(),
-    //       text: message || "",
-    //     }),
-    //   });
-    // }
+// setMessage("");
+// if (messageLocal?.trim() === "" && !img && !pdf) {
+//   alert("Enter valid message");
+//   return;
+// }
+// console.log("activeUser,pdfURL,imgURL :", activeUser, pdfURL, imgURL || "");
+// setOutputMessage(messageLocal);
+// if (actualDbId) {
+//   await updateDoc(doc(db, "chats", actualDbId), {
+//     messages: arrayUnion({
+//       uid: activeUser?.uid,
+//       name: activeUser?.name,
+//       avatar: activeUser?.avatar,
+//       createdAt: new Date().toUTCString(),
+//       pdf: pdfURL || "",
+//       fileName: (pdfName ? pdfName : imgName) || "",
+//       img: imgURL || "",
+//       time: getTime(),
+//       text: message || "",
+//     }),
+//   });
+// }
 
-    //chats,
-
-
+//chats,
 
 // import { storage } from "./firebase";
 

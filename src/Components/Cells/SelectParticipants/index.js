@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { rightArrow } from "../../Utillities/icons";
-import { messageContext } from "../../../App";
-import { auth, db, storage } from "../../../firebase";
-import { getTime } from "../../Utillities/getTime";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import {rightArrow} from "../../Utillities/icons";
+import {messageContext} from "../../../App";
+import {auth, db, storage} from "../../../firebase";
+import {getTime} from "../../Utillities/getTime";
 import {
   doc,
   getDoc,
@@ -11,11 +11,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { IMAGES } from "../../Utillities/Images";
-import { getUserFromUid } from "../../Utillities/getUserFromUid";
+import {IMAGES} from "../../Utillities/Images";
+import {getUserFromUid} from "../../Utillities/getUserFromUid";
 import "./styles.css";
 import ProfileImage from "../../Atoms/ProfileImage";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {getDownloadURL, ref, uploadBytesResumable} from "firebase/storage";
+import getActiveUserId from "../../Utillities/getActiveUserId";
 
 function SelectParticipants(props) {
   const [img, setImg] = useState("");
@@ -43,7 +44,7 @@ function SelectParticipants(props) {
     groupName,
     setGroupName,
   } = props;
-  // console.log(selectedParticipants, "groupName selectedParticipants");
+
   const {
     actualDbGroupId,
     setActualDbGroupId,
@@ -62,24 +63,25 @@ function SelectParticipants(props) {
     recieverDetails?.name || recieverDetails?.groupName
   );
   const grp = users?.find((user) => user.uid == actualDbId);
-  const [localGroupName, setLocalGroupName] = useState(isNewGroup ? "": getUserFromUid(recieverDetails?.uid, users)?.groupName);
+  const [localGroupName, setLocalGroupName] = useState(isNewGroup ? "" : getUserFromUid(recieverDetails?.uid, users)?.groupName);
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
-  // console.log(localGroupName," localGroupName")
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
+  useEffect(() => {
+    isNewGroup && setSelectedParticipants([activeUser || getUserFromUid(getActiveUserId(), users)])
+  }, [])
   //
   // useEffect(()=>{
   //   const q = query(collection(db, "users"), orderBy("createdAt"));
   //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
   //     QuerySnapshot.forEach((doc) => {
-  //       // console.log("<>snapshot foreach<>", doc, doc.id, typeof doc);
+  //
   //     });
   //   });
-  //   console.log("actualDbId in useEffectMount(sidebar) :", actualDbId);
   //   return () => unsubscribe;
   // },[])
-  
+
   // useEffect(()=>{
   //   if(showGroupAddComp && !showMemberEditFormOnTheRight){
   //     setLocalGroupName("");
@@ -110,13 +112,11 @@ function SelectParticipants(props) {
   };
 
   const updateChatGroup = async () => {
-    console.log(imgURL,"ref inside chatgrop")
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
-    // console.log("imgimgin", recieverDetails);
+
     // docRef = await getDoc(doc(db, "users", gid));
-    // console.log(docRef.data(),"docRef.data()")
     // setRecieverDetails({...docRef.data()})
     // recieverDetails?.avatar !== img && handleUpload();  
 
@@ -128,8 +128,6 @@ function SelectParticipants(props) {
     );
     const tempSelectedParticipants = [...selectedParticipants];
     // tempSelectedParticipants[0] = currentUser0;
-    // console.log(imgURL.current, "tempSelectedParticipants :");
-    // console.log("gid", gid);
     await updateDoc(doc(db, "users", gid), {
       uid: gid,
       // creatorUid:
@@ -137,13 +135,12 @@ function SelectParticipants(props) {
       avatar: imgURL.current || recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
-      unseenMessageCount:recieverDetails?.unseenMessageCount
+      unseenMessageCount: recieverDetails?.unseenMessageCount
       // {...users?.map(user=>user.uid)}
       // details: {uid,email,name,avatar,}
     });
     // await get
     let docRef = await getDoc(doc(db, "chats", gid));
-    // console.log("doesn't exist", actualDbId, docRef.exists());
     // if (docRef.exists()) return null;
 
     await updateDoc(doc(db, "chats", gid), {
@@ -156,7 +153,6 @@ function SelectParticipants(props) {
       lastChatedAt: serverTimestamp(),
 
     });
-    // console.log(recieverDetails, "tempSelectedParticipants :");
     //create new
     // setActualDbGroupId(gid);
     setActualDbId(gid);
@@ -167,11 +163,10 @@ function SelectParticipants(props) {
   };
 
   const handleUpload = async () => {
-    console.log(img,"ref inside upload func")
     setFileStatus(false);
-    
+
     if (img) {
-      
+
       const localFileNewURL = `/profiles/${img.name}${recieverDetails.uid}`;
       const storageRef = ref(storage, localFileNewURL);
       const uploadTask = uploadBytesResumable(storageRef, img);
@@ -182,72 +177,45 @@ function SelectParticipants(props) {
             setImgUrl(url);
             imgURLGlobal = url;
             // const obj = {a: 23}
-            setRecieverDetails((rec)=>{
-              return {...rec,["avatar"]:url}
+            setRecieverDetails((rec) => {
+              return {...rec, ["avatar"]: url}
             })
-            console.log(url, "url :: 12", userName);
             imgURL.current = url;
-            // recieverDetails?.groupName &&
-              // userName?.trim() &&
-              // (await updateDoc(doc(db, "users", recieverDetails?.uid), {
-              //   uid: recieverDetails.uid,
-              //   groupName: recieverDetails?.groupName && userName,
-              //   // name: recieverDetails?.name && userName,
-              //   participants: [...recieverDetails?.participants],
-              //   avatar: url, //random array dp generator
-              //   createdAt: recieverDetails.createdAt,
-              //   creatorUid: recieverDetails.creatorUid,
-              // }));
-              // console.log(recieverDetails?.avatar, "?.avatar")
-            if (recieverDetails?.name) {
-              // await updateDoc(doc(db, "users", recieverDetails?.uid), {
-              //   uid: recieverDetails.uid,
-              //   name: userName,
-              //   email: recieverDetails.email,
-              //   avatar: url,
-              //   createdAt: activeUser.createdAt,
-              // });
-            }
-            isNewGroup ? createChatGroup(): updateChatGroup();
+            isNewGroup ? createChatGroup() : updateChatGroup();
           });
         }
       );
     }
     setImg(null);
-    !img && isNewGroup ? createChatGroup(): updateChatGroup();
-    // setImgUrl("");
-    // setUserName("");
+    !img && isNewGroup ? createChatGroup() : updateChatGroup();
+
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
   };
-  // const [recentGroupName,setRecentGroupName]
-  //   const userCheckboxChange = (e, checkedUser) => {};
   const createChatGroup = async () => {
     //GET DOC
     //TRUE UPDATE
     //FALSE SETDOC
-    
+
     const gid = createNewGroupId();
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const tempSelectedParticipants = [...selectedParticipants];
     tempSelectedParticipants[0] = currentUser0;
-    // console.log(recieverDetails, "tempSelectedParticipants :");
-    // console.log("gid", gid);
+
     const objProxy = {};
-    tempSelectedParticipants?.map(user=>{return objProxy[user.uid] = 0})
-    console.log("obj proxy: ",objProxy,recieverDetails)
-    
+    tempSelectedParticipants?.map(user => {return objProxy[user.uid] = 0})
+
     await setDoc(doc(db, "users", gid), {
       uid: gid,
       groupName: localGroupName,
       creatorUid: auth.currentUser.uid,
-      avatar: imgURLGlobal|| recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
+      avatar: imgURLGlobal || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
-      unseenMessageCount:objProxy
+      unseenMessageCount: objProxy
       // details: {uid,email,name,avatar,}
     });
-    
+
     await setDoc(doc(db, "chats", gid), {
       uid: gid,
       creatorUid: auth.currentUser.uid,
@@ -265,15 +233,14 @@ function SelectParticipants(props) {
     setShowGroupAddComp(false);
     // setGroupName("")
     // setRecieverDetails(getUserFromUid(gid,users))
-    // console.log("after create new grp : receiverdetails", recieverDetails);
     // setWelcomeChatPage(true)
     // recieverDetails?.avatar !== img && handleUpload();
     // newObj = {};
   };
 
   return (
-    <div className="padded" style={{ padding: "15px" }}>
-      <ProfileImage activeUser={isNewGroup ? {} :recieverDetails} propObj={propObj} />
+    <div className="padded" style={{padding: "15px"}}>
+      <ProfileImage activeUser={isNewGroup ? {} : recieverDetails} propObj={propObj} />
       <div>
         <input
           className="textInput"
@@ -300,13 +267,12 @@ function SelectParticipants(props) {
                 <label>
                   <input
                     name={user?.uid}
-                    style={{ height: "15px", width: "15px" }}
+                    style={{height: "15px", width: "15px"}}
                     type="checkbox"
                     checked={selectedParticipants?.some(
                       (participant) => participant.uid === user.uid
                     )}
                     onChange={(e) => {
-                      // console.log("IN check change", e.target.checked);
                       if (e.target.checked)
                         setSelectedParticipants(() => [
                           ...selectedParticipants,
@@ -332,7 +298,6 @@ function SelectParticipants(props) {
       </div>
       <p className="text-danger">{errorName}</p>
       <div>
-        {/* (selectedParticipants?.length < 1)?setGroupEmptyError("Select a member") */}
         <button
           className="arrow"
           onClick={() => {

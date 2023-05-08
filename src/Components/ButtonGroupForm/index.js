@@ -6,9 +6,7 @@ function ButtonGroupForm(isNewGroupBtnClicked, setIsNewGroupBtnClicked) {
     <div style={{"padding-left":"50%"}}>
       <button className="arrow"
         onClick={() => {
-          if (isNewGroupBtnClicked) {
-            console.log("isNewGroupBtnClicked ", isNewGroupBtnClicked);
-          } else setIsNewGroupBtnClicked(true);
+          !isNewGroupBtnClicked && setIsNewGroupBtnClicked(true);
         }}
       >
         {rightArrow}

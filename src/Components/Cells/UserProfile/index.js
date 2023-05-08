@@ -68,7 +68,6 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
     setFileStatus(false);
 
     if (img) {
-      console.log("imgimgin", img);
       const localFileNewURL = `/profiles/${img.name}${auth.currentUser.uid}`;
       const storageRef = ref(storage, localFileNewURL);
       const uploadTask = uploadBytesResumable(storageRef, img);
@@ -88,7 +87,6 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             setImgUrl(url);
             imgURL = url;
-            console.log(url, imgURL, "url ::");
             activeUser?.groupName &&
               userName?.trim() &&
               (await updateDoc(doc(db, "users", activeUser?.uid), {
