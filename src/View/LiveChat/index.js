@@ -136,6 +136,11 @@ function LiveChat() {
 
   useEffect(() => {
     if (recieverDetails?.groupName) {
+      
+      // const thisChat = chats?.find(chat => chat.uid === actualDbId);
+      // const lastText = thisChat.messages?.at(-1)?.text;
+      // setUnseenCounter({...recieverDetails.unseenCounter})
+      // setLastMessage(lastText);
       // const thisChat = chats?.find(chat => chat.uid === actualDbId);
       // const lastText = thisChat.messages?.at(-1)?.text;
       // setLastMessage(lastText);
@@ -200,7 +205,7 @@ function LiveChat() {
             //   ["lastChat"]: lastChat,
             // });
             setUnseenCounter({...unseenMessageCount});
-            lastChatLocal = lastChat;
+            // lastChatLocal = lastChat;
           }
           // console.log("doc on snapshot data :", doc.data()?.messages, actualDbId);
           // console.log("actualDbId in useEffect(LiveCHat) :", actualDbId);

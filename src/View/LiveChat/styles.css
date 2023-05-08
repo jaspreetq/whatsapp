@@ -126,7 +126,7 @@
 }
 
 .defaultChat {
-  /* background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/WhatsApplogo.jpg"); */
+  background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/WhatsApplogo.jpg");
   /* /home/chicmic/Documents/whatsapp/public/whatsappSide.png  */
   background-repeat: no-repeat;
   background-size: cover;

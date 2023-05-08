@@ -56,7 +56,7 @@
 }
 
 .editHover:hover {
-  /* background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/editImgHover.png"); */
+  background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/editImgHover.png");
   background-repeat: no-repeat;
   background-size: contain;
 }

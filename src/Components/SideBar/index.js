@@ -121,17 +121,17 @@ function SideBar() {
 
   useEffect(() => {
 
-    const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails.uid), {
-      uid: recieverDetails.uid,
-      groupName: recieverDetails?.groupName,
-      participants: [...recieverDetails?.participants],
-      avatar: recieverDetails.avatar, //random array dp generator
-      createdAt: recieverDetails.createdAt,
-      creatorUid: recieverDetails.creatorUid,
-      lastChat: {...(recieverDetails?.lastChat || {})},
-      unseenMessageCount: {...unseenCounter, ...{[getActiveUserId()]: 0}}
-    });
-    recieverDetails?.groupName && unseenCounter > 0 && asyncCountUpdate();
+    // const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails.uid), {
+    //   uid: recieverDetails.uid,
+    //   groupName: recieverDetails?.groupName,
+    //   participants: [...recieverDetails?.participants],
+    //   avatar: recieverDetails.avatar, //random array dp generator
+    //   createdAt: recieverDetails.createdAt,
+    //   creatorUid: recieverDetails.creatorUid,
+    //   lastChat: {...(recieverDetails?.lastChat || {})},
+    //   unseenMessageCount: {...unseenCounter, ...{[getActiveUserId()]: 0}}
+    // });
+    // recieverDetails?.groupName && asyncCountUpdate();
 
     const updateCntTo0 = async () => (await updateDoc(doc(db, "users", activeUser?.uid), {
       uid: activeUser.uid,
