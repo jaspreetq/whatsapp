@@ -34,7 +34,7 @@ export const attachement = (
   <svg
   xmlns="http://www.w3.org/2000/svg"
   width="30"
-  height="90"
+  height="30"
   fill="#73777a"
   class="bi bi-paperclip"
   viewBox="0 0 16 16"

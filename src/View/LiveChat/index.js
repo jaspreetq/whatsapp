@@ -131,58 +131,12 @@ function LiveChat() {
 
   // },[])
   useEffect(() => {
-    refHook.current?.scrollIntoView({behavior: "smooth"});
+    refHook.current?.scrollIntoView();
   }, [messages, loading]);
 
   useEffect(() => {
     if (recieverDetails?.groupName) {
       
-      // const thisChat = chats?.find(chat => chat.uid === actualDbId);
-      // const lastText = thisChat.messages?.at(-1)?.text;
-      // setUnseenCounter({...recieverDetails.unseenCounter})
-      // setLastMessage(lastText);
-      // const thisChat = chats?.find(chat => chat.uid === actualDbId);
-      // const lastText = thisChat.messages?.at(-1)?.text;
-      // setLastMessage(lastText);
-      // let lastChatGrpKey
-      // let lastChatGrpValue
-      // let lastChatGrpKeyStr
-      // let finalLastChatGrpString = "";
-
-      // const lastChatGrp = getUserFromUid(recieverDetails?.uid, users);
-      // if (lastChatGrp && Object.keys(lastChatGrp).length && recieverDetails.groupName) {
-      //   console.log(lastChatGrp, recieverDetails.uid, "lastChatGrp");
-      //   console.log(Object.keys(lastChatGrp)[0], "lastChat in sidebar", Object.values(lastChatGrp)[0])
-      //   lastChatGrpKey = Object.keys(lastChatGrp)[0];
-      //   lastChatGrpValue = lastText;
-      //   lastChatGrpKeyStr = (lastChatGrpKey === getActiveUserId()) ? "You: " : `${getUserFromUid(lastChatGrpKey, users)?.name}: `
-      //   finalLastChatGrpString = lastChatGrpKeyStr + lastChatGrpValue;
-      // }
-
-      // // console.log(getUserFromUid(activeUser.uid, users).unseenMessageCount, "getUserFromUid(activeUser", lastText);
-      // let unseenMessageCountLocal, lastChatLocal;
-      // const unsubscribe = onSnapshot(doc(db, "users", recieverDetails?.uid || RANDOM_TEXT),
-      //   (doc) => {
-      //     if (doc?.exists()) {
-      //       const {unseenMessageCount, lastChat} = doc.data();
-      //       setUnseenCounter({...unseenMessageCount});
-      //       lastChatLocal = lastChat;
-      //     }
-      //   }
-      // );
-      // let docRef = async () => await getDoc(doc(db, "users", recieverDetails.uid));
-      // const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails.uid), {
-      //   uid: recieverDetails.uid,
-      //   groupName: recieverDetails?.groupName,
-      //   participants: [...recieverDetails?.participants],
-      //   avatar: recieverDetails.avatar, //random array dp generator
-      //   createdAt: recieverDetails.createdAt,
-      //   creatorUid: recieverDetails.creatorUid,
-      //   lastChat: {...(getActiveUserId(recieverDetails.uid, users))?.lastChat},
-      //   unseenMessageCount: {...recieverDetails?.unseenMessageCount, ...{[getActiveUserId()]: 0}}
-      // });
-      // asyncCountUpdate();
-      // console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
     }
     console.log(getUserFromUid(activeUser?.uid, users)?.unseenMessageCount?.[actualDbId], activeUser, recieverDetails, "in chats useEffect");
     if (recieverDetails?.name) {
@@ -368,13 +322,21 @@ function LiveChat() {
       {/* <SignOut /> */}
       {/* {console.log("recieverDetails in <><><><>", recieverDetails)} */}
       {/* {!auth.currentUser.uid && console.log("null chak")} */}
-      <div className="d-flex justify-content-start sidebar">
+      <div className="d-flex justify-content-start sidebar shadowBorder">
         <SideBar />
         <div style={{width: "80%"}}>
           {welcomeChatPage ? (
             <div className="defaultChat align-middle w-100 h-100">
               {" "}
               <div style={{"font-size": "23px", "padding-left": "10px", "background": "#f8f9fae0"}}><br />Select a contact to chat</div>
+              <img
+                  key="whatsappLogo"
+                  id='whatsappLogo'
+                  className="whatsappLogo"
+                  src={IMAGES.WHATSAPP_LOGO_PNG}
+                  height='200px'
+                  width='200px'
+                />
             </div>
           ) : (
             <>
@@ -490,10 +452,7 @@ function LiveChat() {
                   </div>
                 </>
               ) : (
-                <div
-                  className="scroll-right"
-                  style={{background: "#e4ddd5", height: "68%", width: "100%"}}
-                >
+                <div className="scroll-right">
                   <ul>
                     {messages?.map((message, idx) => {
                       {/* console.log("message:::", message); */}

@@ -5,6 +5,7 @@ import background from "../../Assets/background.png";
 import websignin from "../../Assets/websignin.jpg";
 import whatsappSide from "../../Assets/whatsappSide.png";
 import WhatsApplogo from "../../Assets/WhatsApplogo.jpg";
+import whatsappSmallLogoPng from "../../Assets/whatsapp-logo.png";
 export const IMAGES = {
   DP1: dp1,
   default:
@@ -15,4 +16,5 @@ export const IMAGES = {
   SIGNIN_BACKGROUND: websignin,
   SIDE_IMG: whatsappSide,
   WHATSAPP_LOGO: WhatsApplogo,
+  WHATSAPP_LOGO_PNG: whatsappSmallLogoPng
 };

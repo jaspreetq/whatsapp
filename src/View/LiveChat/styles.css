@@ -1,10 +1,5 @@
 .liveChat {
-  /* margin: 0;
-  width: 95%;
-  padding: 0; 
-  #f0f2f5
-  */
-  /* background-image: url("background.png"); */
+  
 }
 .seeThrough {
   z-index: -1;
@@ -14,7 +9,7 @@
   background: #f0f2f5;
 }
 .sidebar {
-  height: 100vh;
+  height: calc(100vh + 5px);
   background: #fff;
 }
 .container {
@@ -25,7 +20,9 @@
 .scroll-right {
   flex: 1;
   overflow-y: scroll;
-  max-height: 100vh;
+  height: calc(100vh - 130px);
+  width: 100%;
+  background: #e4ddd5;
 }
 
 .left-box,
@@ -44,7 +41,9 @@
   word-wrap: break-word;
   /* width: fit-content; */
 }
-
+.shadowBorder{
+  
+}
 .container-sender {
   border: 2px solid #dedede;
   background-color: #bfe6b8;
@@ -92,9 +91,12 @@
 }
 
 .time-right {
-  float: right;
-  /* position: relative; */
-  color: black;
+  /* float: right; */
+  display: flex;
+  justify-content: end;
+  color: black;  
+  font-size: smaller;
+  margin-bottom: -11px;
 }
 
 .time-left {
@@ -124,9 +126,14 @@
   padding: 5%;
   padding-left: 30%;
 }
-
+.whatsappLogo{
+  display: flex;
+  justify-content: center;
+  margin-left: 45%;
+  margin-top: 20%;
+}
 .defaultChat {
-  background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/WhatsApplogo.jpg");
+  background-color: #dedede;
   /* /home/chicmic/Documents/whatsapp/public/whatsappSide.png  */
   background-repeat: no-repeat;
   background-size: cover;

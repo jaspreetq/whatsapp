@@ -27,7 +27,7 @@
 .scroll-left {
   flex: 1;
   overflow-y: scroll;
-  max-height: 100vh;
+  max-height: calc(100vh - 38px - 68px);
 }
 .navbar {
   border-bottom: 1px solid black;
@@ -55,8 +55,9 @@
   padding-right: 0;
 }
 
+/* src/Assets/editImgHover.png */
 .editHover:hover {
-  background-image: url("/home/chicmic/Documents/whatsapp/src/Assets/editImgHover.png");
+  background-image: url("../../Assets/editImgHover.png");
   background-repeat: no-repeat;
   background-size: contain;
 }
