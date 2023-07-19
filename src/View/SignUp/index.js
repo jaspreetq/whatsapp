@@ -93,6 +93,10 @@ function SignUp() {
     }
   };
   return (
+    <form action="get" onSubmit={(e)=>{{
+        setLoading(true);
+        signUpEmailPassword(e);
+      }}}>
     <div className="Signup">
       <div className="form centered">
         <div className="registerHeader">
@@ -166,6 +170,7 @@ function SignUp() {
       </div>
       <div className="rightSideImage"></div>
     </div>
+    </form>
   );
 }
 

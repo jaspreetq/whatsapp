@@ -167,7 +167,7 @@ function SelectParticipants(props) {
 
     if (img) {
 
-      const localFileNewURL = `/profiles/${img.name}${recieverDetails.uid}`;
+      const localFileNewURL = `/profiles/${img.name}${recieverDetails?.uid}`;
       const storageRef = ref(storage, localFileNewURL);
       const uploadTask = uploadBytesResumable(storageRef, img);
 

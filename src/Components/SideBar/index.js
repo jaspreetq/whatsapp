@@ -121,13 +121,13 @@ function SideBar() {
 
   useEffect(() => {
 
-    // const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails.uid), {
-    //   uid: recieverDetails.uid,
+    // const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails?.uid), {
+    //   uid: recieverDetails?.uid,
     //   groupName: recieverDetails?.groupName,
     //   participants: [...recieverDetails?.participants],
-    //   avatar: recieverDetails.avatar, //random array dp generator
-    //   createdAt: recieverDetails.createdAt,
-    //   creatorUid: recieverDetails.creatorUid,
+    //   avatar: recieverDetails?.avatar, //random array dp generator
+    //   createdAt: recieverDetails?.createdAt,
+    //   creatorUid: recieverDetails?.creatorUid,
     //   lastChat: {...(recieverDetails?.lastChat || {})},
     //   unseenMessageCount: {...unseenCounter, ...{[getActiveUserId()]: 0}}
     // });
@@ -369,7 +369,7 @@ function SideBar() {
                       const cssUser =
                         recieverDetails?.uid === user?.uid ? " selected" : ""; //||selectedGroup.uid === user.uid\
 
-                      const badgeNo = user.groupName ? user.unseenMessageCount[auth.currentUser.uid]
+                      const badgeNo = user?.groupName ? user?.unseenMessageCount[auth?.currentUser?.uid]
                         : getUserFromUid(getActiveUserId(), users)?.unseenMessageCount[getChatDbId(user, getUserFromUid(getActiveUserId(), users))]
 
                       const lastChatUser = user?.lastChat?.[user?.uid] ||
@@ -387,7 +387,7 @@ function SideBar() {
 
                       const lastChatGrp = user?.lastChat;
                       if (lastChatGrp && Object.keys(lastChatGrp).length && user.groupName) {
-                        console.log(lastChatGrp, recieverDetails.uid, "lastChatGrp");
+                        console.log(lastChatGrp, recieverDetails?.uid, "lastChatGrp");
                         console.log(Object.keys(lastChatGrp)[0], "lastChat in sidebar", Object.values(lastChatGrp)[0])
                         lastChatGrpKey = Object.keys(lastChatGrp)[0];
                         lastChatGrpValue = Object.values(lastChatGrp)[0];

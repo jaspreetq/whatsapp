@@ -198,12 +198,12 @@ function SendMessage() {
         // console.log(recieverDetails?.unseenMessageCount, " recieverWithNewChatCnt")
 
         const asyncCountUpdate = async () =>
-          await updateDoc(doc(db, "users", recieverDetails.uid), {
-            uid: recieverDetails.uid,
-            name: recieverDetails.name,
-            email: recieverDetails.email,
-            avatar: recieverDetails.avatar, //random array dp generator
-            createdAt: recieverDetails.createdAt,
+          await updateDoc(doc(db, "users", recieverDetails?.uid), {
+            uid: recieverDetails?.uid,
+            name: recieverDetails?.name,
+            email: recieverDetails?.email,
+            avatar: recieverDetails?.avatar, //random array dp generator
+            createdAt: recieverDetails?.createdAt,
             lastChat: {
               ...(recieverDetails?.lastChat || {}),
               [actualDbId]: message,
@@ -220,11 +220,11 @@ function SendMessage() {
         //1on1
         recieverDetails?.name &&
           (await updateDoc(doc(db, "users", recieverDetails?.uid), {
-            uid: recieverDetails.uid,
-            name: recieverDetails.name,
-            email: recieverDetails.email,
-            avatar: recieverDetails.avatar, //random array dp generator
-            createdAt: recieverDetails.createdAt,
+            uid: recieverDetails?.uid,
+            name: recieverDetails?.name,
+            email: recieverDetails?.email,
+            avatar: recieverDetails?.avatar, //random array dp generator
+            createdAt: recieverDetails?.createdAt,
             lastChat: {
               ...(recieverDetails?.lastChat || {}),
               [actualDbId]: message,
@@ -234,13 +234,13 @@ function SendMessage() {
       }
 
       recieverDetails?.groupName &&
-        (await updateDoc(doc(db, "users", recieverDetails.uid), {
-          uid: recieverDetails.uid,
+        (await updateDoc(doc(db, "users", recieverDetails?.uid), {
+          uid: recieverDetails?.uid,
           groupName: recieverDetails?.groupName,
           participants: [...recieverDetails?.participants],
-          avatar: recieverDetails.avatar, //random array dp generator
-          createdAt: recieverDetails.createdAt,
-          creatorUid: recieverDetails.creatorUid,
+          avatar: recieverDetails?.avatar, //random array dp generator
+          createdAt: recieverDetails?.createdAt,
+          creatorUid: recieverDetails?.creatorUid,
           lastChat: {
             [activeUser?.uid]: message,
           },

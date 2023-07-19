@@ -20,6 +20,7 @@ import { errorDisplay } from "../../Components/Utillities/errorDisplay";
 import { whatsapp } from "../../Components/Utillities/icons";
 import { LINK } from "../../ConstantString";
 import { SENT_VERIFICATION_LINK } from "../../Components/ConstantStrings";
+
 function SignIn() {
   const [verificationMessage,setVerificationMessage] = useState("");
   const navigate = useNavigate();
@@ -46,8 +47,8 @@ function SignIn() {
   }, []);
 
   // connectAuthEmulator(auth, "http://localhost:9899");
-  const handleSignIn = () => {
-    // e.preventDefault();
+  const handleSignIn = (e) => {
+    e.preventDefault();
     setWelcomeChatPage(true);
     loginEmailPassword();
   };
@@ -58,8 +59,7 @@ function SignIn() {
   // signUpEmailPassword
 
   const loginEmailPassword = async () => {
-    // console.log(emailExists)
-    const loginEmail = email;
+    const loginEmail   = email;
     const loginPassword = password;
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -67,26 +67,11 @@ function SignIn() {
         loginEmail,
         loginPassword
       );
-
-      // const actionCodeSettings = {
-      //   url: LINK.AFTER_VERIFICATION_REDIRECT_TO_URL,
-      //   handleCodeInApp: true
-      // };
-      // // await sendEmailVerification(auth.currentUser, actionCodeSettings)
-      // // setDisplayError("Messages.sentVerification")
-
-      // await sendEmailVerification(auth.currentUser, actionCodeSettings)
-      // setVerificationMessage(SENT_VERIFICATION_LINK)
-
-      // console.log("userCredential signup", userCredential);
       const { uid } = auth.currentUser;
 
-      console.log("userCredential signin ", userCredential);
       setErrorMessage("");
       navigate(`/LiveChat/${auth.currentUser.uid}`);
     } catch (error) {
-      console.log(error, "in signin error");
-      // showLoginError(error);
       errorDisplay(error, email, setErrorMessage);
     }
   };
@@ -122,6 +107,7 @@ function SignIn() {
     {/* {loading ? :} */}
       <div className="signIn">
       <div className="registerHeader"><h2>Whatsapp-Web</h2></div>
+      <form method="get" onSubmit={handleSignIn}>
         <div className="form">
           <h3>Please SignIn...</h3>
           
@@ -158,6 +144,7 @@ function SignIn() {
           <button className="registration" onClick={() => navigate("/SignUp")}>New User, SignUp</button>
           </div>
         </div>
+        </form>
         <div className="icon">
           {/* <p className="whatsapp_label"></p> */}
           <label className="whatsapp_logo">{whatsapp}</label>

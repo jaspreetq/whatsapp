@@ -140,7 +140,7 @@ function LiveChat() {
     }
     console.log(getUserFromUid(activeUser?.uid, users)?.unseenMessageCount?.[actualDbId], activeUser, recieverDetails, "in chats useEffect");
     if (recieverDetails?.name) {
-      // let docRef = async () => await getDoc(doc(db, "users", recieverDetails.uid));
+      // let docRef = async () => await getDoc(doc(db, "users", recieverDetails?.uid));
       // const {lastChat} = docRef.data();
       // docRef.lastChat
       const thisChat = chats?.find(chat => chat.uid === actualDbId);
@@ -200,14 +200,14 @@ function LiveChat() {
       //     return objWithIncrementedCnt[key] = getUserFromUid(recieverDetails?.uid,users)?.unseenMessageCount[key] + 1
       // })
       console.log(recieverDetails?.unseenMessageCount, " objWithIncrementedCnt")
-      const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails.uid), {
-        uid: recieverDetails.uid,
+      const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails?.uid), {
+        uid: recieverDetails?.uid,
         groupName: recieverDetails?.groupName,
         participants: [...recieverDetails?.participants],
-        avatar: recieverDetails.avatar, //random array dp generator
-        createdAt: recieverDetails.createdAt,
-        creatorUid: recieverDetails.creatorUid,
-        lastChat: recieverDetails.lastChat,
+        avatar: recieverDetails?.avatar, //random array dp generator
+        createdAt: recieverDetails?.createdAt,
+        creatorUid: recieverDetails?.creatorUid,
+        lastChat: recieverDetails?.lastChat,
         unseenMessageCount: {...getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount, ...{[getActiveUserId()]: 0}}
       });
       recieverDetails?.groupName && asyncCountUpdate();
