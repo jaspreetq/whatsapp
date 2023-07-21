@@ -27,30 +27,11 @@
 .scroll-left {
   flex: 1;
   overflow-y: scroll;
-  max-height: calc(100vh - 38px - 68px);
+  max-height: calc(100vh - 38px - 85px);
 }
 .navbar {
   border-bottom: 1px solid black;
 }
-
-/* .dropdown-toggle::after{
-  display: none;
-}
-
-/* .container {
-  display: flex;
-    overflow: hidden;
-    max-height: 100%;
-  }
-  
-  .left-box, .right-box {
-    flex: 1;
-  } */
-
-/* .avatar:hover {
-  background-color: grey;
-} */
-
 .dropdown-toggle {
   padding-right: 0;
 }

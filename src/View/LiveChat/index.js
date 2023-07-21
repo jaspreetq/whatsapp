@@ -382,7 +382,7 @@ function LiveChat() {
 
                 {recieverDetails?.participants?.length && (
                   <p
-                    className="text-primary blockquote-footer overflow-hidden"
+                    className="singleChat text-primary blockquote-footer overflow-hidden"
                   >
                     {recieverDetails?.groupName &&
                       users
@@ -455,18 +455,15 @@ function LiveChat() {
                 <div className="scroll-right">
                   <ul>
                     {messages?.map((message, idx) => {
-                      {/* console.log("message:::", message); */}
                       const cssStr =
                         message.uid === auth.currentUser.uid
                           ? "-sender"
                           : "-reciever";
-                      {/* console.log("cssStr: ", cssStr); */}
                       if (!(message.text || message.img || message.pdf))
                         return null;
                       return (
                         <div className="w-100">
                           <div ref={refHook} className={`container${cssStr} shadow`}>
-                            {/* {message?.img && <img src={message?.img} height="100px" width="100px"/>} */}
                             {recieverDetails?.groupName && (
                               <span>
                                 {recieverDetails?.groupName && (cssStr === "-reciever") && (

@@ -44,10 +44,6 @@ function SendMessage() {
     setActualDbId, users, setUsers, lastMessage, setLastMessage
   } = useContext(messageContext);
 
-  // useEffect(() => {
-  //   console.log("useEffect(Send Message) actualDbId changed ", actualDbId);
-  // }, [img]);
-
   function handleFileChange(e) {
     if (e.target.files[0]?.size > 16777216) {
       setFileSizeError("Too large to upload ,Limit the file size to 16MB");
@@ -195,7 +191,6 @@ function SendMessage() {
 
       if (recieverDetails?.name && !getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount?.[actualDbId]) {
         const objChatIdMessage = {};
-        // console.log(recieverDetails?.unseenMessageCount, " recieverWithNewChatCnt")
 
         const asyncCountUpdate = async () =>
           await updateDoc(doc(db, "users", recieverDetails?.uid), {
@@ -214,8 +209,6 @@ function SendMessage() {
             },
           });
         recieverDetails?.name && asyncCountUpdate();
-        // console.log(" recieverWithNewChatCnt");
-        console.log(recieverWithNewChatCnt, "on 1non1 chat recieverWithNewChatCnt");
       } else {
         //1on1
         recieverDetails?.name &&
@@ -244,8 +237,6 @@ function SendMessage() {
           lastChat: {
             [activeUser?.uid]: message,
           },
-
-          // ...(recieverDetails?.lastChat || {}),
           unseenMessageCount: recieverWithNewChatCnt,
         }));
 
@@ -285,10 +276,7 @@ function SendMessage() {
           onEnter={() => handleSend()}
           placeholder="Type a message"
         />
-        {/* <label htmlFor="file">
         
-      </label> */}
-
         <div className="sendMessageArea">
           <label htmlFor="attachement">{attachement}</label>
           <input
@@ -298,7 +286,6 @@ function SendMessage() {
             onChange={handleFileChange}
             accept="image/*,application/pdf,video/mp4,video/x-m4v,video/*,.mp3,audio/*"
           />
-          {/* style={{"border-style": "none","padding":0 }} */}
         </div>
         <div>
           <button
@@ -311,12 +298,7 @@ function SendMessage() {
           </button>
         </div>
       </div>
-      {/* <p color="green">{percent}% done</p> */}
     </div>
   );
 }
 export default SendMessage;
-
-{
-  /* // useEffect(()=>{ */
-}

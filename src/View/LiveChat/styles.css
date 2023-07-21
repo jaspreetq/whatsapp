@@ -9,7 +9,7 @@
   background: #f0f2f5;
 }
 .sidebar {
-  height: calc(100vh - 5px);
+  height: calc(100vh - 10px);
   background: #fff;
 }
 .container {
@@ -20,7 +20,7 @@
 .scroll-right {
   flex: 1;
   overflow-y: scroll;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 143px);
   width: 100%;
   background: #e4ddd5;
 }
@@ -39,7 +39,8 @@
   margin: 10px 0;
   max-width: 50%;
   word-wrap: break-word;
-  /* width: fit-content; */
+  width: fit-content;
+  min-width: 75px;
 }
 .shadowBorder{
   
@@ -53,9 +54,9 @@
   margin-right: 0;
   margin-left: 50%;
   max-width: 48%;
-  /* width: fit-content; */
-  /* min-width: none;
-   */
+  width: fit-content;
+  min-width: 75px;
+  
 
   /* margin-left:30%;
    float: right; */
@@ -113,7 +114,7 @@
   height: 100%;
   display: flex;
   align-items: flex-end;
-  shape-outside: inset(calc(100% - 100px) 0 0);
+  shape-outside: inset(calc(100vh - 100px) 0 0);
 }
 
 .selectParticipants-right {
@@ -137,4 +138,9 @@
   /* /home/chicmic/Documents/whatsapp/public/whatsappSide.png  */
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.singleChat{
+  display: flex;
+  justify-content: flex-end;
 }

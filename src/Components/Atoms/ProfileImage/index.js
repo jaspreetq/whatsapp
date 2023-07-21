@@ -13,24 +13,15 @@ function ProfileImage({ activeUser, propObj : {
     const [userName, setUserName] = useState(
         activeUser?.name || activeUser?.groupName || ""
     );
-    // const {
-    //     img, setImg,
-    //     imgName, setImgName,
-    //     fileStatus, setFileStatus,
-    //     imgUrl, setImgUrl } = propObj;
+    
     let imgURL;
-    // const {welcomeChatPage,
-    //   setWelcomeChatPage} = useContext(messageContext);
+    
     function handleDpChange(e) {
-        // setFileStatus(true)
-        // setImg(null);
         setImg(e.target.files[0]);
         setImgName(e.target.files[0].name);
         setFileStatus(true);
         e.target.value = null;
     }
-
-    // const handleEnter = (e) => e.key === "Enter" && handleSend();
 
     return (
         <div className="userProfile">
@@ -52,8 +43,6 @@ function ProfileImage({ activeUser, propObj : {
                             alt="Avatar"
                         />
                     )}
-                    {/* https://api.backlinko.com/app/uploads/2021/03/whatsapp-user-statistics.webp */}
-                    {/* <img className="avatar" src={activeUser?.avatar || IMAGES.default} alt="Avatar" /> */}
                 </label>
                 <input
                     id="profilePicture"
