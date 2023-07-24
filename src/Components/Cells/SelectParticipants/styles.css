@@ -9,3 +9,7 @@
     height: calc(100vh - 280px - 90px);
     /* height: calc(100vh - 102px); */
   }
+
+  .edit{
+    height: calc(100vh - 430px);
+  }

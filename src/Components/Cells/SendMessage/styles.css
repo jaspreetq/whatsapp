@@ -36,3 +36,6 @@ custom-input-text {
 .react-input-emoji--placeholder{
   width: 900px;
 }
+.react-input-emoji--input{
+  max-height: 45px;
+}

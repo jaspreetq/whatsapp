@@ -214,7 +214,7 @@ function SelectParticipants(props) {
           placeholder="Enter group name..."
         />
       </div>
-      <div className="participants scroll">
+      <div className="participants scroll edit">
         <br />
         <h6 className="text-primary">
           {isNewGroup
