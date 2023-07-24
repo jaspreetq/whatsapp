@@ -71,31 +71,6 @@ function SelectParticipants(props) {
   useEffect(() => {
     isNewGroup && setSelectedParticipants([activeUser || getUserFromUid(getActiveUserId(), users)])
   }, [])
-  //
-  // useEffect(()=>{
-  //   const q = query(collection(db, "users"), orderBy("createdAt"));
-  //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
-  //     QuerySnapshot.forEach((doc) => {
-  //
-  //     });
-  //   });
-  //   return () => unsubscribe;
-  // },[])
-
-  // useEffect(()=>{
-  //   if(showGroupAddComp && !showMemberEditFormOnTheRight){
-  //     setLocalGroupName("");
-  //     setRecieverDetails({});
-  //     setSelectedParticipants([])
-  //   }
-  //   return ()=>setRecieverDetails(getUserFromUid(actualDbId,users));
-  // },[])
-
-  // useEffect(()=>{
-  //   // setRecieverDetails(users?.at(-1));
-  //   // setActualDbId(users?.at(-1)?.uid);
-  //   setWelcomeChatPage(true)
-  // },[users?.length])
 
   useEffect(() => {
     if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
@@ -112,14 +87,6 @@ function SelectParticipants(props) {
   };
 
   const updateChatGroup = async () => {
-    //GET DOC
-    //TRUE UPDATE
-    //FALSE SETDOC
-
-    // docRef = await getDoc(doc(db, "users", gid));
-    // setRecieverDetails({...docRef.data()})
-    // recieverDetails?.avatar !== img && handleUpload();  
-
     const gid = recieverDetails?.uid; //grp
 
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
@@ -181,7 +148,9 @@ function SelectParticipants(props) {
               return {...rec, ["avatar"]: url}
             })
             imgURL.current = url;
-            isNewGroup ? createChatGroup() : updateChatGroup();
+            isNewGroup
+              ? createChatGroup()
+              : updateChatGroup();
           });
         }
       );
@@ -193,9 +162,6 @@ function SelectParticipants(props) {
     // Receives the storage reference and the file to upload.
   };
   const createChatGroup = async () => {
-    //GET DOC
-    //TRUE UPDATE
-    //FALSE SETDOC
 
     const gid = createNewGroupId();
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
@@ -231,11 +197,6 @@ function SelectParticipants(props) {
     setIsNewGroupBtnClicked(true);
     // setSelectedParticipants([{}]);
     setShowGroupAddComp(false);
-    // setGroupName("")
-    // setRecieverDetails(getUserFromUid(gid,users))
-    // setWelcomeChatPage(true)
-    // recieverDetails?.avatar !== img && handleUpload();
-    // newObj = {};
   };
 
   return (
@@ -253,7 +214,7 @@ function SelectParticipants(props) {
           placeholder="Enter group name..."
         />
       </div>
-      <div className="">
+      <div className="participants scroll">
         <br />
         <h6 className="text-primary">
           {isNewGroup

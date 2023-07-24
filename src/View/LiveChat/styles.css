@@ -133,6 +133,28 @@
   margin-left: 45%;
   margin-top: 20%;
 }
+.allignedRight{
+  display: flex;
+  /* flex-direction: row | row-reverse | column | column-reverse */
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+.chat-sender{
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+.chat-reciever{
+  padding-left: 10px;
+}
+.paddingzero{
+  padding-left: 0;  
+}
+
+
+.chat-reciever{
+  justify-content: flex-start;
+}
 .defaultChat {
   background-color: #dedede;
   /* /home/chicmic/Documents/whatsapp/public/whatsappSide.png  */

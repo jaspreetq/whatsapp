@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import {createUserWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -7,21 +7,21 @@ import {
   setDoc,
 } from "firebase/firestore";
 
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useContext, useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
-import { auth, db } from "../../firebase";
-import { NAME_ERROR_STRING, SENT_VERIFICATION_LINK } from "../../Components/ConstantStrings";
-import { errorDisplay } from "../../Components/Utillities/errorDisplay";
-import { IMAGES } from "../../Components/Utillities/Images";
+import {auth, db} from "../../firebase";
+import {NAME_ERROR_STRING, SENT_VERIFICATION_LINK} from "../../Components/ConstantStrings";
+import {errorDisplay} from "../../Components/Utillities/errorDisplay";
+import {IMAGES} from "../../Components/Utillities/Images";
 import "./styles.css";
-import { messageContext } from "../../App";
-import { LINK } from "../../ConstantString";
+import {messageContext} from "../../App";
+import {LINK} from "../../ConstantString";
 // import { LINK } from "../../ConstantString";
 
 function SignUp() {
   const [name, setName] = useState("");
-  const [verificationMessage,setVerificationMessage] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState("");
   const navigate = useNavigate();
   const {
     errorMessage,
@@ -68,9 +68,9 @@ function SignUp() {
       // };
       // await sendEmailVerification(userCredential.user, actionCodeSettings)
       // setVerificationMessage(SENT_VERIFICATION_LINK)
- 
+
       // console.log("userCredential signup", userCredential);
-      const { uid } = auth.currentUser;
+      const {uid} = auth.currentUser;
       await setDoc(doc(db, "users", uid), {
         uid,
         name,
@@ -81,7 +81,7 @@ function SignUp() {
         email,
         avatar: IMAGES.default, //random array dp generator
         createdAt: serverTimestamp(),
-        unseenMessageCount:{"123jdksah":0}
+        unseenMessageCount: {"123jdksah": 0}
         // details: {uid,email,name,avatar,}
       });
       console.log("name ", name, errorMessage);
@@ -93,83 +93,86 @@ function SignUp() {
     }
   };
   return (
-    <form action="get" onSubmit={(e)=>{{
+    <form action="post" onSubmit={(e) => {
+      {
+        e.preventDefault();
         setLoading(true);
         signUpEmailPassword(e);
-      }}}>
-    <div className="Signup">
-      <div className="form centered">
-        <div className="registerHeader">
-          <h2>Whatsapp-Web</h2>
-        </div>
-        {/* <h2>Whatsapp-Web</h2> */}
-        <h3 style={{ "margin-left": "28%" }}>Please Register....</h3>
-        {/* <label>Username:</label> */}
-        <input
-          className="textInput"
-          id="userName"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-          type="text"
-          placeholder="Enter Name..."
-          required
-          // onKeyDown={handleEnter}
-        />
-        {/* <label>Email:</label> */}
-        <input
-          className="textInput"
-          id="userEmail"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-          type="text"
-          placeholder="Enter email..."
-          // onKeyDown={handleEnter}
-        />
-        {/* <label>Password:</label> */}
-        <input
-          className="textInput"
-          id="userPassword"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          type="password"
-          placeholder="Enter Password..."
-          // onKeyDown={handleEnter}
-        />
-        <br />
-        <p style={{ color: "red" }}>{errorMessage}</p>
-        <br />
-        <div className="centered-btn">
-          <button
-            className="registration enlarged"
-            onClick={(e) => {
-              setLoading(true);
-              signUpEmailPassword(e);
+      }
+    }}>
+      <div className="Signup">
+        <div className="form centered">
+          <div className="registerHeader">
+            <h2>Whatsapp-Web</h2>
+          </div>
+          {/* <h2>Whatsapp-Web</h2> */}
+          <h3 style={{"margin-left": "28%"}}>Please Register....</h3>
+          {/* <label>Username:</label> */}
+          <input
+            className="textInput"
+            id="userName"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
             }}
-          >
-            Sign Up
-          </button>
-
-          <button
-            className="registration enlarged"
-            onClick={() => {
-              setLoading(true);
-              return navigate("/SignIn");
+            type="text"
+            placeholder="Enter Name..."
+            required
+          // onKeyDown={handleEnter}
+          />
+          {/* <label>Email:</label> */}
+          <input
+            className="textInput"
+            id="userEmail"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
             }}
-          >
-            Existing User: SignIn
-          </button>
-        <p className="text-danger">{verificationMessage}</p>
+            type="text"
+            placeholder="Enter email..."
+          // onKeyDown={handleEnter}
+          />
+          {/* <label>Password:</label> */}
+          <input
+            className="textInput"
+            id="userPassword"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            type="password"
+            placeholder="Enter Password..."
+          // onKeyDown={handleEnter}
+          />
+          <br />
+          <p style={{color: "red"}}>{errorMessage}</p>
+          <br />
+          <div className="centered-btn">
+            <button
+              className="registration enlarged"
+              onClick={(e) => {
+                setLoading(true);
+                signUpEmailPassword(e);
+              }}
+            >
+              Sign Up
+            </button>
 
+            <button
+              className="registration enlarged"
+              onClick={() => {
+                setLoading(true);
+                return navigate("/SignIn");
+              }}
+            >
+              Existing User: SignIn
+            </button>
+            <p className="text-danger">{verificationMessage}</p>
+
+          </div>
         </div>
+        <div className="rightSideImage"></div>
       </div>
-      <div className="rightSideImage"></div>
-    </div>
     </form>
   );
 }

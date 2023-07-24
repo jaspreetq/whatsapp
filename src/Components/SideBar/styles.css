@@ -44,9 +44,6 @@
 }
 
 .badge{
-  /* position: relative;
-  top: -1px;
-  right: -120px; */
   float: right;
   padding: 5px 7px;
   border-radius: 50%;
@@ -56,8 +53,10 @@
 
 .name{
   display: inline-block;
+  /* max-width: 10px; */
 }
 .lastMssg{
   font-size: smaller;
   color: rgb(49, 48, 48);
+  /* max-width: 10px; */
 }

@@ -118,25 +118,16 @@ function LiveChat() {
     // console.log("recieverDetails outside changed visible? ", recieverDetails);
     return () => unsubscribe();
   }, []);
-  // recieverDetails?.name,
-  // recieverDetails?.groupName,
-  // recieverDetails?.avatar,
-  // recieverDetails?.participants,
 
-  // console.log("recieverDetails changed visible? ", recieverDetails);
-  // useEffect(() => {
-  // }, [recieverDetails?.uid]);
 
-  // useEffect(()=>{
-
-  // },[])
   useEffect(() => {
     refHook.current?.scrollIntoView();
+
   }, [messages, loading]);
 
   useEffect(() => {
     if (recieverDetails?.groupName) {
-      
+
     }
     console.log(getUserFromUid(activeUser?.uid, users)?.unseenMessageCount?.[actualDbId], activeUser, recieverDetails, "in chats useEffect");
     if (recieverDetails?.name) {
@@ -144,7 +135,7 @@ function LiveChat() {
       // const {lastChat} = docRef.data();
       // docRef.lastChat
       const thisChat = chats?.find(chat => chat.uid === actualDbId);
-      const lastText = thisChat.messages?.at(-1)?.text;
+      const lastText = thisChat?.messages?.at(-1)?.text;
       setLastMessage(lastText);
       console.log(getUserFromUid(activeUser.uid, users).unseenMessageCount, "getUserFromUid(activeUser", lastText);
       let unseenMessageCountLocal, lastChatLocal;
@@ -317,11 +308,6 @@ function LiveChat() {
     //RecieveChat
     <div className="liveChat">
       <div className="registerHeader seeThrough"></div>
-      {/* {showMemberEditFormOnTheRight && <CustomModal { children, show, setEditedGroupName = ()=>{}, string, handleEditGroupName, editedGroupName, handleGroupNameEdit, setShow, channelName, title, selectedList, setSelectedList, addChannel, addUser=()=>{}, handleSelect=()=>{}, showHead, showFoot }) >
-      </CustomModal>} */}
-      {/* <SignOut /> */}
-      {/* {console.log("recieverDetails in <><><><>", recieverDetails)} */}
-      {/* {!auth.currentUser.uid && console.log("null chak")} */}
       <div className="d-flex justify-content-start sidebar shadowBorder">
         <SideBar />
         <div style={{width: "80%"}}>
@@ -330,20 +316,21 @@ function LiveChat() {
               {" "}
               <div style={{"font-size": "23px", "padding-left": "10px", "background": "#f8f9fae0"}}><br />Select a contact to chat</div>
               <img
-                  key="whatsappLogo"
-                  id='whatsappLogo'
-                  className="whatsappLogo"
-                  src={IMAGES.WHATSAPP_LOGO_PNG}
-                  height='200px'
-                  width='200px'
-                />
+                key="whatsappLogo"
+                id='whatsappLogo'
+                className="whatsappLogo"
+                src={IMAGES.WHATSAPP_LOGO_PNG}
+                height='200px'
+                width='200px'
+              />
             </div>
           ) : (
             <>
               <nav className="navbar navbar-expand-lg navbar-light bg-light border-left">
+                {console.log(recieverDetails, "img profile")}
                 <img
                   className="avatar"
-                  src={getUserFromUid(recieverDetails?.uid, users)?.avatar || IMAGES.default}
+                  src={getUserFromUid(recieverDetails?.uid, users)?.avatar || recieverDetails?.avatar || IMAGES.default}
                   alt="Avatar"
                   key={recieverDetails?.uid || actualDbId || "uniqueID1"}
                   id={recieverDetails?.uid || actualDbId || "uniqueID1"}
@@ -453,7 +440,7 @@ function LiveChat() {
                 </>
               ) : (
                 <div className="scroll-right">
-                  <ul>
+                  <ul className="paddingzero">
                     {messages?.map((message, idx) => {
                       const cssStr =
                         message.uid === auth.currentUser.uid
@@ -462,7 +449,7 @@ function LiveChat() {
                       if (!(message.text || message.img || message.pdf))
                         return null;
                       return (
-                        <div className="w-100">
+                        <div className={`w-100 allignedRight chat${cssStr}`}  >
                           <div ref={refHook} className={`container${cssStr} shadow`}>
                             {recieverDetails?.groupName && (
                               <span>

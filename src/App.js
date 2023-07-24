@@ -99,15 +99,6 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
-        {/* <br />
-          {user ? (
-            <div className="home">
-              <SideBar />
-              <LiveChat />
-            </div>
-          ) : (
-            <SignIn />
-          )} */}
       </div>
     </messageContext.Provider>
   );

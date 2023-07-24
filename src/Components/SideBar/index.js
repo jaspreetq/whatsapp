@@ -17,7 +17,7 @@ import {messageContext} from "../../App";
 import {auth, db} from "../../firebase";
 import {IMAGES} from "../Utillities/Images";
 import "./styles.css";
-import Header from "../Atoms/Header"; 
+import Header from "../Atoms/Header";
 import SelectParticipants from "../Cells/SelectParticipants";
 import {rightArrow, threeDotsHamburger} from "../Utillities/icons";
 import {useNavigate} from "react-router-dom";
@@ -26,6 +26,7 @@ import {getUserFromUid} from "../Utillities/getUserFromUid";
 import getActiveUserId from "../Utillities/getActiveUserId";
 import getChatDbId from "../Utillities/getChatDbId";
 import {RANDOM_TEXT} from "../../ConstantString";
+import stringTrimmer from "../Utillities/stringTrimmer";
 // export const GrpParticipantContext = createContext();
 
 function SideBar() {
@@ -51,7 +52,6 @@ function SideBar() {
     loading, unseenCounter, setUnseenCounter, lastMessage, setLastMessage
   } = useContext(messageContext);
   let senderUserID;
-  // const currentUser0 = users?.find((user) => user.uid == auth.currentUser.uid)
 
   const [sortedUsers, setSortedUsers] = useState([]);
   const [displayRecords, setDisplayRecords] = useState([]);
@@ -63,7 +63,6 @@ function SideBar() {
   const [searchedTerm, setSearchedTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const navigate = useNavigate();
-  //SIGN-OUT
   const auth = getAuth();
   const defaultRec = () => users?.find((user) => user.uid !== auth.currentUser?.uid);
   const UID = auth.currentUser.uid;
@@ -86,7 +85,6 @@ function SideBar() {
   }, [activeUser]);
 
   useEffect(() => {
-    // setRecieverDetails(defaultRec());
     setDisplayRecords(sortedUsers);
     const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
@@ -105,7 +103,6 @@ function SideBar() {
   }, [chats?.messages]);
 
   useEffect(() => {
-    // setRecieverDetails(defaultRec());
     const q = query(collection(db, "chats"), orderBy("lastChatedAt", "desc"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let chats = [];
@@ -119,18 +116,6 @@ function SideBar() {
   }, []);
 
   useEffect(() => {
-
-    // const asyncCountUpdate = async () => await updateDoc(doc(db, "users", recieverDetails?.uid), {
-    //   uid: recieverDetails?.uid,
-    //   groupName: recieverDetails?.groupName,
-    //   participants: [...recieverDetails?.participants],
-    //   avatar: recieverDetails?.avatar, //random array dp generator
-    //   createdAt: recieverDetails?.createdAt,
-    //   creatorUid: recieverDetails?.creatorUid,
-    //   lastChat: {...(recieverDetails?.lastChat || {})},
-    //   unseenMessageCount: {...unseenCounter, ...{[getActiveUserId()]: 0}}
-    // });
-    // recieverDetails?.groupName && asyncCountUpdate();
 
     const updateCntTo0 = async () => (await updateDoc(doc(db, "users", activeUser?.uid), {
       uid: activeUser.uid,
@@ -152,6 +137,7 @@ function SideBar() {
 
   useEffect(() => {
     //sort and filter array
+    // group in which I am a participant and individual chats 
     const filteredChats = chats?.filter((chat) => {
       return (
         chat?.participants?.some((member) => member?.uid?.includes(UID)) ||
@@ -289,23 +275,8 @@ function SideBar() {
                       {"  "}
                       {getCurrentUser()?.name}
                     </div>
-                    {/* 
-                <button
-                  style={{ border: "none" }}
-                  onClick={() => {
-                    const initialSelected =
-                      users[0].uid === auth.currentUser.uid
-                        ? users[1]
-                        : users[0];
-                    setRecieverDetails(initialSelected);
-                    setShowGroupAddComp(true);
-                  }}
-                >
-                  {threeDotsHamburger}
-                </button> */}
                   </div>
                   <div class="dropdown">
-                    {/* <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> */}
                     <button
                       className="dropdown-toggle"
                       type="button"
@@ -317,7 +288,6 @@ function SideBar() {
                     >
                       {threeDotsHamburger}
                     </button>
-                    {/* </button> */}
                     <div
                       class="dropdown-menu"
                       aria-labelledby="dropdownMenuButton"
@@ -325,11 +295,8 @@ function SideBar() {
                       <a
                         class="dropdown-item"
                         onClick={() => {
-                          // const initialSelected =
-                          //   users[0].uid === auth.currentUser.uid
-                          //     ? users[1]
-                          //     : users[0];
-                          // setRecieverDetails(initialSelected);
+                          setWelcomeChatPage(true);
+                          setRecieverDetails({});
                           setShowGroupAddComp(true);
                         }}
                         href="#"
@@ -357,6 +324,7 @@ function SideBar() {
                 <div className="scroll-left shadow sidebar">
                   {displayRecords.length ? (
                     (displayRecords || sortedUsers)?.map((user) => {
+                      const fullName = (user?.groupName || user?.name)
                       if (user?.uid === auth.currentUser.uid) return;
                       const isCurrentUserAMemberOfThisGroup =
                         user?.participants?.some(
@@ -417,24 +385,17 @@ function SideBar() {
 
 
                           {"  "}
-                          <div className="name">{user?.groupName || user?.name}
-                            {/* style={{"display": "inline"}} */}
+                          <div className="name">{
+                            stringTrimmer(fullName)
+                          }
+                            {console.log("getUserFromUid :", user)}
                             <p className="lastMssg">
-                              {lastChatUser || finalLastChatGrpString}
-                              {/* || user?.lastChat?.[getChatDbId(user, getUserFromUid(getActiveUserId()))] */}
+                              {stringTrimmer(lastChatUser || finalLastChatGrpString)}
                             </p>
                           </div>
                           <span className="badge">
                             {badgeNo || ""}
                           </span>
-                          {user.name && console.log(user.unseenMessageCount[getChatDbId(user, getUserFromUid(getActiveUserId(), users))], "user.unseenMessageCount")}
-                          {/* user.unseenMessageCount[
-                              getChatDbId(
-                                user,
-                                getUserFromUid(getActiveUserId())
-                              )
-                            ] */}
-                          {/* && user?.lastChat?.keys?.includes(user?.uid))  */}
                         </div>
                       );
                     })
