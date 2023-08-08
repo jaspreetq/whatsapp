@@ -16,5 +16,5 @@ export const IMAGES = {
   SIGNIN_BACKGROUND: websignin,
   SIDE_IMG: whatsappSide,
   WHATSAPP_LOGO: WhatsApplogo,
-  WHATSAPP_LOGO_PNG: whatsappSmallLogoPng
+  WHATSAPP_LOGO_PNG: whatsappSmallLogoPng,
 };

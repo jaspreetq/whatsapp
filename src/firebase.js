@@ -38,7 +38,7 @@ const firebaseConfig = {
   storageBucket: "whatsappwithemail.appspot.com",
   messagingSenderId: "364927015827",
   appId: "1:364927015827:web:f0c4ac1e3a920a8985e666",
-  measurementId: "G-EG4P91GCLS"
+  measurementId: "G-EG4P91GCLS",
 };
 
 // Initialize Firebase

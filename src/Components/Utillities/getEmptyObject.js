@@ -1,6 +1,6 @@
 function getEmptyObject() {
-    const newObj = {}
+  const newObj = {};
   return newObj;
 }
 
-export default getEmptyObject
+export default getEmptyObject;

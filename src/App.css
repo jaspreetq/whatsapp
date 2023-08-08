@@ -1,4 +1,3 @@
- 
 /* loader */
 .lds-ellipsis {
   display: inline-block;
@@ -71,7 +70,8 @@
   background-color: #fafbfc;
   border: 1px solid rgba(27, 31, 35, 0.15);
   border-radius: 6px;
-  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0,
+  box-shadow:
+    rgba(27, 31, 35, 0.04) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
   box-sizing: border-box;
   color: #24292e;
@@ -80,7 +80,6 @@
   line-height: 20px;
   list-style: none;
   padding: 6px 16px;
-
 }
 
 .dropdown-toggle::after {
@@ -190,7 +189,6 @@ button {
   word-wrap: break-word;
 }
 
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -201,7 +199,7 @@ button {
   font-size: calc(10px + 2vmin);
   color: white;
 }
-.App{
+.App {
   padding: 15px;
 }
 .App-link {
@@ -214,7 +212,7 @@ button {
   justify-content: flex-start;
 }
 
-.registerHeader{
+.registerHeader {
   /* display: block; */
   /* margin-left: -4%; */
   position: absolute;

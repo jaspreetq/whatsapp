@@ -18,7 +18,7 @@ import {auth, db} from "../../firebase";
 import {IMAGES} from "../Utillities/Images";
 import "./styles.css";
 import Header from "../Atoms/Header";
-import SelectParticipants from "../Cells/SelectParticipants";
+import SelectParticipants from "../../View/LiveChat/components/SelectParticipants";
 import {rightArrow, threeDotsHamburger} from "../Utillities/icons";
 import {useNavigate} from "react-router-dom";
 import UserProfile from "../Cells/UserProfile";
@@ -49,7 +49,11 @@ function SideBar() {
     chats,
     setChats,
     setLoading,
-    loading, unseenCounter, setUnseenCounter, lastMessage, setLastMessage
+    loading,
+    unseenCounter,
+    setUnseenCounter,
+    lastMessage,
+    setLastMessage,
   } = useContext(messageContext);
   let senderUserID;
 
@@ -64,7 +68,8 @@ function SideBar() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const navigate = useNavigate();
   const auth = getAuth();
-  const defaultRec = () => users?.find((user) => user.uid !== auth.currentUser?.uid);
+  const defaultRec = () =>
+    users?.find((user) => user.uid !== auth.currentUser?.uid);
   const UID = auth.currentUser.uid;
   const signOut = () => {
     auth.signOut();
@@ -116,28 +121,31 @@ function SideBar() {
   }, []);
 
   useEffect(() => {
-
-    const updateCntTo0 = async () => (await updateDoc(doc(db, "users", activeUser?.uid), {
-      uid: activeUser.uid,
-      name: activeUser.name,
-      email: activeUser.email,
-      avatar: activeUser.avatar, //random array dp generator
-      createdAt: activeUser.createdAt,
-      lastChat: {...(activeUser?.lastChat || {}), [actualDbId]: lastMessage},
-      unseenMessageCount: {
-        ...unseenCounter,
-        ...{[actualDbId]: 0},
-      },
-    }));
+    const updateCntTo0 = async () =>
+      await updateDoc(doc(db, "users", activeUser?.uid), {
+        uid: activeUser.uid,
+        name: activeUser.name,
+        email: activeUser.email,
+        avatar: activeUser.avatar, //random array dp generator
+        createdAt: activeUser.createdAt,
+        lastChat: {
+          ...(activeUser?.lastChat || {}),
+          [actualDbId]: lastMessage,
+        },
+        unseenMessageCount: {
+          ...unseenCounter,
+          ...{[actualDbId]: 0},
+        },
+      });
 
     recieverDetails?.name && updateCntTo0();
 
     console.log("getUserFromUid(activeUser", unseenCounter);
-  }, [unseenCounter])
+  }, [unseenCounter]);
 
   useEffect(() => {
     //sort and filter array
-    // group in which I am a participant and individual chats 
+    // group in which I am a participant and individual chats
     const filteredChats = chats?.filter((chat) => {
       return (
         chat?.participants?.some((member) => member?.uid?.includes(UID)) ||
@@ -147,7 +155,7 @@ function SideBar() {
     const filteredUsers = users?.filter(
       (user) =>
         !filteredChats?.some((chat) => chat.uid?.includes(user.uid)) &&
-        user.uid?.length < 29
+        user.uid?.length < 29,
     ); //(user?.uid.length < 29 && user?.uid !== UID)
     const filteredChatUIds = filteredChats?.map((chat) => chat.uid);
     // const filteredUsers =
@@ -324,11 +332,11 @@ function SideBar() {
                 <div className="scroll-left shadow sidebar">
                   {displayRecords.length ? (
                     (displayRecords || sortedUsers)?.map((user) => {
-                      const fullName = (user?.groupName || user?.name)
+                      const fullName = user?.groupName || user?.name;
                       if (user?.uid === auth.currentUser.uid) return;
                       const isCurrentUserAMemberOfThisGroup =
                         user?.participants?.some(
-                          (member) => member.uid === auth.currentUser.uid
+                          (member) => member.uid === auth.currentUser.uid,
                         );
 
                       if (user?.groupName && !isCurrentUserAMemberOfThisGroup)
@@ -336,30 +344,46 @@ function SideBar() {
                       const cssUser =
                         recieverDetails?.uid === user?.uid ? " selected" : ""; //||selectedGroup.uid === user.uid\
 
-                      const badgeNo = user?.groupName ? user?.unseenMessageCount[auth?.currentUser?.uid]
-                        : getUserFromUid(getActiveUserId(), users)?.unseenMessageCount[getChatDbId(user, getUserFromUid(getActiveUserId(), users))]
+                      const badgeNo = user?.groupName
+                        ? user?.unseenMessageCount[auth?.currentUser?.uid]
+                        : getUserFromUid(getActiveUserId(), users)
+                          ?.unseenMessageCount[
+                        getChatDbId(
+                          user,
+                          getUserFromUid(getActiveUserId(), users),
+                        )
+                        ];
 
-                      const lastChatUser = user?.lastChat?.[user?.uid] ||
+                      const lastChatUser =
+                        user?.lastChat?.[user?.uid] ||
                         user?.lastChat?.[
                         Object.keys(user?.lastChat || {})?.find(
                           (chatId) =>
                             chatId.length > 54 &&
                             chatId.includes(user?.uid) &&
-                            chatId.includes(auth.currentUser.uid)
-                        )]
-                      let lastChatGrpKey
-                      let lastChatGrpValue
-                      let lastChatGrpKeyStr
+                            chatId.includes(auth.currentUser.uid),
+                        )
+                        ];
+                      let lastChatGrpKey;
+                      let lastChatGrpValue;
+                      let lastChatGrpKeyStr;
                       let finalLastChatGrpString = "";
 
                       const lastChatGrp = user?.lastChat;
-                      if (lastChatGrp && Object.keys(lastChatGrp).length && user.groupName) {
-                        console.log(lastChatGrp, recieverDetails?.uid, "lastChatGrp");
-                        console.log(Object.keys(lastChatGrp)[0], "lastChat in sidebar", Object.values(lastChatGrp)[0])
+                      if (
+                        lastChatGrp &&
+                        Object.keys(lastChatGrp).length &&
+                        user.groupName
+                      ) {
                         lastChatGrpKey = Object.keys(lastChatGrp)[0];
                         lastChatGrpValue = Object.values(lastChatGrp)[0];
-                        lastChatGrpKeyStr = (lastChatGrpKey === getActiveUserId()) ? "You: " : `${getUserFromUid(lastChatGrpKey, users)?.name}: `
-                        finalLastChatGrpString = lastChatGrpKeyStr + lastChatGrpValue;
+                        lastChatGrpKeyStr =
+                          lastChatGrpKey === getActiveUserId()
+                            ? "You: "
+                            : `${getUserFromUid(lastChatGrpKey, users)?.name
+                            }: `;
+                        finalLastChatGrpString =
+                          lastChatGrpKeyStr + lastChatGrpValue;
                       }
                       return (
                         <div
@@ -368,7 +392,7 @@ function SideBar() {
                           id={user?.uid}
                           onClick={() => receiverSelected(user)}
                         >
-                          {lastChatUser || finalLastChatGrpString ?
+                          {lastChatUser || finalLastChatGrpString ? (
                             <img
                               className="avatar"
                               id={user?.uid}
@@ -376,26 +400,25 @@ function SideBar() {
                               src={user?.avatar}
                               style={{"margin-top": "-21px"}}
                             />
-                            : <img className="avatar"
+                          ) : (
+                            <img
+                              className="avatar"
                               id={user?.uid}
                               key={user?.uid}
                               src={user?.avatar}
                             />
-                          }
-
+                          )}
 
                           {"  "}
-                          <div className="name">{
-                            stringTrimmer(fullName)
-                          }
-                            {console.log("getUserFromUid :", user)}
+                          <div className="name">
+                            {stringTrimmer(fullName)}
                             <p className="lastMssg">
-                              {stringTrimmer(lastChatUser || finalLastChatGrpString)}
+                              {stringTrimmer(
+                                lastChatUser || finalLastChatGrpString,
+                              )}
                             </p>
                           </div>
-                          <span className="badge">
-                            {badgeNo || ""}
-                          </span>
+                          <span className="badge">{badgeNo || ""}</span>
                         </div>
                       );
                     })

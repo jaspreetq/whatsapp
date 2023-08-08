@@ -15,16 +15,15 @@ import {
 import { messageContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import "./styles.css"
+import "./styles.css";
 import { errorDisplay } from "../../Components/Utillities/errorDisplay";
 import { whatsapp } from "../../Components/Utillities/icons";
 import { LINK } from "../../ConstantString";
 import { SENT_VERIFICATION_LINK } from "../../Components/ConstantStrings";
 
 function SignIn() {
-  const [verificationMessage,setVerificationMessage] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState("");
   const navigate = useNavigate();
-  // const [userDetailsObj, setUserDetailsObj] = useState({});
   const auth = getAuth();
   const [user] = useAuthState(auth);
   const {
@@ -38,12 +37,13 @@ function SignIn() {
     setWelcomeChatPage,
     activeUser,
     setActiveUser,
-    loading,setLoading
+    loading,
+    setLoading,
   } = useContext(messageContext);
 
   useEffect(() => {
     setErrorMessage("");
-    return setLoading(false)
+    return setLoading(false);
   }, []);
 
   // connectAuthEmulator(auth, "http://localhost:9899");
@@ -59,13 +59,13 @@ function SignIn() {
   // signUpEmailPassword
 
   const loginEmailPassword = async () => {
-    const loginEmail   = email;
+    const loginEmail = email;
     const loginPassword = password;
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         loginEmail,
-        loginPassword
+        loginPassword,
       );
       const { uid } = auth.currentUser;
 
@@ -104,46 +104,56 @@ function SignIn() {
 
   return (
     <>
-    {/* {loading ? :} */}
+      {/* {loading ? :} */}
       <div className="signIn">
-      <div className="registerHeader"><h2>Whatsapp-Web</h2></div>
-      <form method="get" onSubmit={handleSignIn}>
-        <div className="form">
-          <h3>Please SignIn...</h3>
-          
-          <input
-            className="textInput"
-            id="userEmail"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            type="text"
-            placeholder="Enter email..."
-          // onKeyDown={handleEnter}
-          />
-
-          <input
-            className="textInput"
-            id="userPassword"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type="password"
-            placeholder="Enter Password..."
-          // onKeyDown={handleEnter}
-          />
-
-          <br /><br />
-          <p style={{ color: "red" }}>{errorMessage}</p>
-          {/* <button onClick={googleSignIn}>Sign In G</button> */}
-          <div className="">
-          <button className="registration" onClick={handleSignIn}>Sign In</button>
-          {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
-          <button className="registration" onClick={() => navigate("/SignUp")}>New User, SignUp</button>
-          </div>
+        <div className="registerHeader">
+          <h2>Whatsapp-Web</h2>
         </div>
+        <form method="get" onSubmit={handleSignIn}>
+          <div className="form">
+            <h3>Please SignIn...</h3>
+
+            <input
+              className="textInput"
+              id="userEmail"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              type="text"
+              placeholder="Enter email..."
+              // onKeyDown={handleEnter}
+            />
+
+            <input
+              className="textInput"
+              id="userPassword"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              type="password"
+              placeholder="Enter Password..."
+              // onKeyDown={handleEnter}
+            />
+
+            <br />
+            <br />
+            <p style={{ color: "red" }}>{errorMessage}</p>
+            {/* <button onClick={googleSignIn}>Sign In G</button> */}
+            <div className="">
+              <button className="registration" onClick={handleSignIn}>
+                Sign In
+              </button>
+              {/* {!user && <button onClick={handleSignUp}>Sign Up</button>} */}
+              <button
+                className="registration"
+                onClick={() => navigate("/SignUp")}
+              >
+                New User, SignUp
+              </button>
+            </div>
+          </div>
         </form>
         <div className="icon">
           {/* <p className="whatsapp_label"></p> */}

@@ -1,4 +1,4 @@
-.userProfile{
+.userProfile {
   height: 100%;
   width: 100%;
 }
@@ -7,7 +7,7 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  margin:2%;
+  margin: 2%;
 }
 
 .large:hover {
@@ -16,10 +16,10 @@
   cursor: pointer;
 }
 
-.arrow{
+.arrow {
   background-color: #5db5a1e3;
   border-radius: 40%;
 }
-#newName{
-  margin:5px
+#newName {
+  margin: 5px;
 }

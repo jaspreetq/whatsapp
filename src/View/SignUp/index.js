@@ -1,4 +1,7 @@
-import {createUserWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -7,16 +10,19 @@ import {
   setDoc,
 } from "firebase/firestore";
 
-import React, {useContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import {auth, db} from "../../firebase";
-import {NAME_ERROR_STRING, SENT_VERIFICATION_LINK} from "../../Components/ConstantStrings";
-import {errorDisplay} from "../../Components/Utillities/errorDisplay";
-import {IMAGES} from "../../Components/Utillities/Images";
+import { auth, db } from "../../firebase";
+import {
+  NAME_ERROR_STRING,
+  SENT_VERIFICATION_LINK,
+} from "../../Components/ConstantStrings";
+import { errorDisplay } from "../../Components/Utillities/errorDisplay";
+import { IMAGES } from "../../Components/Utillities/Images";
 import "./styles.css";
-import {messageContext} from "../../App";
-import {LINK} from "../../ConstantString";
+import { messageContext } from "../../App";
+import { LINK } from "../../ConstantString";
 // import { LINK } from "../../ConstantString";
 
 function SignUp() {
@@ -52,14 +58,12 @@ function SignUp() {
     const signupEmail = email;
     const signupPassword = password;
     try {
-      console.log("name<><><>", name);
       if (name == "") throw new Error(NAME_ERROR_STRING);
 
-      console.log(" Sign up in  ", email, password);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         signupEmail,
-        signupPassword
+        signupPassword,
       );
 
       // const actionCodeSettings = {
@@ -69,8 +73,7 @@ function SignUp() {
       // await sendEmailVerification(userCredential.user, actionCodeSettings)
       // setVerificationMessage(SENT_VERIFICATION_LINK)
 
-      // console.log("userCredential signup", userCredential);
-      const {uid} = auth.currentUser;
+      const { uid } = auth.currentUser;
       await setDoc(doc(db, "users", uid), {
         uid,
         name,
@@ -81,7 +84,7 @@ function SignUp() {
         email,
         avatar: IMAGES.default, //random array dp generator
         createdAt: serverTimestamp(),
-        unseenMessageCount: {"123jdksah": 0}
+        unseenMessageCount: { "123jdksah": 0 },
         // details: {uid,email,name,avatar,}
       });
       console.log("name ", name, errorMessage);
@@ -93,20 +96,23 @@ function SignUp() {
     }
   };
   return (
-    <form action="post" onSubmit={(e) => {
-      {
-        e.preventDefault();
-        setLoading(true);
-        signUpEmailPassword(e);
-      }
-    }}>
+    <form
+      action="post"
+      onSubmit={(e) => {
+        {
+          e.preventDefault();
+          setLoading(true);
+          signUpEmailPassword(e);
+        }
+      }}
+    >
       <div className="Signup">
         <div className="form centered">
           <div className="registerHeader">
             <h2>Whatsapp-Web</h2>
           </div>
           {/* <h2>Whatsapp-Web</h2> */}
-          <h3 style={{"margin-left": "28%"}}>Please Register....</h3>
+          <h3 style={{ "margin-left": "28%" }}>Please Register....</h3>
           {/* <label>Username:</label> */}
           <input
             className="textInput"
@@ -118,7 +124,7 @@ function SignUp() {
             type="text"
             placeholder="Enter Name..."
             required
-          // onKeyDown={handleEnter}
+            // onKeyDown={handleEnter}
           />
           {/* <label>Email:</label> */}
           <input
@@ -130,7 +136,7 @@ function SignUp() {
             }}
             type="text"
             placeholder="Enter email..."
-          // onKeyDown={handleEnter}
+            // onKeyDown={handleEnter}
           />
           {/* <label>Password:</label> */}
           <input
@@ -142,10 +148,10 @@ function SignUp() {
             }}
             type="password"
             placeholder="Enter Password..."
-          // onKeyDown={handleEnter}
+            // onKeyDown={handleEnter}
           />
           <br />
-          <p style={{color: "red"}}>{errorMessage}</p>
+          <p style={{ color: "red" }}>{errorMessage}</p>
           <br />
           <div className="centered-btn">
             <button
@@ -168,7 +174,6 @@ function SignUp() {
               Existing User: SignIn
             </button>
             <p className="text-danger">{verificationMessage}</p>
-
           </div>
         </div>
         <div className="rightSideImage"></div>

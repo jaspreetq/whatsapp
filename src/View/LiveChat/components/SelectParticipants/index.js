@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
-import {rightArrow} from "../../Utillities/icons";
-import {messageContext} from "../../../App";
-import {auth, db, storage} from "../../../firebase";
-import {getTime} from "../../Utillities/getTime";
+import {rightArrow} from "../../../../Components/Utillities/icons";
+import {messageContext} from "../../../../App";
+import {auth, db, storage} from "../../../../firebase";
+import {getTime} from "../../../../Components/Utillities/getTime";
 import {
   doc,
   getDoc,
@@ -11,12 +11,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import {IMAGES} from "../../Utillities/Images";
-import {getUserFromUid} from "../../Utillities/getUserFromUid";
+import {IMAGES} from "../../../../Components/Utillities/Images";
+import {getUserFromUid} from "../../../../Components/Utillities/getUserFromUid";
 import "./styles.css";
-import ProfileImage from "../../Atoms/ProfileImage";
+import ProfileImage from "../../../../Components/Atoms/ProfileImage";
 import {getDownloadURL, ref, uploadBytesResumable} from "firebase/storage";
-import getActiveUserId from "../../Utillities/getActiveUserId";
+import getActiveUserId from "../../../../Components/Utillities/getActiveUserId";
 
 function SelectParticipants(props) {
   const [img, setImg] = useState("");
@@ -24,11 +24,15 @@ function SelectParticipants(props) {
   const [fileStatus, setFileStatus] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   const propObj = {
-    img, setImg,
-    imgName, setImgName,
-    fileStatus, setFileStatus,
-    imgUrl, setImgUrl
-  }
+    img,
+    setImg,
+    imgName,
+    setImgName,
+    fileStatus,
+    setFileStatus,
+    imgUrl,
+    setImgUrl,
+  };
   const newObj = {};
   let imgURLGlobal;
   const imgURL = useRef();
@@ -60,17 +64,22 @@ function SelectParticipants(props) {
   } = useContext(messageContext);
 
   const [userName, setUserName] = useState(
-    recieverDetails?.name || recieverDetails?.groupName
+    recieverDetails?.name || recieverDetails?.groupName,
   );
   const grp = users?.find((user) => user.uid == actualDbId);
-  const [localGroupName, setLocalGroupName] = useState(isNewGroup ? "" : getUserFromUid(recieverDetails?.uid, users)?.groupName);
+  const [localGroupName, setLocalGroupName] = useState(
+    isNewGroup ? "" : getUserFromUid(recieverDetails?.uid, users)?.groupName,
+  );
   // const { groupName, setGroupName } = useContext(GrpParticipantContext);
   const [groupEmptyError, setGroupEmptyError] = useState("");
   const [errorName, setErrorName] = useState("");
 
   useEffect(() => {
-    isNewGroup && setSelectedParticipants([activeUser || getUserFromUid(getActiveUserId(), users)])
-  }, [])
+    isNewGroup &&
+      setSelectedParticipants([
+        activeUser || getUserFromUid(getActiveUserId(), users),
+      ]);
+  }, []);
 
   useEffect(() => {
     if (!isNewGroup && recieverDetails?.uid !== grp?.uid) {
@@ -91,7 +100,7 @@ function SelectParticipants(props) {
 
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const currentUser0 = users?.find(
-      (user) => user.uid == auth.currentUser.uid
+      (user) => user.uid == auth.currentUser.uid,
     );
     const tempSelectedParticipants = [...selectedParticipants];
     // tempSelectedParticipants[0] = currentUser0;
@@ -99,10 +108,11 @@ function SelectParticipants(props) {
       uid: gid,
       // creatorUid:
       groupName: localGroupName,
-      avatar: imgURL.current || recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
+      avatar:
+        imgURL.current || recieverDetails?.avatar || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
-      unseenMessageCount: recieverDetails?.unseenMessageCount
+      unseenMessageCount: recieverDetails?.unseenMessageCount,
       // {...users?.map(user=>user.uid)}
       // details: {uid,email,name,avatar,}
     });
@@ -118,7 +128,6 @@ function SelectParticipants(props) {
       participants: [...tempSelectedParticipants],
       messages,
       lastChatedAt: serverTimestamp(),
-
     });
     //create new
     // setActualDbGroupId(gid);
@@ -133,27 +142,22 @@ function SelectParticipants(props) {
     setFileStatus(false);
 
     if (img) {
-
       const localFileNewURL = `/profiles/${img.name}${recieverDetails?.uid}`;
       const storageRef = ref(storage, localFileNewURL);
       const uploadTask = uploadBytesResumable(storageRef, img);
 
-      uploadTask.then(
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            setImgUrl(url);
-            imgURLGlobal = url;
-            // const obj = {a: 23}
-            setRecieverDetails((rec) => {
-              return {...rec, ["avatar"]: url}
-            })
-            imgURL.current = url;
-            isNewGroup
-              ? createChatGroup()
-              : updateChatGroup();
+      uploadTask.then(() => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+          setImgUrl(url);
+          imgURLGlobal = url;
+          // const obj = {a: 23}
+          setRecieverDetails((rec) => {
+            return {...rec, ["avatar"]: url};
           });
-        }
-      );
+          imgURL.current = url;
+          isNewGroup ? createChatGroup() : updateChatGroup();
+        });
+      });
     }
     setImg(null);
     !img && isNewGroup ? createChatGroup() : updateChatGroup();
@@ -162,14 +166,15 @@ function SelectParticipants(props) {
     // Receives the storage reference and the file to upload.
   };
   const createChatGroup = async () => {
-
     const gid = createNewGroupId();
     // selectedParticipants?.filter((member,idx)=>member?.uid&&member)
     const tempSelectedParticipants = [...selectedParticipants];
     tempSelectedParticipants[0] = currentUser0;
 
     const objProxy = {};
-    tempSelectedParticipants?.map(user => {return objProxy[user.uid] = 0})
+    tempSelectedParticipants?.map((user) => {
+      return (objProxy[user.uid] = 0);
+    });
 
     await setDoc(doc(db, "users", gid), {
       uid: gid,
@@ -178,7 +183,7 @@ function SelectParticipants(props) {
       avatar: imgURLGlobal || IMAGES.GROUP_DEFAULT_DP, //random array dp generator
       createdAt: serverTimestamp(),
       participants: [...tempSelectedParticipants],
-      unseenMessageCount: objProxy
+      unseenMessageCount: objProxy,
       // details: {uid,email,name,avatar,}
     });
 
@@ -201,7 +206,10 @@ function SelectParticipants(props) {
 
   return (
     <div className="padded" style={{padding: "15px"}}>
-      <ProfileImage activeUser={isNewGroup ? {} : recieverDetails} propObj={propObj} />
+      <ProfileImage
+        activeUser={isNewGroup ? {} : recieverDetails}
+        propObj={propObj}
+      />
       <div>
         <input
           className="textInput"
@@ -231,7 +239,7 @@ function SelectParticipants(props) {
                     style={{height: "15px", width: "15px"}}
                     type="checkbox"
                     checked={selectedParticipants?.some(
-                      (participant) => participant.uid === user.uid
+                      (participant) => participant.uid === user.uid,
                     )}
                     onChange={(e) => {
                       if (e.target.checked)
@@ -242,14 +250,22 @@ function SelectParticipants(props) {
                       else
                         setSelectedParticipants(() =>
                           selectedParticipants?.filter(
-                            (participant) => participant.uid !== user?.uid
-                          )
+                            (participant) => participant.uid !== user?.uid,
+                          ),
                         );
                     }}
                   />
                   <span>
                     {" "}
-                    <img height="50" width="50" id={user?.uid} className="avatar" key={user?.uid} src={user?.avatar} /> {user?.name}
+                    <img
+                      height="50"
+                      width="50"
+                      id={user?.uid}
+                      className="avatar"
+                      key={user?.uid}
+                      src={user?.avatar}
+                    />{" "}
+                    {user?.name}
                   </span>
                 </label>
               )}
@@ -264,7 +280,7 @@ function SelectParticipants(props) {
           onClick={() => {
             !localGroupName
               ? setErrorName("Please enter group name.")
-              : handleUpload()
+              : handleUpload();
           }}
         >
           Save Changes

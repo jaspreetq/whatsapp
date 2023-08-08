@@ -5,7 +5,8 @@ custom-input-text {
   background-color: #fafbfc;
   border: 1px solid rgba(27, 31, 35, 0.15);
   border-radius: 6px;
-  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0,
+  box-shadow:
+    rgba(27, 31, 35, 0.04) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
   box-sizing: border-box;
   color: #24292e;
@@ -28,14 +29,14 @@ custom-input-text {
   padding-top: 9px;
 }
 .send-message {
-  margin-top: 9px;    
-}
-.sendMessageArea{
   margin-top: 9px;
 }
-.react-input-emoji--placeholder{
+.sendMessageArea {
+  margin-top: 9px;
+}
+.react-input-emoji--placeholder {
   width: 900px;
 }
-.react-input-emoji--input{
+.react-input-emoji--input {
   max-height: 45px;
 }

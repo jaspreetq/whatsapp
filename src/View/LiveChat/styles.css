@@ -1,5 +1,4 @@
 .liveChat {
-  
 }
 .seeThrough {
   z-index: -1;
@@ -42,8 +41,7 @@
   width: fit-content;
   min-width: 75px;
 }
-.shadowBorder{
-  
+.shadowBorder {
 }
 .container-sender {
   border: 2px solid #dedede;
@@ -56,7 +54,6 @@
   max-width: 48%;
   width: fit-content;
   min-width: 75px;
-  
 
   /* margin-left:30%;
    float: right; */
@@ -95,7 +92,7 @@
   /* float: right; */
   display: flex;
   justify-content: end;
-  color: black;  
+  color: black;
   font-size: smaller;
   margin-bottom: -11px;
 }
@@ -127,32 +124,31 @@
   padding: 5%;
   padding-left: 30%;
 }
-.whatsappLogo{
+.whatsappLogo {
   display: flex;
   justify-content: center;
   margin-left: 45%;
   margin-top: 20%;
 }
-.allignedRight{
+.allignedRight {
   display: flex;
   /* flex-direction: row | row-reverse | column | column-reverse */
   align-items: flex-end;
   justify-content: flex-end;
   padding-right: 10px;
 }
-.chat-sender{
+.chat-sender {
   justify-content: flex-end;
   padding-right: 10px;
 }
-.chat-reciever{
+.chat-reciever {
   padding-left: 10px;
 }
-.paddingzero{
-  padding-left: 0;  
+.paddingzero {
+  padding-left: 0;
 }
 
-
-.chat-reciever{
+.chat-reciever {
   justify-content: flex-start;
 }
 .defaultChat {
@@ -162,7 +158,7 @@
   background-size: cover;
 }
 
-.singleChat{
+.singleChat {
   display: flex;
   justify-content: flex-end;
 }

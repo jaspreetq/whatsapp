@@ -1,13 +1,13 @@
-import {auth} from "./firebase";
-import {useAuthState} from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 import "./App.css";
-import {createContext, useEffect, useState} from "react";
+import { createContext, useEffect, useState } from "react";
 
 import SendMessage from "./Components/Cells/SendMessage";
 import SideBar from "./Components/SideBar";
-import {BrowserRouter, HashRouter, Route, Routes} from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import SignUp from "./View/SignUp";
-import {onAuthStateChanged} from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import LiveChat from "./View/LiveChat";
 import SignIn from "./View/SignIn";
 
@@ -28,11 +28,12 @@ function App() {
   const [actualDbGroupId, setActualDbGroupId] = useState("");
   const [users, setUsers] = useState([]);
   const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(false)
-  const [lastMessage, setLastMessage] = useState("")
-  const [unseenCounter, setUnseenCounter] = useState({})
+  const [loading, setLoading] = useState(false);
+  const [lastMessage, setLastMessage] = useState("");
+  const [unseenCounter, setUnseenCounter] = useState({});
   const [lastTextMessage, setLastTextMessage] = useState("");
-  const defaultRec = () => users?.find((user) => user.uid !== auth.currentUser?.uid);
+  const defaultRec = () =>
+    users?.find((user) => user.uid !== auth.currentUser?.uid);
 
   useEffect(() => {
     const clear = onAuthStateChanged(auth, (user) => {
@@ -83,8 +84,10 @@ function App() {
         setChats,
         unseenCounter,
         setUnseenCounter,
-        lastMessage, setLastMessage,
-        lastTextMessage, setLastTextMessage
+        lastMessage,
+        setLastMessage,
+        lastTextMessage,
+        setLastTextMessage,
       }}
     >
       <div className="App">

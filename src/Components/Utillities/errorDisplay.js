@@ -2,8 +2,7 @@ import { NAME_ERROR_STRING } from "../ConstantStrings";
 
 export const errorDisplay = (error, email, setErrorMessage) => {
   console.log("In utility :", error);
-  if(error.message == NAME_ERROR_STRING)
-  {
+  if (error.message == NAME_ERROR_STRING) {
     setErrorMessage(NAME_ERROR_STRING);
     return;
   }
@@ -13,7 +12,7 @@ export const errorDisplay = (error, email, setErrorMessage) => {
       break;
     case "auth/user-not-found":
       setErrorMessage(
-        `Email address ${email} is not signed up. Kindly Sign up`
+        `Email address ${email} is not signed up. Kindly Sign up`,
       );
       break;
     case "auth/invalid-email":
@@ -24,7 +23,7 @@ export const errorDisplay = (error, email, setErrorMessage) => {
       break;
     case "auth/weak-password":
       setErrorMessage(
-        "Password is not strong enough. Add additional characters including special characters and numbers."
+        "Password is not strong enough. Add additional characters including special characters and numbers.",
       );
       break;
     case "auth/wrong-password":
@@ -32,7 +31,7 @@ export const errorDisplay = (error, email, setErrorMessage) => {
       break;
     default:
       // console.log(error)
-      console.log(error.code)
+      console.log(error.code);
       setErrorMessage(error.code);
       break;
   }

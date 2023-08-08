@@ -5,13 +5,18 @@ import { auth, db, storage } from "../../../firebase";
 import { rightArrow } from "../../Utillities/icons";
 import { IMAGES } from "../../Utillities/Images";
 import { messageContext } from "../../../App";
-import "./styles.css"
+import "./styles.css";
 import { getUserFromUid } from "../../Utillities/getUserFromUid";
 //active user - 2meanings
-function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false }) {
-  const {users} = useContext(messageContext);
+function UserProfile({
+  activeUser,
+  setActiveUser,
+  setEditProfile,
+  isGroup = false,
+}) {
+  const { users } = useContext(messageContext);
   const [userName, setUserName] = useState(
-    getUserFromUid(activeUser?.uid,users).groupName || activeUser?.name
+    getUserFromUid(activeUser?.uid, users).groupName || activeUser?.name,
   );
   const [img, setImg] = useState("");
   const [imgName, setImgName] = useState("");
@@ -42,11 +47,11 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
       (await updateDoc(doc(db, "users", activeUser?.uid), {
         uid: activeUser.uid,
         groupName: userName,
-        participants: [...getUserFromUid(activeUser.uid,users)?.participants],
+        participants: [...getUserFromUid(activeUser.uid, users)?.participants],
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
         creatorUid: activeUser.creatorUid,
-        unseenMessageCount: activeUser?.unseenMessageCount
+        unseenMessageCount: activeUser?.unseenMessageCount,
       }));
 
     activeUser?.name &&
@@ -57,11 +62,8 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
         email: activeUser.email,
         avatar: activeUser.avatar, //random array dp generator
         createdAt: activeUser.createdAt,
-        unseenMessageCount: activeUser?.unseenMessageCount
-      })
-      
-      );
-      
+        unseenMessageCount: activeUser?.unseenMessageCount,
+      }));
   };
 
   const handleUpload = async () => {
@@ -76,7 +78,7 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
         "state_changed",
         (snapshot) => {
           const percent = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
           );
 
           // update progress
@@ -92,11 +94,13 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
               (await updateDoc(doc(db, "users", activeUser?.uid), {
                 uid: activeUser.uid,
                 groupName: userName,
-                participants: [...getUserFromUid(activeUser.uid,users)?.participants],
+                participants: [
+                  ...getUserFromUid(activeUser.uid, users)?.participants,
+                ],
                 avatar: url, //random array dp generator
                 createdAt: activeUser.createdAt,
                 creatorUid: activeUser.creatorUid,
-                unseenMessageCount: activeUser?.unseenMessageCount
+                unseenMessageCount: activeUser?.unseenMessageCount,
               }));
 
             if (activeUser?.name) {
@@ -106,12 +110,12 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
                 email: activeUser.email,
                 avatar: url,
                 createdAt: activeUser.createdAt,
-                unseenMessageCount: activeUser?.unseenMessageCount
+                unseenMessageCount: activeUser?.unseenMessageCount,
               });
             }
-            setActiveUser({...activeUser,["avatar"]:url})
+            setActiveUser({ ...activeUser, ["avatar"]: url });
           });
-        }
+        },
       );
     }
 
@@ -127,10 +131,7 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
       <div className="d-flex justify-content-center">
         <label htmlFor="profilePicture">
           {img ? (
-            <img
-              className="large"
-              src={URL.createObjectURL(img)}
-            />
+            <img className="large" src={URL.createObjectURL(img)} />
           ) : (
             <img
               className="large"
@@ -164,7 +165,8 @@ function UserProfile({ activeUser,setActiveUser, setEditProfile, isGroup = false
           />
         </div>
         <div className="d-flex justify-content-center">
-          <button className="arrow"
+          <button
+            className="arrow"
             onClick={() => {
               (activeUser?.name !== userName ||
                 activeUser?.groupName !== userName) &&
