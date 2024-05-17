@@ -8,20 +8,20 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import React, { useContext, useEffect, useState, useRef } from "react";
-import { messageContext } from "../../../App";
-import { auth, db, storage } from "../../../firebase";
-import { IMAGES } from "../../Utillities/Images";
+import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
+import React, {useContext, useEffect, useState, useRef} from "react";
+import {messageContext} from "../../../../App";
+import {auth, db, storage} from "../../../../firebase";
+import {IMAGES} from "../../../../../src/Components/Utillities/Images";
 import InputEmoji from "react-input-emoji";
 import "./styles.css";
-import { RANDOM_TEXT } from "../../../ConstantString";
-import { getTime } from "../../Utillities/getTime";
-import { FileContext } from "../../../View/LiveChat";
-import Loader from "../../Atoms/Loader";
-import { attachement } from "../../Utillities/icons";
-import { getUserFromUid } from "../../Utillities/getUserFromUid";
-import getActiveUserId from "../../Utillities/getActiveUserId";
+import {RANDOM_TEXT} from "../../../../ConstantString";
+import {getTime} from "../../../../../src/Components/Utillities/getTime";
+import {FileContext} from "../../../../View/LiveChat";
+import Loader from "../../../../../src/Components/Atoms/Loader";
+import {attachement} from "../../../../Components/Utillities/icons";
+import {getUserFromUid} from "../../../../Components/Utillities/getUserFromUid";
+import getActiveUserId from "../../../../Components/Utillities/getActiveUserId";
 
 function SendMessage() {
   // State to store uploaded file
@@ -102,7 +102,7 @@ function SendMessage() {
   }
 
   const handleEnter = (e) => e.key === "Enter" && handleSend();
-  const { uid, displayName, photoURL } = auth.currentUser;
+  const {uid, displayName, photoURL} = auth.currentUser;
 
   const handleUpload = async () => {
     setFileStatus(false);
@@ -208,7 +208,7 @@ function SendMessage() {
           if (key === activeUser?.uid) return (recieverWithNewChatCnt[key] = 0);
           return (recieverWithNewChatCnt[key] =
             getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount[
-              key
+            key
             ] + 1);
         });
 
@@ -222,7 +222,7 @@ function SendMessage() {
           ) {
             recieverWithNewChatCnt[key] =
               getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount[
-                key
+              key
               ] + 1;
           }
         });
@@ -230,7 +230,7 @@ function SendMessage() {
       if (
         recieverDetails?.name &&
         !getUserFromUid(recieverDetails?.uid, users)?.unseenMessageCount?.[
-          actualDbId
+        actualDbId
         ]
       ) {
         const objChatIdMessage = {};
@@ -249,7 +249,7 @@ function SendMessage() {
             unseenMessageCount: {
               ...getUserFromUid(recieverDetails?.uid, users)
                 ?.unseenMessageCount,
-              ...{ [actualDbId]: 1 },
+              ...{[actualDbId]: 1},
             },
           });
         recieverDetails?.name && asyncCountUpdate();
@@ -329,7 +329,7 @@ function SendMessage() {
           <label htmlFor="attachement">{attachement}</label>
           <input
             id="attachement"
-            style={{ display: "contents" }}
+            style={{display: "contents"}}
             type="file"
             onChange={handleFileChange}
             accept="image/*,application/pdf,video/mp4,video/x-m4v,video/*,.mp3,audio/*"

@@ -27,7 +27,7 @@ import SideBar from "../../Components/SideBar";
 import {messageContext} from "../../App";
 import {useParams} from "react-router-dom";
 import {RANDOM_TEXT} from "../../ConstantString";
-import SendMessage from "../../Components/Cells/SendMessage";
+import SendMessage from "./components/SendMessage";
 import {IMAGES} from "../../Components/Utillities/Images";
 import Loader from "../../Components/Atoms/Loader";
 import getActiveUserId from "../../Components/Utillities/getActiveUserId";

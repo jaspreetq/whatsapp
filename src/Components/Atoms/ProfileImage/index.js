@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { IMAGES } from "../../Utillities/Images";
-import { auth, db, storage } from "../../../firebase";
-import { doc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import React, {useEffect, useState} from "react";
+import {IMAGES} from "../../Utillities/Images";
+import {auth, db, storage} from "../../../firebase";
+import {doc, updateDoc} from "firebase/firestore";
+import {getDownloadURL, ref, uploadBytesResumable} from "firebase/storage";
 
 function ProfileImage({
   activeUser,
@@ -53,7 +53,7 @@ function ProfileImage({
         </label>
         <input
           id="profilePicture"
-          style={{ display: "contents" }}
+          style={{display: "contents"}}
           type="file"
           onChange={handleDpChange}
           accept="image/*"

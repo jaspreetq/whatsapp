@@ -1,13 +1,13 @@
-import { auth } from "./firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+import {auth} from "./firebase";
+import {useAuthState} from "react-firebase-hooks/auth";
 import "./App.css";
-import { createContext, useEffect, useState } from "react";
+import {createContext, useEffect, useState} from "react";
 
-import SendMessage from "./Components/Cells/SendMessage";
+// import SendMessage from "./Components/Cells/SendMessage";
 import SideBar from "./Components/SideBar";
-import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import {BrowserRouter, HashRouter, Route, Routes} from "react-router-dom";
 import SignUp from "./View/SignUp";
-import { onAuthStateChanged } from "firebase/auth";
+import {onAuthStateChanged} from "firebase/auth";
 import LiveChat from "./View/LiveChat";
 import SignIn from "./View/SignIn";
 

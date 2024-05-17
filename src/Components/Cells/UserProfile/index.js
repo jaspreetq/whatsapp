@@ -1,12 +1,12 @@
-import { doc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import React, { useContext, useState } from "react";
-import { auth, db, storage } from "../../../firebase";
-import { rightArrow } from "../../Utillities/icons";
-import { IMAGES } from "../../Utillities/Images";
-import { messageContext } from "../../../App";
+import {doc, updateDoc} from "firebase/firestore";
+import {getDownloadURL, ref, uploadBytesResumable} from "firebase/storage";
+import React, {useContext, useState} from "react";
+import {auth, db, storage} from "../../../firebase";
+import {rightArrow} from "../../Utillities/icons";
+import {IMAGES} from "../../Utillities/Images";
+import {messageContext} from "../../../App";
 import "./styles.css";
-import { getUserFromUid } from "../../Utillities/getUserFromUid";
+import {getUserFromUid} from "../../Utillities/getUserFromUid";
 //active user - 2meanings
 function UserProfile({
   activeUser,
@@ -14,7 +14,7 @@ function UserProfile({
   setEditProfile,
   isGroup = false,
 }) {
-  const { users } = useContext(messageContext);
+  const {users} = useContext(messageContext);
   const [userName, setUserName] = useState(
     getUserFromUid(activeUser?.uid, users).groupName || activeUser?.name,
   );
@@ -113,7 +113,7 @@ function UserProfile({
                 unseenMessageCount: activeUser?.unseenMessageCount,
               });
             }
-            setActiveUser({ ...activeUser, ["avatar"]: url });
+            setActiveUser({...activeUser, ["avatar"]: url});
           });
         },
       );
@@ -144,7 +144,7 @@ function UserProfile({
         </label>
         <input
           id="profilePicture"
-          style={{ display: "contents" }}
+          style={{display: "contents"}}
           type="file"
           onChange={handleDpChange}
           accept="image/*"
@@ -161,7 +161,7 @@ function UserProfile({
             }}
             type="text"
             placeholder="Name..."
-            // onKeyDown={(e) => handleEnter(e)}
+          // onKeyDown={(e) => handleEnter(e)}
           />
         </div>
         <div className="d-flex justify-content-center">
